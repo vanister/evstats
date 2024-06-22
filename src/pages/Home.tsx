@@ -1,14 +1,12 @@
-import './Home.css';
+import './Home.scss';
 
-import ExploreContainer from '../components/ExploreContainer';
 import EvsPage from '../components/EvsPage';
+import ExploreContainer from '../components/ExploreContainer';
 
-const Home: React.FC = () => {
+export default function Home() {
   return (
     <EvsPage title="Home">
       <ExploreContainer />
     </EvsPage>
   );
-};
-
-export default Home;
+}
