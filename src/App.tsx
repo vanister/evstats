@@ -28,10 +28,8 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.scss';
 
-import { IonApp, IonSplitPane, setupIonicReact } from '@ionic/react';
+import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import MenuControl from './providers/MenuControl';
-import NavMenu from './components/NavMenu';
 import RootLayout from './RootLayout';
 
 setupIonicReact();
@@ -40,12 +38,7 @@ export default function App() {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane when="md">
-          <MenuControl>
-            <NavMenu contentId="root-content" />
-            <RootLayout contentId="root-content" />
-          </MenuControl>
-        </IonSplitPane>
+        <RootLayout contentId="root-content" />
       </IonReactRouter>
     </IonApp>
   );
