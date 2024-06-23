@@ -7,6 +7,7 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
+import React from 'react';
 
 export type EvsPageProps = {
   title: string;
@@ -15,11 +16,11 @@ export type EvsPageProps = {
   fixedSlotPlacement?: 'before' | 'after';
 };
 
-export default function EvsPage(props: EvsPageProps) {
+const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
   const { children, fixedSlotPlacement, hideMenuButton, title } = props;
 
   return (
-    <IonPage>
+    <IonPage ref={ref}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -42,4 +43,6 @@ export default function EvsPage(props: EvsPageProps) {
       </IonContent>
     </IonPage>
   );
-}
+});
+
+export default EvsPage;
