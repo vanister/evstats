@@ -23,7 +23,9 @@ import '@ionic/react/css/display.css';
 
 /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
+
+// todo - revert back to system theme
+// import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.scss';
@@ -32,7 +34,8 @@ import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import RootLayout from './RootLayout';
 
-setupIonicReact();
+// todo - remove
+setupIonicReact({ mode: 'ios' });
 
 export default function App() {
   return (

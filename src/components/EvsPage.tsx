@@ -12,10 +12,11 @@ export type EvsPageProps = {
   title: string;
   children: React.ReactNode;
   hideMenuButton?: boolean;
+  fixedSlotPlacement?: 'before' | 'after';
 };
 
 export default function EvsPage(props: EvsPageProps) {
-  const { title, children, hideMenuButton } = props;
+  const { children, fixedSlotPlacement, hideMenuButton, title } = props;
 
   return (
     <IonPage>
@@ -27,7 +28,11 @@ export default function EvsPage(props: EvsPageProps) {
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent
+        className="ion-padding"
+        fullscreen
+        fixedSlotPlacement={fixedSlotPlacement}
+      >
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">{title}</IonTitle>
