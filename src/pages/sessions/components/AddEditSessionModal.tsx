@@ -11,7 +11,7 @@ import { useRef } from 'react';
 import { Session } from '../../../models/session';
 import { IonSlots, ModalRoles } from '../../../constants';
 
-export type AddEditSessionModalProps = {
+interface AddEditSessionModalProps {
   allowCloseGesture?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
@@ -19,7 +19,7 @@ export type AddEditSessionModalProps = {
   triggerId?: string;
   onClose?: VoidFunction;
   onSave: (session: Session) => Promise<boolean>;
-};
+}
 
 export default function AddEditSessionModal(props: AddEditSessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, onSave } = props;

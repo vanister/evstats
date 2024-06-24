@@ -4,7 +4,7 @@ import {
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
-  IonTabs,
+  IonTabs
 } from '@ionic/react';
 import { carSport, flash, statsChart } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router';
@@ -12,9 +12,9 @@ import VehiclePage from './pages/vehicles/VehiclePage';
 import SessionPage from './pages/sessions/SessionPage';
 import ChargeStats from './pages/stats/ChargeStats';
 
-export type RootLayoutProps = {
+interface RootLayoutProps {
   contentId: string;
-};
+}
 
 export default function RootLayout(props: RootLayoutProps) {
   return (

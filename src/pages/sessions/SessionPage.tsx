@@ -1,12 +1,12 @@
 import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import EvsPage from '../../components/EvsPage';
 import { useRef } from 'react';
-import { useSessions } from './useSessions';
+import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
+import EvsPage from '../../components/EvsPage';
 import { Session } from '../../models/session';
 import AddEditSessionModal from './components/AddEditSessionModal';
 import SessionList from './components/SessionList';
-import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
+import { useSessions } from './useSessions';
 
 export default function SessionPage() {
   const presentingElement = useRef<HTMLElement>();

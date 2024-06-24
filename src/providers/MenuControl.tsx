@@ -1,19 +1,19 @@
 import React, { useContext, useState } from 'react';
 
-export type MenuControlContextType = {
+interface MenuControlContextType {
   disabled?: boolean;
   setDisabled: (value: boolean) => void;
-};
+}
 
-export type MenuControlProps = {
+interface MenuControlProps {
   children: React.ReactNode;
-};
+}
 
 const INITIAL_CONTEXT_VALUES: MenuControlContextType = {
   disabled: false,
   setDisabled: () => {
     /* noop */
-  },
+  }
 };
 
 export const MenuControlContext = React.createContext(INITIAL_CONTEXT_VALUES);

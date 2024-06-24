@@ -5,16 +5,16 @@ import {
   IonMenuButton,
   IonPage,
   IonTitle,
-  IonToolbar,
+  IonToolbar
 } from '@ionic/react';
 import React from 'react';
 
-export type EvsPageProps = {
+interface EvsPageProps {
   title: string;
   children: React.ReactNode;
   hideMenuButton?: boolean;
   fixedSlotPlacement?: 'before' | 'after';
-};
+}
 
 const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
   const { children, fixedSlotPlacement, hideMenuButton, title } = props;

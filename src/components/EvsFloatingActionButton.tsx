@@ -1,13 +1,13 @@
 import { IonFab, IonFabButton } from '@ionic/react';
 
-export type EvsFloatingAddButtonProps = {
+interface EvsFloatingAddButtonProps {
   id?: string;
   children: React.ReactNode;
   horizontal?: 'start' | 'end' | 'center';
   vertical?: 'top' | 'bottom' | 'center';
   slot?: string;
   onClick?: VoidFunction;
-};
+}
 
 export default function EvsFloatingActionButton({
   id,
