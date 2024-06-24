@@ -1,39 +1,24 @@
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonFab,
-  IonFabButton,
-  IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonModal,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
+import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useRef } from 'react';
-import { Session, useSessions } from './useSessions';
+import { useSessions } from './useSessions';
+import { Session } from '../../models/session';
+import AddEditSessionModal from './components/AddEditSessionModal';
+import SessionList from './components/SessionList';
+import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 
 export default function SessionPage() {
-  const modal = useRef<HTMLIonModalElement>(null);
   const presentingElement = useRef<HTMLElement>();
   const { sessions } = useSessions();
 
-  const modalCanDismiss = async (_: any, role: string | undefined) => {
-    return role !== 'gesture';
+  const handleSessionSave = async (session: Session) => {
+    console.log('Session saved:', session);
+    return true;
   };
 
-  const handleModalDismiss = () => {
-    modal.current?.dismiss();
-  };
-
-  const handleAddSessionClick = (session: Session | null) => {
-    // todo
-    modal.current?.dismiss();
+  const handleSessionSelection = (session: Session) => {
+    console.log('Session selected:', session);
   };
 
   // a recent list of charge sessions
@@ -43,53 +28,23 @@ export default function SessionPage() {
       title="Sessions"
       fixedSlotPlacement="before"
     >
-      {/* todo - turn into EvsFloatingAddButton */}
-      <IonFab horizontal="end" vertical="bottom" slot="fixed">
-        <IonFabButton id="new-session">
-          <IonIcon icon={add} />
-        </IonFabButton>
-      </IonFab>
-      {/* todo - SessionList */}
-      <IonList>
-        {sessions.map((session) => (
-          <IonItem key={session.id} button>
-            <IonLabel>
-              <h3>{session.vehicleName}</h3>
-              <p>{session.date.toLocaleDateString()}</p>
-            </IonLabel>
-            <IonLabel slot="end">
-              <h3>{session.kWhAdded} kWh</h3>
-            </IonLabel>
-          </IonItem>
-        ))}
-      </IonList>
-      {/* todo - AddSessionModal */}
-      <IonModal
-        ref={modal}
-        trigger="new-session"
-        canDismiss={modalCanDismiss}
-        presentingElement={presentingElement.current}
+      <EvsFloatingActionButton
+        id="new-session"
+        horizontal="end"
+        vertical="bottom"
+        slot="fixed"
       >
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonButton onClick={handleModalDismiss}>Close</IonButton>
-            </IonButtons>
-            <IonTitle>New Session</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={() => handleAddSessionClick(null)}>
-                Add
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <p>
-            To close this modal, please use the "Close" button provided. Note
-            that swiping the modal will not dismiss it.
-          </p>
-        </IonContent>
-      </IonModal>
+        <IonIcon icon={add} />
+      </EvsFloatingActionButton>
+
+      <SessionList sessions={sessions} onSelection={handleSessionSelection} />
+
+      <AddEditSessionModal
+        isNew
+        presentingElement={presentingElement.current}
+        triggerId="new-session"
+        onSave={handleSessionSave}
+      />
     </EvsPage>
   );
 }

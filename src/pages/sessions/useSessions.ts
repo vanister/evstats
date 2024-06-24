@@ -1,11 +1,5 @@
 import { useState } from 'react';
-
-export type Session = {
-  id: number,
-  kWhAdded: number,
-  vehicleName: string,
-  date: Date
-}
+import { Session } from '../../models/session';
 
 const MOCK_SESSIONS: Session[] = [
   {
@@ -13,18 +7,22 @@ const MOCK_SESSIONS: Session[] = [
     kWhAdded: 43,
     vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 5, 22),
+    rateType: 'Home'
   },
   {
     id: 2,
     kWhAdded: 22,
     vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 4, 16),
+    rateType: 'Home'
+
   },
   {
     id: 3,
     kWhAdded: 12,
     vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 4, 8),
+    rateType: 'Other'
   },
 ];
 
