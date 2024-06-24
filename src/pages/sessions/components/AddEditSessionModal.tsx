@@ -5,9 +5,14 @@ import {
   IonButtons,
   IonButton,
   IonTitle,
-  IonContent
+  IonContent,
+  IonList,
+  IonInput,
+  IonItem,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/react';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Session } from '../../../models/session';
 import { IonSlots, ModalRoles } from '../../../constants';
 
@@ -24,6 +29,7 @@ interface AddEditSessionModalProps {
 export default function AddEditSessionModal(props: AddEditSessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, onSave } = props;
   const modal = useRef<HTMLIonModalElement>(null);
+  const today = useMemo(() => Date.now(), []);
 
   const modalCanDismiss = async (_: any, role: string | undefined) => {
     if (allowCloseGesture) {
@@ -71,10 +77,69 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p>
-          To close this modal, please use the "Close" button provided. Note that
-          swiping the modal will not dismiss it.
-        </p>
+        <IonList>
+          <IonItem>
+            <IonInput
+              label="kWh added *"
+              labelPlacement="fixed"
+              placeholder="Added during charge session"
+              min={0}
+              max={999}
+              maxlength={3}
+              type="number"
+            />
+          </IonItem>
+          <IonItem>
+            <IonInput
+              label="Date *"
+              labelPlacement="fixed"
+              placeholder="Session date"
+              type="date"
+              defaultValue={today}
+            />
+          </IonItem>
+          {/* todo EvsSelect */}
+          <IonItem>
+            <IonSelect
+              label="Vehicle"
+              labelPlacement="fixed"
+              interfaceOptions={{
+                header: 'Select a Vehicle'
+              }}
+              value={1}
+            >
+              <IonSelectOption value={1}>Mustang Mach-E</IonSelectOption>
+              <IonSelectOption value={2}>R1S</IonSelectOption>
+              <IonSelectOption value={3}>Model 3</IonSelectOption>
+            </IonSelect>
+          </IonItem>
+          <IonItem>
+            <IonSelect
+              label="Rate type"
+              labelPlacement="fixed"
+              value={1}
+              interfaceOptions={{
+                header: 'Select a Rate Type'
+              }}
+            >
+              <IonSelectOption value={1}>Home</IonSelectOption>
+              <IonSelectOption value={2}>Work</IonSelectOption>
+              <IonSelectOption value={3}>Other</IonSelectOption>
+              <IonSelectOption value={4}>DC</IonSelectOption>
+            </IonSelect>
+          </IonItem>
+          <IonItem>
+            <IonInput
+              label="Rate override"
+              labelPlacement="fixed"
+              placeholder="0.32 (per kWh)"
+              type="number"
+              min={0}
+              max={99}
+              maxlength={2}
+            />
+          </IonItem>
+        </IonList>
       </IonContent>
     </IonModal>
   );
