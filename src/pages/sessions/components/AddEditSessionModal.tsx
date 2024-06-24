@@ -10,7 +10,8 @@ import {
   IonInput,
   IonItem,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonNote
 } from '@ionic/react';
 import { useMemo, useRef } from 'react';
 import { Session } from '../../../models/session';
@@ -76,8 +77,8 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
-        <IonList>
+      <IonContent color="light">
+        <IonList inset>
           <IonItem>
             <IonInput
               label="kWh added *"
@@ -99,20 +100,24 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
             />
           </IonItem>
           {/* todo EvsSelect */}
+        </IonList>
+        <IonList inset>
           <IonItem>
             <IonSelect
               label="Vehicle"
               labelPlacement="fixed"
+              value={1}
               interfaceOptions={{
                 header: 'Select a Vehicle'
               }}
-              value={1}
             >
               <IonSelectOption value={1}>Mustang Mach-E</IonSelectOption>
               <IonSelectOption value={2}>R1S</IonSelectOption>
               <IonSelectOption value={3}>Model 3</IonSelectOption>
             </IonSelect>
           </IonItem>
+        </IonList>
+        <IonList inset>
           <IonItem>
             <IonSelect
               label="Rate type"
@@ -132,13 +137,16 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
             <IonInput
               label="Rate override"
               labelPlacement="fixed"
-              placeholder="0.32 (per kWh)"
+              placeholder="0.32"
               type="number"
               min={0}
               max={99}
               maxlength={2}
             />
           </IonItem>
+          <IonNote className="ion-padding-horizontal">
+            This will override the preset rate type.
+          </IonNote>
         </IonList>
       </IonContent>
     </IonModal>
