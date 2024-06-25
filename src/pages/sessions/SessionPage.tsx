@@ -2,21 +2,30 @@ import './SessionPage.scss';
 
 import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { Session } from '../../models/session';
-import AddEditSessionModal from './components/AddEditSessionModal';
+import AddEditSessionModal from './components/AddEditSessionModal/AddEditSessionModal';
 import SessionList from './components/SessionList';
 import { useSessions } from './useSessions';
 
 export default function SessionPage() {
   const presentingElement = useRef<HTMLElement>();
   const { sessions } = useSessions();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleSessionFabClick = () => {
+    setShowModal(true);
+  };
 
   const handleSessionSave = async (session: Session) => {
     console.log('Session saved:', session);
     return true;
+  };
+
+  const handleSessionModalDismiss = () => {
+    setShowModal(false);
   };
 
   const handleSessionSelection = (session: Session) => {
@@ -33,20 +42,22 @@ export default function SessionPage() {
       color="light"
     >
       <EvsFloatingActionButton
-        id="new-session"
         horizontal="end"
         vertical="bottom"
         slot="fixed"
+        onClick={handleSessionFabClick}
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
       <SessionList sessions={sessions} onSelection={handleSessionSelection} />
-      <AddEditSessionModal
-        isNew
-        presentingElement={presentingElement.current}
-        triggerId="new-session"
-        onSave={handleSessionSave}
-      />
+      {showModal && (
+        <AddEditSessionModal
+          isNew
+          presentingElement={presentingElement.current}
+          onSave={handleSessionSave}
+          onDidDismiss={handleSessionModalDismiss}
+        />
+      )}
     </EvsPage>
   );
 }
