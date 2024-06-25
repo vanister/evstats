@@ -1,30 +1,23 @@
 import {
-  IonAlert,
-  IonButton,
-  IonButtons,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonList,
   IonModal,
   IonNote,
-  IonSelect,
-  IonSelectOption,
-  IonTitle,
-  IonToolbar
+  IonSelectOption
 } from '@ionic/react';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import EvsSelect from '../../../../components/EvsSelect';
-import { IonSlots, ModalRoles } from '../../../../constants';
+import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
+import AddEditSessionModalHeader from './AddEditSessionModalHeader';
 
 interface AddEditSessionState {
   session: Partial<Session>;
   errorMsg?: string | null;
-  showError?: boolean;
 }
 
 interface AddEditSessionModalProps {
@@ -76,16 +69,15 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
     onCancel?.();
   };
 
-  const handleAddClick = async () => {
+  const handleSaveClick = async () => {
     const errorMsg = validateSession(state.session);
 
     setState((s) => {
       s.errorMsg = errorMsg;
-      s.showError = !!errorMsg;
     });
 
     if (errorMsg) {
-      // do raise if there are errors
+      // don't raise if there are errors
       return;
     }
 
@@ -106,29 +98,17 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
       presentingElement={presentingElement}
       onDidDismiss={handleDidDismiss}
     >
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot={IonSlots.start}>
-            <IonButton onClick={handleCancelClick}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>{isNew ? 'New Session' : 'Edit Session'}</IonTitle>
-          <IonButtons slot={IonSlots.end}>
-            <IonButton onClick={handleAddClick}>Save</IonButton>
-            <IonAlert
-              isOpen={!!state.showError}
-              header="Error"
-              subHeader="Please fix the following error(s)"
-              message={state.errorMsg ? state.errorMsg : ''}
-              buttons={['OK']}
-              onDidDismiss={() =>
-                setState((s) => {
-                  s.showError = false;
-                })
-              }
-            ></IonAlert>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+      <AddEditSessionModalHeader
+        title={isNew ? 'New Session' : 'Edit Session'}
+        errorMsg={state.errorMsg ?? ''}
+        onCancelClick={handleCancelClick}
+        onSaveClick={handleSaveClick}
+        onErrorMsgDismiss={() =>
+          setState((s) => {
+            s.errorMsg = null;
+          })
+        }
+      ></AddEditSessionModalHeader>
       <IonContent color="light">
         <IonList inset>
           <IonItem>
