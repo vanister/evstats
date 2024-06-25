@@ -5,7 +5,7 @@ import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
-import { Session } from '../../models/session';
+import { Session, SessionViewModal } from '../../models/session';
 import SessionList from './components/SessionList';
 import AddEditSessionModal from './components/SessionModal.tsx/SessionModal';
 import { useSessions } from './useSessions';
@@ -28,7 +28,7 @@ export default function SessionPage() {
     setShowModal(false);
   };
 
-  const handleSessionSelection = (session: Session) => {
+  const handleSessionSelection = (session: SessionViewModal) => {
     console.log('Session selected:', session);
   };
 

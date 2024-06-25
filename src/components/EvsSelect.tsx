@@ -22,6 +22,11 @@ export interface EvsSelect {
   /** The options of the list */
   children?: React.ReactNode;
 
+  /**
+   * Raised when an option is selected.
+   *
+   * @param value The value of the selected option.
+   */
   onSelect?: (value: any) => void;
 }
 

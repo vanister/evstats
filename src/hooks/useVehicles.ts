@@ -1,0 +1,56 @@
+import { useState } from 'react';
+
+interface Vehicle {
+  id: number;
+  make: string;
+  model: string;
+  nickname?: string;
+  trim?: string;
+  vin?: string;
+  year: number;
+  /** The useable battery size. */
+  batterySize: number;
+  /** The initial range of vehicle. */
+  range: number
+}
+
+const VEHICLES: Vehicle[] = [
+  {
+    id: 1,
+    year: 2022,
+    make: 'Ford',
+    model: 'Mustang Mach-E',
+    trim: 'GT',
+    vin: '1FM123AB456CD7890',
+    nickname: 'Red Stallion',
+    batterySize: 91.0,
+    range: 290
+  },
+  {
+    id: 2,
+    year: 2021,
+    make: 'Tesla',
+    model: 'Model 3',
+    trim: 'Long Range',
+    vin: '5TM123AB456CD7890',
+    nickname: 'M3',
+    batterySize: 78.0,
+    range: 334
+  },
+  {
+    id: 3,
+    year: 2023,
+    make: 'Rivian',
+    model: 'R1S',
+    trim: 'Quad Motor',
+    vin: '1RM123AB456CD7890',
+    batterySize: 131,
+    range: 328
+  }
+]
+
+export function useVehicles() {
+  const [vehicles] = useState<Vehicle[]>(VEHICLES);
+
+  return { vehicles };
+}

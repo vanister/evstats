@@ -1,34 +1,49 @@
-import { useState } from 'react';
-import { Session } from '../../models/session';
+import { useEffect, useState } from 'react';
+import { Session, SessionViewModal } from '../../models/session';
+import { useVehicles } from '../../hooks/useVehicles';
+import { useRateTypes } from '../../hooks/useRateTypes';
 
-const MOCK_SESSIONS: Session[] = [
+const MOCK_SESSIONS: Partial<Session>[] = [
   {
     id: 1,
     kWhAdded: 43,
-    vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 5, 22),
-    rateType: 'Home'
+    rateTypeId: 1,
+    vehicleId: 1
   },
   {
     id: 2,
     kWhAdded: 22,
-    vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 4, 16),
-    rateType: 'Home'
-
+    rateTypeId: 1,
+    vehicleId: 1
   },
   {
     id: 3,
     kWhAdded: 12,
-    vehicleName: 'Mustang Mach-E',
     date: new Date(2024, 4, 8),
-    rateType: 'Other'
-  },
+    rateTypeId: 3,
+    vehicleId: 2
+  }
 ];
 
 export function useSessions() {
-  const [sessions, setSessions] = useState(MOCK_SESSIONS);
+  const { vehicles } = useVehicles();
+  const { rateTypes } = useRateTypes();
+  const [sessionsEntries] = useState(MOCK_SESSIONS);
+  const [sessions, setSessions] = useState<SessionViewModal[]>([]);
 
-  return { sessions }
+  useEffect(() => {
+    const vms = sessionsEntries.map((s) => {
+      const vehicleName = vehicles.find((v) => v.id === s.vehicleId)?.model ?? 'Vehicle not found ';
+      const rateType = rateTypes.find((r) => r.id === s.rateTypeId)?.name ?? 'Rate not found';
+      const vm = new SessionViewModal(s.id!, s.date!, s.kWhAdded!, vehicleName, rateType);
 
+      return vm;
+    });
+
+    setSessions(vms);
+  }, []);
+
+  return { sessions };
 }
