@@ -22,6 +22,11 @@ export type SetImmerState<T> = (updater: StateUpdater<T>) => void;
  * setState(draft => {
  *   drat.name = 'Jyn Erso';
  * });
+ * 
+ * // or return a new state object
+ * setState(_draft => {
+ *   return { name: 'Cassian Andor' };
+ * });
  *
  * @param initialValue The initial state value.
  */
