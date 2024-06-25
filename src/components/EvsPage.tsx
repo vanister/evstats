@@ -7,35 +7,37 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/react';
+import classNames from 'classnames';
 import React from 'react';
 
 interface EvsPageProps {
-  title: string;
   children: React.ReactNode;
-  hideMenuButton?: boolean;
+  className?: string;
+  color?: string;
   fixedSlotPlacement?: 'before' | 'after';
+  padding?: boolean;
+  title: string;
 }
 
 const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
-  const { children, fixedSlotPlacement, hideMenuButton, title } = props;
+  const { children, className, color, fixedSlotPlacement, padding, title } =
+    props;
 
   return (
-    <IonPage ref={ref}>
+    <IonPage ref={ref} className={classNames('evs-page', className)}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton disabled={hideMenuButton} hidden={hideMenuButton} />
-          </IonButtons>
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent
-        className="ion-padding"
+        className={`${padding ? 'ion-padding' : ''}`}
+        color={color}
         fullscreen
         fixedSlotPlacement={fixedSlotPlacement}
       >
         <IonHeader collapse="condense">
-          <IonToolbar>
+          <IonToolbar color={color}>
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>

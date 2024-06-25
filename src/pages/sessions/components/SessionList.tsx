@@ -1,4 +1,4 @@
-import { IonList, IonItem, IonLabel } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonContent } from '@ionic/react';
 import { Session } from '../../../models/session';
 
 interface SessionListProps {
@@ -14,7 +14,7 @@ export default function SessionList(props: SessionListProps) {
   };
 
   return (
-    <IonList>
+    <IonList className="session-list" inset>
       {sessions.map((session) => (
         <IonItem
           key={session.id}

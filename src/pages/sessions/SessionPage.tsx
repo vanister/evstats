@@ -1,3 +1,5 @@
+import './SessionPage.scss';
+
 import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef } from 'react';
@@ -25,8 +27,10 @@ export default function SessionPage() {
   return (
     <EvsPage
       ref={presentingElement}
+      className="sessions"
       title="Sessions"
       fixedSlotPlacement="before"
+      color="light"
     >
       <EvsFloatingActionButton
         id="new-session"
@@ -36,9 +40,7 @@ export default function SessionPage() {
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
-
       <SessionList sessions={sessions} onSelection={handleSessionSelection} />
-
       <AddEditSessionModal
         isNew
         presentingElement={presentingElement.current}

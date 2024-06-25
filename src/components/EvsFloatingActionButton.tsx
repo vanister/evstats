@@ -18,7 +18,12 @@ export default function EvsFloatingActionButton({
   onClick
 }: EvsFloatingAddButtonProps) {
   return (
-    <IonFab horizontal={horizontal} vertical={vertical} slot={slot}>
+    <IonFab
+      className="evs-fab"
+      horizontal={horizontal}
+      vertical={vertical}
+      slot={slot}
+    >
       <IonFabButton id={id} onClick={onClick}>
         {children}
       </IonFabButton>

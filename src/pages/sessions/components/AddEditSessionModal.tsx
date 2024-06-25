@@ -62,6 +62,7 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
   return (
     <IonModal
       ref={modal}
+      className="add-edit-session-modal"
       trigger="new-session"
       canDismiss={modalCanDismiss}
       presentingElement={presentingElement}
