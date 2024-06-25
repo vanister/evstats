@@ -6,8 +6,8 @@ import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { Session } from '../../models/session';
-import AddEditSessionModal from './components/AddEditSessionModal/AddEditSessionModal';
 import SessionList from './components/SessionList';
+import AddEditSessionModal from './components/SessionModal.tsx/SessionModal';
 import { useSessions } from './useSessions';
 
 export default function SessionPage() {

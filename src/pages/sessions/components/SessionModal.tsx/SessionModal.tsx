@@ -13,7 +13,7 @@ import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
-import AddEditSessionModalHeader from './AddEditSessionModalHeader';
+import AddEditSessionModalHeader from './SessionModalHeader';
 
 interface AddEditSessionState {
   session: Partial<Session>;
