@@ -1,15 +1,19 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
 import { IonSlots } from '../../../../constants';
+import { SessionModalState } from './SessionModal';
+import { SetImmerState } from '../../../../hooks/useImmerState';
 
-interface AddEditSessionModalHeaderProps {
-  errorMsg?: string;
+export interface HeaderProps {
+  state: SessionModalState;
   title: string;
+  setState: SetImmerState<SessionModalState>;
   onCancelClick: VoidFunction;
-  onErrorMsgDismiss: VoidFunction;
   onSaveClick: VoidFunction;
 }
 
-export default function AddEditSessionModalHeader(props: AddEditSessionModalHeaderProps) {
+export default function Header(props: HeaderProps) {
+  const { state, setState } = props;
+
   return (
     <IonHeader>
       <IonToolbar>
@@ -20,11 +24,15 @@ export default function AddEditSessionModalHeader(props: AddEditSessionModalHead
         <IonButtons slot={IonSlots.end}>
           <IonButton onClick={props.onSaveClick}>Save</IonButton>
           <IonAlert
-            isOpen={!!props.errorMsg}
+            isOpen={!!state.errorMsg}
             header="Error"
-            message={props.errorMsg}
+            message={state.errorMsg || ''}
             buttons={['OK']}
-            onDidDismiss={props.onErrorMsgDismiss}
+            onDidDismiss={() => {
+              setState((s) => {
+                s.errorMsg = null;
+              });
+            }}
           ></IonAlert>
         </IonButtons>
       </IonToolbar>

@@ -5,7 +5,7 @@ import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { Session, SessionViewModal } from '../../models/session';
 import SessionList from './components/SessionList';
-import AddEditSessionModal from './components/SessionModal.tsx/SessionModal';
+import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 
 export default function SessionPage() {
@@ -50,7 +50,7 @@ export default function SessionPage() {
       </EvsFloatingActionButton>
       <SessionList sessions={sessions} onSelection={handleSessionSelection} />
       {showModal && (
-        <AddEditSessionModal
+        <SessionModal
           isNew
           presentingElement={presentingElement.current}
           onSave={handleSessionSave}
