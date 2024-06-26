@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface Vehicle {
+export interface Vehicle {
   id: number;
   make: string;
   model: string;
@@ -11,7 +11,7 @@ interface Vehicle {
   /** The useable battery size. */
   batterySize: number;
   /** The initial range of vehicle. */
-  range: number
+  range: number;
 }
 
 const VEHICLES: Vehicle[] = [
@@ -47,7 +47,7 @@ const VEHICLES: Vehicle[] = [
     batterySize: 131,
     range: 328
   }
-]
+];
 
 export function useVehicles() {
   const [vehicles] = useState<Vehicle[]>(VEHICLES);

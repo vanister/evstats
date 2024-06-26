@@ -1,5 +1,3 @@
-import './SessionPage.scss';
-
 import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
@@ -12,7 +10,7 @@ import { useSessions } from './useSessions';
 
 export default function SessionPage() {
   const presentingElement = useRef<HTMLElement>();
-  const { sessions } = useSessions();
+  const { sessions, addSession } = useSessions();
   const [showModal, setShowModal] = useState(false);
 
   const handleSessionFabClick = () => {
@@ -20,7 +18,8 @@ export default function SessionPage() {
   };
 
   const handleSessionSave = async (session: Session) => {
-    console.log('Session saved:', session);
+    addSession(session);
+
     return true;
   };
 

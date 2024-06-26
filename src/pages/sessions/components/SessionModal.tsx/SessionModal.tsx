@@ -14,6 +14,8 @@ import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
 import AddEditSessionModalHeader from './SessionModalHeader';
+import { useVehicles } from '../../../../hooks/useVehicles';
+import { useRateTypes } from '../../../../hooks/useRateTypes';
 
 interface AddEditSessionState {
   session: Partial<Session>;
@@ -33,24 +35,19 @@ interface AddEditSessionModalProps {
 
 const FORM_STATE: AddEditSessionState = {
   session: {
-    date: new Date(),
+    date: new Date().toLocaleString(),
     rateTypeId: 1,
     vehicleId: 1
   }
 };
 
 export default function AddEditSessionModal(props: AddEditSessionModalProps) {
-  const {
-    allowCloseGesture,
-    isNew,
-    presentingElement,
-    onSave,
-    onCancel,
-    onDidDismiss
-  } = props;
+  const { allowCloseGesture, isNew, presentingElement, onSave, onCancel, onDidDismiss } = props;
   const [state, setState] = useImmerState<AddEditSessionState>(FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
   const today = useMemo(() => Date.now(), []);
+  const { vehicles } = useVehicles();
+  const { rateTypes } = useRateTypes();
 
   const modalCanDismiss = async (_: any, role: string | undefined) => {
     if (allowCloseGesture) {
@@ -135,10 +132,10 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
               placeholder="Session date"
               type="date"
               defaultValue={today}
-              value={state.session.date?.getDate()}
+              value={state.session.date}
               onIonChange={(e) =>
                 setState((s) => {
-                  s.session.date = new Date(Date.parse(e.detail.value!));
+                  s.session.date = e.detail.value!;
                 })
               }
             />
@@ -158,9 +155,11 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
                 })
               }
             >
-              <IonSelectOption value={1}>Mustang Mach-E</IonSelectOption>
-              <IonSelectOption value={2}>R1S</IonSelectOption>
-              <IonSelectOption value={3}>Model 3</IonSelectOption>
+              {vehicles.map((v) => (
+                <IonSelectOption key={v.id} value={v.id}>
+                  {v.model}
+                </IonSelectOption>
+              ))}
             </EvsSelect>
           </IonItem>
         </IonList>
@@ -178,10 +177,11 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
                 })
               }
             >
-              <IonSelectOption value={1}>Home</IonSelectOption>
-              <IonSelectOption value={2}>Work</IonSelectOption>
-              <IonSelectOption value={3}>Other</IonSelectOption>
-              <IonSelectOption value={4}>DC</IonSelectOption>
+              {rateTypes.map((r) => (
+                <IonSelectOption key={r.id} value={r.id}>
+                  {r.name}
+                </IonSelectOption>
+              ))}
             </EvsSelect>
           </IonItem>
           <IonItem>
@@ -201,9 +201,7 @@ export default function AddEditSessionModal(props: AddEditSessionModalProps) {
               }
             />
           </IonItem>
-          <IonNote className="ion-padding">
-            This will override the preset rate type.
-          </IonNote>
+          <IonNote className="ion-padding">This will override the preset rate type.</IonNote>
         </IonList>
       </IonContent>
     </IonModal>

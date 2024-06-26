@@ -1,11 +1,4 @@
-import {
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonTitle,
-  IonAlert
-} from '@ionic/react';
+import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
 import { IonSlots } from '../../../../constants';
 
 interface AddEditSessionModalHeaderProps {
@@ -16,9 +9,7 @@ interface AddEditSessionModalHeaderProps {
   onSaveClick: VoidFunction;
 }
 
-export default function AddEditSessionModalHeader(
-  props: AddEditSessionModalHeaderProps
-) {
+export default function AddEditSessionModalHeader(props: AddEditSessionModalHeaderProps) {
   return (
     <IonHeader>
       <IonToolbar>
@@ -31,7 +22,6 @@ export default function AddEditSessionModalHeader(
           <IonAlert
             isOpen={!!props.errorMsg}
             header="Error"
-            subHeader="Please fix the following error(s)"
             message={props.errorMsg}
             buttons={['OK']}
             onDidDismiss={props.onErrorMsgDismiss}

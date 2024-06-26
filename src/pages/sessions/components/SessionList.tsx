@@ -19,7 +19,7 @@ export default function SessionList(props: SessionListProps) {
         <IonItem key={session.id} button detail={false} onClick={() => handleItemClick(session)}>
           <IonLabel>
             <h3>{session.rateType}</h3>
-            <p>{session.date.toLocaleDateString()}</p>
+            <p>{session.date}</p>
             <p>{session.vehicleName}</p>
           </IonLabel>
           <IonLabel slot="end">
