@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Session, SessionViewModal } from '../../models/session';
-import { Vehicle, useVehicles } from '../../hooks/useVehicles';
-import { RateType, useRateTypes } from '../../hooks/useRateTypes';
+import { useVehicles } from '../../hooks/useVehicles';
+import { useRateTypes } from '../../hooks/useRateTypes';
+import { createSessionVm } from './helpers';
 
 const MOCK_SESSIONS: Partial<Session>[] = [
   {
@@ -34,19 +35,19 @@ export function useSessions() {
   const [sessions, setSessions] = useState<SessionViewModal[]>([]);
 
   useEffect(() => {
-    const vms = sessionsEntries.map((s) => {
+    const sessionViewModels = sessionsEntries.map((s) => {
       const vm = createSessionVm(s as Session, vehicles, rateTypes);
 
       return vm;
     });
 
-    setSessions(vms);
+    setSessions(sessionViewModels);
   }, []);
 
   const addSession = useCallback(
     async (session: Session) => {
-      const vm = createSessionVm(session, vehicles, rateTypes);
-      vm.id = sessions.length + 1;
+      const sessionWithId: Session = { ...session, id: sessions.length + 1 };
+      const vm = createSessionVm(sessionWithId, vehicles, rateTypes);
 
       setSessions((s) => [...s, vm]);
     },
@@ -54,13 +55,4 @@ export function useSessions() {
   );
 
   return { sessions, addSession };
-}
-
-// todo - move to helpers
-function createSessionVm(s: Session, vehicles: Vehicle[], rateTypes: RateType[]): SessionViewModal {
-  const vehicleName = vehicles.find((v) => v.id === s.vehicleId)?.model ?? 'Vehicle not found ';
-  const rateType = rateTypes.find((r) => r.id === s.rateTypeId)?.name ?? 'Rate not found';
-  const vm = new SessionViewModal(s.id!, s.date!, s.kWhAdded!, vehicleName, rateType);
-
-  return vm;
 }

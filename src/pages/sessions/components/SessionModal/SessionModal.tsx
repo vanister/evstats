@@ -1,5 +1,5 @@
 import { IonContent, IonModal } from '@ionic/react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
@@ -10,11 +10,7 @@ import { useRateTypes } from '../../../../hooks/useRateTypes';
 import RequiredFieldSection from './RequiredFieldSection';
 import VehicleSection from './VehicleSection';
 import RateSection from './RateSection';
-
-export interface SessionModalState {
-  session: Partial<Session>;
-  errorMsg?: string | null;
-}
+import { SessionModalState } from '../../session-types';
 
 export interface SessionModalProps {
   allowCloseGesture?: boolean;
@@ -39,7 +35,6 @@ export default function SessionModal(props: SessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, onSave, onCancel, onDidDismiss } = props;
   const [state, setState] = useImmerState<SessionModalState>(FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
-  const today = useMemo(() => Date.now(), []);
   const { vehicles } = useVehicles();
   const { rateTypes } = useRateTypes();
 

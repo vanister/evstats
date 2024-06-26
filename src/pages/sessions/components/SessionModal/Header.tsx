@@ -1,12 +1,9 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
 import { IonSlots } from '../../../../constants';
-import { SessionModalState } from './SessionModal';
-import { SetImmerState } from '../../../../hooks/useImmerState';
+import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface HeaderProps {
-  state: SessionModalState;
+export interface HeaderProps extends CommonSessionModalSectionProps {
   title: string;
-  setState: SetImmerState<SessionModalState>;
   onCancelClick: VoidFunction;
   onSaveClick: VoidFunction;
 }

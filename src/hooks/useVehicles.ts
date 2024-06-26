@@ -1,18 +1,5 @@
 import { useState } from 'react';
-
-export interface Vehicle {
-  id: number;
-  make: string;
-  model: string;
-  nickname?: string;
-  trim?: string;
-  vin?: string;
-  year: number;
-  /** The useable battery size. */
-  batterySize: number;
-  /** The initial range of vehicle. */
-  range: number;
-}
+import { Vehicle } from '../models/vehicle';
 
 const VEHICLES: Vehicle[] = [
   {

@@ -1,7 +1,7 @@
 import { IonList, IonItem, IonLabel } from '@ionic/react';
 import { SessionViewModal } from '../../../models/session';
 
-interface SessionListProps {
+export interface SessionListProps {
   sessions: SessionViewModal[];
   onSelection: (session: SessionViewModal) => void;
 }

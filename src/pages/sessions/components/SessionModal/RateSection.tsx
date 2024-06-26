@@ -1,13 +1,10 @@
 import { IonList, IonItem, IonSelectOption, IonInput, IonNote } from '@ionic/react';
 import EvsSelect from '../../../../components/EvsSelect';
 import { RateType } from '../../../../hooks/useRateTypes';
-import { SessionModalState } from './SessionModal';
-import { SetImmerState } from '../../../../hooks/useImmerState';
+import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface RateSectionProps {
+export interface RateSectionProps extends CommonSessionModalSectionProps {
   rateTypes: RateType[];
-  state: SessionModalState;
-  setState: SetImmerState<SessionModalState>;
 }
 
 export default function RateSection({ state, rateTypes, setState }: RateSectionProps) {

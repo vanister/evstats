@@ -1,12 +1,7 @@
 import { IonList, IonItem, IonInput } from '@ionic/react';
-import { today } from 'ionicons/icons';
-import { SessionModalState } from './SessionModal';
-import { SetImmerState } from '../../../../hooks/useImmerState';
+import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface RequiredFieldSectionProps {
-  state: SessionModalState;
-  setState: SetImmerState<SessionModalState>;
-}
+export interface RequiredFieldSectionProps extends CommonSessionModalSectionProps {}
 
 export default function RequiredFieldSection({ state, setState }: RequiredFieldSectionProps) {
   return (
@@ -34,7 +29,6 @@ export default function RequiredFieldSection({ state, setState }: RequiredFieldS
           labelPlacement="fixed"
           placeholder="Session date"
           type="date"
-          defaultValue={today}
           value={state.session.date}
           onIonChange={(e) =>
             setState((s) => {

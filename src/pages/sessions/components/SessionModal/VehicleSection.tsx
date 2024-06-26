@@ -1,14 +1,10 @@
 import { IonList, IonItem, IonSelectOption } from '@ionic/react';
-import React from 'react';
 import EvsSelect from '../../../../components/EvsSelect';
-import { SessionModalState } from './SessionModal';
-import { SetImmerState } from '../../../../hooks/useImmerState';
 import { Vehicle } from '../../../../hooks/useVehicles';
+import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface VehicleSectionProps {
+export interface VehicleSectionProps extends CommonSessionModalSectionProps {
   vehicles: Vehicle[];
-  state: SessionModalState;
-  setState: SetImmerState<SessionModalState>;
 }
 
 export default function VehicleSection({ state, vehicles, setState }: VehicleSectionProps) {
