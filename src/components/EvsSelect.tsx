@@ -1,18 +1,21 @@
-import { IonList, IonItem, IonSelect, IonSelectOption } from '@ionic/react';
+import { IonSelect, IonSelectOption } from '@ionic/react';
 import classNames from 'classnames';
+import { ExplicitAny } from 'evs-types';
+
+type IonSelectChangeEvent = { detail: { value: ExplicitAny } };
 
 export interface EvsSelectOptionItem {
-  value: any;
+  value: unknown;
   display: React.ReactNode;
 }
 
-export interface EvsSelect {
+export interface EvsSelectProps {
   className?: string;
   inset?: boolean;
   label: string;
   labelPlacement?: 'fixed' | 'start' | 'end' | 'floating' | 'stacked';
   /** The Selected value */
-  value?: any;
+  value?: unknown;
   /** The header that is shown on the opened select list. */
   header?: string;
   /** The sub header that is shown below the header of the opened select list. */
@@ -27,16 +30,16 @@ export interface EvsSelect {
    *
    * @param value The value of the selected option.
    */
-  onSelect?: (value: any) => void;
+  onSelect?: (value: unknown) => void;
 }
 
-export default function EvsSelect(props: EvsSelect) {
+export default function EvsSelect(props: EvsSelectProps) {
   const headerOptions = {
     header: props.header,
     subHeader: props.subHeader
   };
 
-  const handleSelectChange = (event: { detail: { value: any } }) => {
+  const handleSelectChange = (event: IonSelectChangeEvent) => {
     const value = event.detail.value;
 
     props.onSelect?.(value);
@@ -53,7 +56,7 @@ export default function EvsSelect(props: EvsSelect) {
     >
       {props.children ??
         props.options?.map((o) => (
-          <EvsSelectOption key={o.value} value={o.value}>
+          <EvsSelectOption key={o.value as ExplicitAny} value={o.value}>
             {o.display}
           </EvsSelectOption>
         ))}
@@ -62,12 +65,10 @@ export default function EvsSelect(props: EvsSelect) {
 }
 
 export interface EvsSelectOption {
-  value?: any;
+  value?: unknown;
   children: React.ReactNode;
 }
 
 export function EvsSelectOption(props: EvsSelectOption) {
-  return (
-    <IonSelectOption value={props.value}>{props.children}</IonSelectOption>
-  );
+  return <IonSelectOption value={props.value}>{props.children}</IonSelectOption>;
 }

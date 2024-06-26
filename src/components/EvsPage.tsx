@@ -1,12 +1,4 @@
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonMenuButton,
-  IonPage,
-  IonTitle,
-  IonToolbar
-} from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -20,8 +12,7 @@ interface EvsPageProps {
 }
 
 const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
-  const { children, className, color, fixedSlotPlacement, padding, title } =
-    props;
+  const { children, className, color, fixedSlotPlacement, padding, title } = props;
 
   return (
     <IonPage ref={ref} className={classNames('evs-page', className)}>
