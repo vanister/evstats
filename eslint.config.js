@@ -18,7 +18,16 @@ export default [
   pluginReactConfig,
   {
     rules: {
+      // typescript rules overrides
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
+      // react rules overrides
       'react/react-in-jsx-scope': 'off',
       'react/display-name': 'off'
     }
