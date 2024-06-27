@@ -4,13 +4,13 @@ import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
-import Header from './Header';
 import { useVehicles } from '../../../../hooks/useVehicles';
 import { useRateTypes } from '../../../../hooks/useRateTypes';
 import RequiredFieldSection from './RequiredFieldSection';
 import VehicleSection from './VehicleSection';
 import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
+import Header from './Header';
 
 export interface SessionModalProps {
   allowCloseGesture?: boolean;

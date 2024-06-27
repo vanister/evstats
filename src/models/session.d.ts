@@ -8,7 +8,7 @@ export interface Session {
   vehicleId: number;
 }
 
-export interface SessionViewModal {
+export interface SessionListItem {
   id: number;
   date: string;
   kWh: number;

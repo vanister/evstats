@@ -8,7 +8,7 @@ interface EvsPageProps {
   color?: string;
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
-  title: string;
+  title?: string;
 }
 
 const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
@@ -22,11 +22,12 @@ const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
         </IonToolbar>
       </IonHeader>
       <IonContent
-        className={`${padding ? 'ion-padding' : ''}`}
+        className={classNames({ 'ion-padding': padding })}
         color={color}
         fullscreen
         fixedSlotPlacement={fixedSlotPlacement}
       >
+        {/* todo - props.collapsable */}
         <IonHeader collapse="condense">
           <IonToolbar color={color}>
             <IonTitle size="large">{title}</IonTitle>

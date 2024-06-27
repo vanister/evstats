@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Session, SessionViewModal } from '../../models/session';
+import { Session, SessionListItem } from '../../models/session';
 import { useVehicles } from '../../hooks/useVehicles';
 import { useRateTypes } from '../../hooks/useRateTypes';
-import { createSessionVm } from './helpers';
+import { createSessionLogItem } from './helpers';
 
 const MOCK_SESSIONS: Partial<Session>[] = [
   {
@@ -32,11 +32,11 @@ export function useSessions() {
   const { vehicles } = useVehicles();
   const { rateTypes } = useRateTypes();
   const [sessionsEntries] = useState(MOCK_SESSIONS);
-  const [sessions, setSessions] = useState<SessionViewModal[]>([]);
+  const [sessions, setSessions] = useState<SessionListItem[]>([]);
 
   useEffect(() => {
     const sessionViewModels = sessionsEntries.map((s) => {
-      const vm = createSessionVm(s as Session, vehicles, rateTypes);
+      const vm = createSessionLogItem(s as Session, vehicles, rateTypes);
 
       return vm;
     });
@@ -47,7 +47,7 @@ export function useSessions() {
   const addSession = useCallback(
     async (session: Session) => {
       const sessionWithId: Session = { ...session, id: sessions.length + 1 };
-      const vm = createSessionVm(sessionWithId, vehicles, rateTypes);
+      const vm = createSessionLogItem(sessionWithId, vehicles, rateTypes);
 
       setSessions((s) => [...s, vm]);
     },
