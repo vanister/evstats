@@ -1,9 +1,9 @@
 import React from 'react';
 import EvsPage from '../../components/EvsPage';
 
-interface ChargeStatsProps {}
+interface ChargeStatsScreenProps {}
 
-export default function ChargeStats(props: ChargeStatsProps) {
+export default function ChargeStatsScreen(props: ChargeStatsScreenProps) {
   return (
     <EvsPage className="charge-stats" title="Charge Stats" color="light">
       Charge Stats

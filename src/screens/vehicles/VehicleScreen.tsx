@@ -1,4 +1,4 @@
-import './VehiclePage.scss';
+import './VehicleScreen.scss';
 
 import {
   IonButton,

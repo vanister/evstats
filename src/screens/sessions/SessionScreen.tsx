@@ -8,7 +8,7 @@ import SessionList from './components/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 
-export default function SessionPage() {
+export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const { sessions, addSession } = useSessions();
   const [showModal, setShowModal] = useState(false);

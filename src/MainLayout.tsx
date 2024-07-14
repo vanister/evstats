@@ -2,8 +2,8 @@ import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } 
 import { flash, statsChart } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router';
 
-import SessionPage from './screens/sessions/SessionPage';
-import ChargeStats from './screens/stats/ChargeStats';
+import SessionScreen from './screens/sessions/SessionScreen';
+import ChargeStatsScreen from './screens/stats/ChargeStatsScreen';
 
 export default function MainLayout() {
   return (
@@ -12,8 +12,8 @@ export default function MainLayout() {
         <Route exact path="/">
           <Redirect to="/sessions" />
         </Route>
-        <Route exact path="/sessions" component={SessionPage} />
-        <Route exact path="/stats" component={ChargeStats} />
+        <Route exact path="/sessions" component={SessionScreen} />
+        <Route exact path="/stats" component={ChargeStatsScreen} />
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
         <IonTabButton tab="sessions" href="/sessions">
