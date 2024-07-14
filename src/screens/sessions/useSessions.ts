@@ -6,7 +6,7 @@ import { createSessionLogItem } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
 
 export function useSessions() {
-  const { session: sessionService } = useServices();
+  const { sessionService } = useServices();
   const { vehicles } = useVehicles();
   const { rateTypes } = useRateTypes();
   const [sessions, setSessions] = useState<SessionListItem[]>([]);
