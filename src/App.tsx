@@ -34,7 +34,7 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import MainLayout from './MainLayout';
 import { Route } from 'react-router';
-import VehiclePage from './pages/vehicles/VehiclePage';
+import VehiclePage from './screens/vehicles/VehiclePage';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
