@@ -41,8 +41,6 @@ import { ServiceProvider } from './providers/ServiceProvider';
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
-  console.log('App render');
-
   return (
     <IonApp>
       {/* <DatabaseProvider name="evstats_db"> */}

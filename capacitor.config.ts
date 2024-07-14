@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.vanister.evs',
+  appId: 'com.vanister.evstats',
   appName: 'EV Charge Stats',
   webDir: 'dist',
   plugins: {

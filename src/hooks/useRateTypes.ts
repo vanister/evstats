@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RateType } from '../models/rateType';
-
-const MOCK_RATE_TYPES: RateType[] = [
-  { id: 1, name: 'Home', amount: 0.12, unit: 'kWh' },
-  { id: 2, name: 'Work', amount: 0.18, unit: 'kWh' },
-  { id: 3, name: 'Other', amount: 0.13, unit: 'kWh' },
-  { id: 4, name: 'DC', amount: 0.32, unit: 'kWh' }
-];
+import { useServices } from '../providers/ServiceProvider';
 
 export function useRateTypes() {
-  const [rateTypes] = useState<RateType[]>(MOCK_RATE_TYPES);
+  const { rateService } = useServices();
+  const [rateTypes, setRateTypes] = useState<RateType[]>([]);
+
+  useEffect(() => {
+    const loadRateTypes = async () => {
+      const rates = await rateService.list();
+
+      setRateTypes(rates);
+    };
+
+    loadRateTypes();
+  }, []);
 
   return { rateTypes };
 }

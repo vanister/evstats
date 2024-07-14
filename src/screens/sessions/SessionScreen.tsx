@@ -18,7 +18,7 @@ export default function SessionScreen() {
   };
 
   const handleSessionSave = async (session: Session) => {
-    addSession(session);
+    await addSession(session);
 
     return true;
   };

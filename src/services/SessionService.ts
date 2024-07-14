@@ -1,3 +1,4 @@
+import { ExplicitAny } from 'evs-types';
 import { Session } from '../models/session';
 
 const MOCK_SESSIONS: Session[] = [
@@ -61,11 +62,9 @@ export class EvsSessionService implements SessionService {
   async update(session: Session): Promise<void> {
     const existing = await this.get(session.id!);
 
-    existing.date = session.date;
-    existing.kWhAdded = session.kWhAdded;
-    existing.rateOverride = session.rateOverride;
-    existing.rateTypeId = session.rateTypeId;
-    existing.vehicleId = session.vehicleId;
+    Object.keys(existing).forEach((key) => {
+      (existing as ExplicitAny)[key] = (session as ExplicitAny)[key];
+    });
   }
 
   async remove(id: number): Promise<void> {
