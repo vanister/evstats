@@ -40,14 +40,18 @@ import VehiclePage from './pages/vehicles/VehiclePage';
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
+  console.log('App render');
+
   return (
     <IonApp>
+      {/* <DatabaseProvider name="evstats_db"> */}
       <IonReactRouter>
         <IonRouterOutlet>
           <Route path="/" render={() => <MainLayout />} />
           <Route exact path="/vehicles" render={() => <VehiclePage />} />
         </IonRouterOutlet>
       </IonReactRouter>
+      {/* </DatabaseProvider> */}
     </IonApp>
   );
 }
