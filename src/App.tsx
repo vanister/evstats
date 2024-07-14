@@ -35,6 +35,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import MainLayout from './MainLayout';
 import { Route } from 'react-router';
 import VehicleScreen from './screens/vehicles/VehicleScreen';
+import { ServiceProvider } from './providers/ServiceProvider';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
@@ -45,12 +46,14 @@ export default function App() {
   return (
     <IonApp>
       {/* <DatabaseProvider name="evstats_db"> */}
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route path="/" render={() => <MainLayout />} />
-          <Route exact path="/vehicles" render={() => <VehicleScreen />} />
-        </IonRouterOutlet>
-      </IonReactRouter>
+      <ServiceProvider>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route path="/" render={() => <MainLayout />} />
+            <Route exact path="/vehicles" render={() => <VehicleScreen />} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </ServiceProvider>
       {/* </DatabaseProvider> */}
     </IonApp>
   );
