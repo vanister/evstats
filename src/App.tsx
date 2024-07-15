@@ -32,10 +32,12 @@ import './theme/variables.scss';
 
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import MainLayout from './MainLayout';
-import { Route } from 'react-router';
-import VehicleScreen from './screens/vehicles/VehicleScreen';
 import { ServiceProvider } from './providers/ServiceProvider';
+import { SplashScreen } from './screens/SplashScreen/SplashScreen';
+import { Route } from 'react-router';
+import MainLayout from './MainLayout';
+// lazy load
+import VehicleScreen from './screens/vehicles/VehicleScreen';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
@@ -43,16 +45,16 @@ setupIonicReact({ mode: 'ios' });
 export default function App() {
   return (
     <IonApp>
-      {/* <DatabaseProvider name="evstats_db"> */}
       <ServiceProvider>
         <IonReactRouter>
-          <IonRouterOutlet>
-            <Route path="/" render={() => <MainLayout />} />
-            <Route exact path="/vehicles" render={() => <VehicleScreen />} />
-          </IonRouterOutlet>
+          <SplashScreen minDuration={3000}>
+            <IonRouterOutlet>
+              <Route path="/" render={() => <MainLayout />} />
+              <Route exact path="/vehicles" render={() => <VehicleScreen />} />
+            </IonRouterOutlet>
+          </SplashScreen>
         </IonReactRouter>
       </ServiceProvider>
-      {/* </DatabaseProvider> */}
     </IonApp>
   );
 }

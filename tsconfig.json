@@ -20,8 +20,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "evs-types": [
-        "./evs-types.d.ts"
+      "@evs-core": [
+        "./evs-core.d.ts"
       ]
     }
   },

@@ -1,4 +1,4 @@
-import { ExplicitAny } from 'evs-types';
+import { ExplicitAny } from '@evs-core';
 import { Session } from '../models/session';
 
 const MOCK_SESSIONS: Session[] = [
