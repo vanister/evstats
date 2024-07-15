@@ -1,0 +1,12 @@
+.loading.fullscreen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+  }
+}
