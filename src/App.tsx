@@ -37,7 +37,7 @@ import { SplashScreen } from './screens/SplashScreen/SplashScreen';
 import { Route } from 'react-router';
 import MainLayout from './MainLayout';
 // lazy load
-import VehicleScreen from './screens/vehicles/VehicleScreen';
+import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });

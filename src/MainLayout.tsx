@@ -2,8 +2,8 @@ import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } 
 import { flash, statsChart } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router';
 
-import SessionScreen from './screens/sessions/SessionScreen';
-import ChargeStatsScreen from './screens/stats/ChargeStatsScreen';
+import ChargeStatsScreen from './screens/StatsScreen/ChargeStatsScreen';
+import SessionScreen from './screens/SessionScreen/SessionScreen';
 
 export default function MainLayout() {
   return (
