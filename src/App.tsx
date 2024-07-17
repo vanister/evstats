@@ -33,10 +33,10 @@ import './theme/variables.scss';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ServiceProvider } from './providers/ServiceProvider';
-import { SplashScreen } from './screens/SplashScreen/SplashScreen';
 import { Route } from 'react-router';
-import MainLayout from './MainLayout';
 // lazy load
+import MainLayout from './MainLayout';
+import { StartupScreen } from './screens/SplashScreen/StartupScreen';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
 
 // todo - remove
@@ -47,12 +47,12 @@ export default function App() {
     <IonApp>
       <ServiceProvider>
         <IonReactRouter>
-          <SplashScreen minDuration={3000}>
+          <StartupScreen minDuration={2000}>
             <IonRouterOutlet>
               <Route path="/" render={() => <MainLayout />} />
               <Route exact path="/vehicles" render={() => <VehicleScreen />} />
             </IonRouterOutlet>
-          </SplashScreen>
+          </StartupScreen>
         </IonReactRouter>
       </ServiceProvider>
     </IonApp>
