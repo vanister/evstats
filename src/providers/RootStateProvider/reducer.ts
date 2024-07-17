@@ -1,6 +1,13 @@
 import { produce } from 'immer';
 import { RootAction, RootState } from './root-state-types';
-import { INITIALIZED, INITIALIZING, VEHICLES_LOADED, VEHICLES_LOADING_FAILED } from './actionTypes';
+import {
+  INITIALIZED,
+  INITIALIZING,
+  RATE_TYPES_LOADED,
+  RATE_TYPES_LOADING_FAILED,
+  VEHICLES_LOADED,
+  VEHICLES_LOADING_FAILED
+} from './actionTypes';
 
 export const INITIAL_ROOT_STATE: RootState = {
   initialized: false,
@@ -28,6 +35,15 @@ export function rootReducer(state: RootState, action: RootAction): RootState {
         break;
 
       case VEHICLES_LOADING_FAILED:
+        draft.error = payload!.error;
+        break;
+
+      case RATE_TYPES_LOADED:
+        draft.rateTypes = payload!.rateTypes!;
+        draft.error = null;
+        break;
+
+      case RATE_TYPES_LOADING_FAILED:
         draft.error = payload!.error;
         break;
 

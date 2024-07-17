@@ -2,7 +2,9 @@ import { useContext } from 'react';
 import { RootState } from '../providers/RootStateProvider/root-state-types';
 import { RootStateContext } from '../providers/RootStateProvider/RootStateProvider';
 
-export function useRootSelector<T>(select: (state: RootState) => T): T {
+export type RootStateSelect<T> = (state: RootState) => T;
+
+export function useRootSelector<T>(select: RootStateSelect<T>): T {
   const context = useContext(RootStateContext);
 
   if (!context) {

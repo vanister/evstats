@@ -1,14 +1,53 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { RootStateProvider } from './RootStateProvider';
-import { useRootSelector } from '../../hooks/useRootSelector';
+import { RootStateSelect, useRootSelector } from '../../hooks/useRootSelector';
 import { RootState } from './root-state-types';
 import { useRootDispatch } from '../../hooks/useRootDispatch';
 import { VehicleService } from '../../services/VehicleService';
 import { VEHICLES } from '../../__mocks__/vehicleData';
 import { useEffect } from 'react';
-import { loadVehicles } from './actions';
+import { loadRateTypes, loadVehicles } from './actions';
+import { RateService } from '../../services/RateService';
+import { RATE_TYPES } from '../../__mocks__/rateData';
 
 describe('RootStateProvider', () => {
+  type TestComponentProps = {
+    service: Partial<{ list: () => Promise<unknown> }>;
+    selector: RootStateSelect<unknown>;
+    type: 'rate' | 'vehicle';
+  };
+
+  const TestComponent = ({ service, selector, type }: TestComponentProps) => {
+    const data = useRootSelector(selector) as unknown[];
+    const error = useRootSelector((s) => s.error);
+    const dispatch = useRootDispatch();
+
+    useEffect(() => {
+      const init = async () => {
+        switch (type) {
+          case 'vehicle':
+            return await loadVehicles(service as VehicleService, dispatch);
+          case 'rate':
+            return await loadRateTypes(service as RateService, dispatch);
+          default:
+            throw new Error('Invalid type');
+        }
+      };
+
+      init();
+    }, []);
+
+    if (error) {
+      return <p>{`Error loading ${type}.`}</p>;
+    }
+
+    if (data.length === 0) {
+      return <p>Loading...</p>;
+    }
+
+    return <p>Data loaded!</p>;
+  };
+
   test('should render the child inside of the provider', () => {
     const { baseElement } = render(
       <RootStateProvider>
@@ -83,34 +122,9 @@ describe('RootStateProvider', () => {
   });
 
   describe('WHEN loading vehicles', () => {
-    const vehiclesLength = VEHICLES.length;
     const mockList = vi.fn();
     const mockVehicleService: Partial<VehicleService> = {
       list: mockList
-    };
-
-    const Vehicles = () => {
-      const vehicles = useRootSelector((s) => s.vehicles);
-      const error = useRootSelector((s) => s.error);
-      const dispatch = useRootDispatch();
-
-      useEffect(() => {
-        const init = async () => {
-          await loadVehicles(mockVehicleService as VehicleService, dispatch);
-        };
-
-        init();
-      }, []);
-
-      if (error) {
-        return <p>Error loading vehicles.</p>;
-      }
-
-      if (vehicles.length === 0) {
-        return <p>Loading...</p>;
-      }
-
-      return <p>{`${vehiclesLength} Vehicles loaded!`}</p>;
     };
 
     beforeEach(() => {
@@ -122,14 +136,14 @@ describe('RootStateProvider', () => {
 
       render(
         <RootStateProvider>
-          <Vehicles />
+          <TestComponent service={mockVehicleService} selector={(s) => s.vehicles} type="vehicle" />
         </RootStateProvider>
       );
 
       expect(screen.getByText('Loading...')).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(screen.getByText(`${vehiclesLength} Vehicles loaded!`)).toBeInTheDocument();
+        expect(screen.getByText('Data loaded!')).toBeInTheDocument();
       });
     });
 
@@ -139,15 +153,46 @@ describe('RootStateProvider', () => {
 
         render(
           <RootStateProvider>
-            <Vehicles />
+            <TestComponent
+              service={mockVehicleService}
+              selector={(s) => s.vehicles}
+              type="vehicle"
+            />
           </RootStateProvider>
         );
 
         expect(screen.getByText('Loading...')).toBeInTheDocument();
 
         await waitFor(() => {
-          expect(screen.getByText('Error loading vehicles.')).toBeInTheDocument();
+          expect(screen.getByText('Error loading vehicle.')).toBeInTheDocument();
         });
+      });
+    });
+  });
+
+  describe('WHEN loading rate types', () => {
+    const mockList = vi.fn();
+    const mockRateService: Partial<RateService> = {
+      list: mockList
+    };
+
+    beforeEach(() => {
+      mockList.mockClear();
+    });
+
+    test('should get a list of rate types', async () => {
+      mockList.mockResolvedValueOnce(RATE_TYPES);
+
+      render(
+        <RootStateProvider>
+          <TestComponent service={mockRateService} selector={(s) => s.rateTypes} type="rate" />
+        </RootStateProvider>
+      );
+
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByText('Data loaded!')).toBeInTheDocument();
       });
     });
   });
