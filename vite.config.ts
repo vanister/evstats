@@ -14,7 +14,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*'],
-      exclude: ['src/__mocks__', 'src/**/*.test.ts', 'src/**/*.test.tsx']
+      exclude: ['src/__mocks__', 'src/**/*.test.ts', 'src/**/*.test.tsx'],
+      all: false
     }
   }
 });

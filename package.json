@@ -10,7 +10,7 @@
     "test.e2e": "cypress run",
     "test": "vitest",
     "test.lcov": "vitest run --coverage",
-    "test.lcov.only": "vitest run --coverage --coverage.all=false",
+    "test.lcov.all": "vitest run --coverage --coverage.all",
     "test.debug": "vitest --watch=false",
     "lint": "eslint",
     "start": "npm run dev -- --port=8100"
