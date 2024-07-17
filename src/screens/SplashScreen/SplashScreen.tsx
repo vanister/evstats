@@ -2,6 +2,7 @@ import './SplashScreen.scss';
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useIonRouter } from '@ionic/react';
+import { SplashScreen as IonicSplashScreen } from '@capacitor/splash-screen';
 import { Loading } from '../../components/Loading';
 
 export type SplashScreenProps = {
@@ -14,9 +15,16 @@ export function SplashScreen({ children, minDuration }: SplashScreenProps) {
   const _router = useIonRouter();
 
   useEffect(() => {
-    setTimeout(() => {
+    const closeSplashScreen = async () => {
+      await IonicSplashScreen.hide();
+    };
+
+    const id = setTimeout(() => {
       setLoading(false);
+      closeSplashScreen();
     }, minDuration);
+
+    return () => clearTimeout(id);
   }, []);
 
   if (loading) {
