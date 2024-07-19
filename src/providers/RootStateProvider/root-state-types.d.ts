@@ -1,10 +1,8 @@
-import { Dispatch } from 'react';
 import { RateType } from '../../models/rateType';
 import { Vehicle } from '../../models/vehicle';
 
 export type RootStateContextType = {
   state: RootState | undefined;
-  dispatch: Dispatch<RootAction>;
 };
 
 export type RootState = {

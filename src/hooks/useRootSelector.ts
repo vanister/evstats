@@ -11,7 +11,7 @@ export function useRootSelector<T>(select: RootStateSelect<T>): T {
     throw new Error('RootStateContext must be used within a RootStateProvider');
   }
 
-  const selectedState = select(context.state!);
+  const selectedState = select(context);
 
   return selectedState;
 }

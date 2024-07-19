@@ -4,13 +4,12 @@ import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
-import { useVehicles } from '../../../../hooks/useVehicles';
-import { useRateTypes } from '../../../../hooks/useRateTypes';
 import RequiredFieldSection from './RequiredFieldSection';
 import VehicleSection from './VehicleSection';
 import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
 import Header from './Header';
+import { useRootSelector } from '../../../../hooks/useRootSelector';
 
 export interface SessionModalProps {
   allowCloseGesture?: boolean;
@@ -35,8 +34,8 @@ export default function SessionModal(props: SessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, onSave, onCancel, onDidDismiss } = props;
   const [state, setState] = useImmerState<SessionModalState>(FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
-  const { vehicles } = useVehicles();
-  const { rateTypes } = useRateTypes();
+  const vehicles = useRootSelector((s) => s.vehicles);
+  const rateTypes = useRootSelector((s) => s.rateTypes);
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
     if (allowCloseGesture) {

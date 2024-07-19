@@ -1,11 +1,11 @@
 import { Dispatch } from 'react';
 import {
-  RATE_TYPES_LOADED,
-  RATE_TYPES_LOADING,
-  RATE_TYPES_LOADING_FAILED,
-  VEHICLES_LOADED,
-  VEHICLES_LOADING,
-  VEHICLES_LOADING_FAILED
+  ROOT_RATE_TYPES_LOADED,
+  ROOT_RATE_TYPES_LOADING,
+  ROOT_RATE_TYPES_LOADING_FAILED,
+  ROOT_VEHICLES_LOADED,
+  ROOT_VEHICLES_LOADING,
+  ROOT_VEHICLES_LOADING_FAILED
 } from './actionTypes';
 import { RootAction } from './root-state-types';
 import { VehicleService } from '../../services/VehicleService';
@@ -16,24 +16,24 @@ export const loadVehicles = async (
   dispatch: Dispatch<RootAction>
 ) => {
   try {
-    dispatch({ type: VEHICLES_LOADING });
+    dispatch({ type: ROOT_VEHICLES_LOADING });
 
     const vehicles = await vehicleService.list();
 
-    dispatch({ type: VEHICLES_LOADED, payload: { vehicles } });
+    dispatch({ type: ROOT_VEHICLES_LOADED, payload: { vehicles } });
   } catch (error) {
-    dispatch({ type: VEHICLES_LOADING_FAILED, payload: { error } });
+    dispatch({ type: ROOT_VEHICLES_LOADING_FAILED, payload: { error } });
   }
 };
 
 export const loadRateTypes = async (rateService: RateService, dispatch: Dispatch<RootAction>) => {
   try {
-    dispatch({ type: RATE_TYPES_LOADING });
+    dispatch({ type: ROOT_RATE_TYPES_LOADING });
 
     const rateTypes = await rateService.list();
 
-    dispatch({ type: RATE_TYPES_LOADED, payload: { rateTypes } });
+    dispatch({ type: ROOT_RATE_TYPES_LOADED, payload: { rateTypes } });
   } catch (error) {
-    dispatch({ type: RATE_TYPES_LOADING_FAILED, payload: { error } });
+    dispatch({ type: ROOT_RATE_TYPES_LOADING_FAILED, payload: { error } });
   }
 };

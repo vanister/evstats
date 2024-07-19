@@ -1,12 +1,12 @@
 import { produce } from 'immer';
 import { RootAction, RootState } from './root-state-types';
 import {
-  INITIALIZED,
-  INITIALIZING,
-  RATE_TYPES_LOADED,
-  RATE_TYPES_LOADING_FAILED,
-  VEHICLES_LOADED,
-  VEHICLES_LOADING_FAILED
+  ROOT_INITIALIZED,
+  ROOT_INITIALIZING,
+  ROOT_RATE_TYPES_LOADED,
+  ROOT_RATE_TYPES_LOADING_FAILED,
+  ROOT_VEHICLES_LOADED,
+  ROOT_VEHICLES_LOADING_FAILED
 } from './actionTypes';
 
 export const INITIAL_ROOT_STATE: RootState = {
@@ -20,30 +20,30 @@ export function rootReducer(state: RootState, action: RootAction): RootState {
 
   return produce(state, (draft) => {
     switch (type) {
-      case INITIALIZING:
+      case ROOT_INITIALIZING:
         draft.initialized = false;
         break;
 
-      case INITIALIZED:
+      case ROOT_INITIALIZED:
         draft.initialized = true;
         draft.error = null;
         break;
 
-      case VEHICLES_LOADED:
+      case ROOT_VEHICLES_LOADED:
         draft.vehicles = payload!.vehicles!;
         draft.error = null;
         break;
 
-      case VEHICLES_LOADING_FAILED:
+      case ROOT_VEHICLES_LOADING_FAILED:
         draft.error = payload!.error;
         break;
 
-      case RATE_TYPES_LOADED:
+      case ROOT_RATE_TYPES_LOADED:
         draft.rateTypes = payload!.rateTypes!;
         draft.error = null;
         break;
 
-      case RATE_TYPES_LOADING_FAILED:
+      case ROOT_RATE_TYPES_LOADING_FAILED:
         draft.error = payload!.error;
         break;
 

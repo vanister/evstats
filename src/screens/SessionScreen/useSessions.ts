@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Session, SessionListItem } from '../../models/session';
-import { useVehicles } from '../../hooks/useVehicles';
-import { useRateTypes } from '../../hooks/useRateTypes';
 import { createSessionLogItem } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
+import { useRootSelector } from '../../hooks/useRootSelector';
 
 export function useSessions() {
   const { sessionService } = useServices();
-  const { vehicles } = useVehicles();
-  const { rateTypes } = useRateTypes();
+  const vehicles = useRootSelector((s) => s.vehicles);
+  const rateTypes = useRootSelector((s) => s.rateTypes);
   const [sessions, setSessions] = useState<SessionListItem[]>([]);
 
   useEffect(() => {

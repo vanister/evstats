@@ -38,6 +38,7 @@ import { Route } from 'react-router';
 import MainLayout from './MainLayout';
 import { StartupScreen } from './screens/SplashScreen/StartupScreen';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
+import { RootStateProvider } from './providers/RootStateProvider/RootStateProvider';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
@@ -45,16 +46,18 @@ setupIonicReact({ mode: 'ios' });
 export default function App() {
   return (
     <IonApp>
-      <ServiceProvider>
-        <IonReactRouter>
-          <StartupScreen minDuration={2000}>
-            <IonRouterOutlet>
-              <Route path="/" render={() => <MainLayout />} />
-              <Route exact path="/vehicles" render={() => <VehicleScreen />} />
-            </IonRouterOutlet>
-          </StartupScreen>
-        </IonReactRouter>
-      </ServiceProvider>
+      <IonReactRouter>
+        <ServiceProvider>
+          <RootStateProvider>
+            <StartupScreen minDuration={2000}>
+              <IonRouterOutlet>
+                <Route path="/" render={() => <MainLayout />} />
+                <Route exact path="/vehicles" render={() => <VehicleScreen />} />
+              </IonRouterOutlet>
+            </StartupScreen>
+          </RootStateProvider>
+        </ServiceProvider>
+      </IonReactRouter>
     </IonApp>
   );
 }
