@@ -1,6 +1,6 @@
 import { Vehicle } from '../models/vehicle';
 
-export const VEHICLES: Vehicle[] = [
+export const MOCK_VEHICLES: Vehicle[] = [
   {
     id: 1,
     year: 2022,
