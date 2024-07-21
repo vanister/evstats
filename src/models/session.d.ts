@@ -8,7 +8,7 @@ export interface Session {
   vehicleId: number;
 }
 
-export interface SessionListItem {
+export interface SessionLog {
   id: number;
   date: string;
   kWh: number;

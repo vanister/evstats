@@ -1,15 +1,15 @@
 import { IonList, IonItem, IonLabel } from '@ionic/react';
-import { SessionListItem } from '../../../models/session';
+import { SessionLog } from '../../../models/session';
 
 export interface SessionListProps {
-  sessions: SessionListItem[];
-  onSelection: (session: SessionListItem) => void;
+  sessions: SessionLog[];
+  onSelection: (session: SessionLog) => void;
 }
 
 export default function SessionList(props: SessionListProps) {
   const { sessions, onSelection } = props;
 
-  const handleItemClick = (session: SessionListItem) => {
+  const handleItemClick = (session: SessionLog) => {
     onSelection(session);
   };
 
