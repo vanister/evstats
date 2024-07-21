@@ -5,6 +5,8 @@ import {
   ROOT_INITIALIZING,
   ROOT_RATE_TYPES_LOADED,
   ROOT_RATE_TYPES_LOADING_FAILED,
+  ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
+  ROOT_SET_LAST_SELECTED_VEHICLE_ID,
   ROOT_VEHICLES_LOADED,
   ROOT_VEHICLES_LOADING_FAILED
 } from './actionTypes';
@@ -45,6 +47,14 @@ export function rootReducer(state: RootState, action: RootAction): RootState {
 
       case ROOT_RATE_TYPES_LOADING_FAILED:
         draft.error = payload!.error;
+        break;
+
+      case ROOT_SET_LAST_SELECTED_RATE_TYPE_ID:
+        draft.lastSelectedRateTypeId = payload!.lastSelectedRateTypeId;
+        break;
+
+      case ROOT_SET_LAST_SELECTED_VEHICLE_ID:
+        draft.lastSelectedVehicleId = payload!.lastSelectedVehicleId;
         break;
 
       default:
