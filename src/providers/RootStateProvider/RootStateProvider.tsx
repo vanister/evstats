@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useEffect, useReducer } from 'react';
-import { RootState } from './root-state-types';
+import { createContext, Dispatch, ReactNode, useEffect, useReducer } from 'react';
+import { RootAction, RootState } from './root-state-types';
 import { INITIAL_ROOT_STATE, rootReducer } from './reducer';
 import { loadRateTypes, loadVehicles } from './actions';
 import {
@@ -13,7 +13,16 @@ import { useImmerState } from '../../hooks/useImmerState';
 export type RootStateProviderProps = {
   children: ReactNode;
 };
-export const RootStateContext = createContext<RootState | null>(null);
+
+export type RootStateContextType = {
+  state: RootState | null;
+  dispatch: Dispatch<RootAction> | null;
+};
+
+export const RootStateContext = createContext<RootStateContextType>({
+  state: null,
+  dispatch: null
+});
 
 const ROOT_LOCAL_STATE = {
   rateTypesLoaded: false,
@@ -93,5 +102,7 @@ export function RootStateProvider({ children }: RootStateProviderProps) {
     });
   };
 
-  return <RootStateContext.Provider value={state}>{children}</RootStateContext.Provider>;
+  return (
+    <RootStateContext.Provider value={{ state, dispatch }}>{children}</RootStateContext.Provider>
+  );
 }

@@ -5,8 +5,8 @@ import { RootStateContext } from '../providers/RootStateProvider/RootStateProvid
 export function useRootDispatch(): Dispatch<RootAction> {
   const context = useContext(RootStateContext);
 
-  if (!context) {
-    throw new Error('RootStateContext must be used within a RootStateProvider');
+  if (!context?.dispatch) {
+    throw new Error('RooStateContext dispatch must be used within a RootStateProvider');
   }
 
   return context.dispatch;

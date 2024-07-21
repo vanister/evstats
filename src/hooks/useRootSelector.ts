@@ -7,11 +7,11 @@ export type RootStateSelect<T> = (state: RootState) => T;
 export function useRootSelector<T>(select: RootStateSelect<T>): T {
   const context = useContext(RootStateContext);
 
-  if (!context) {
-    throw new Error('RootStateContext must be used within a RootStateProvider');
+  if (!context?.state) {
+    throw new Error('RootStateContext state must be used within a RootStateProvider');
   }
 
-  const selectedState = select(context);
+  const selectedState = select(context.state);
 
   return selectedState;
 }
