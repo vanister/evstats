@@ -1,4 +1,3 @@
-import { ExplicitAny } from '@evs-core';
 import { Session } from '../models/session';
 
 const MOCK_SESSIONS: Session[] = [
@@ -60,11 +59,11 @@ export class EvsSessionService implements SessionService {
   }
 
   async update(session: Session): Promise<void> {
-    const existing = await this.get(session.id!);
+    const existingIdx = this.sessions.findIndex((s) => s.id === session.id);
+    const existing = this.sessions[existingIdx];
+    const udpated: Session = { ...existing, ...session };
 
-    Object.keys(existing).forEach((key) => {
-      (existing as ExplicitAny)[key] = (session as ExplicitAny)[key];
-    });
+    this.sessions[existingIdx] = udpated;
   }
 
   async remove(id: number): Promise<void> {

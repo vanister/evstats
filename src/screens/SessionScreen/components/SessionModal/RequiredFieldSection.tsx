@@ -1,7 +1,7 @@
 import { IonList, IonItem, IonInput } from '@ionic/react';
 import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface RequiredFieldSectionProps extends CommonSessionModalSectionProps {}
+export type RequiredFieldSectionProps = CommonSessionModalSectionProps;
 
 export default function RequiredFieldSection({ state, setState }: RequiredFieldSectionProps) {
   return (

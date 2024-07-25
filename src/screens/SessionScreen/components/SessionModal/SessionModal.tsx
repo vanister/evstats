@@ -1,5 +1,5 @@
 import { IonContent, IonModal } from '@ionic/react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
@@ -9,33 +9,40 @@ import VehicleSection from './VehicleSection';
 import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
 import Header from './Header';
-import { useRootSelector } from '../../../../hooks/useRootSelector';
+import { today } from '../../../../utilities/dateUtility';
 
-export interface SessionModalProps {
+export type SessionModalProps = {
   allowCloseGesture?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
-  session?: Session;
+  session?: Session | null;
   triggerId?: string;
   onCancel?: VoidFunction;
   onSave: (session: Session) => Promise<boolean>;
   onDidDismiss?: VoidFunction;
-}
+};
 
-const FORM_STATE: SessionModalState = {
+const INITIAL_FORM_STATE: SessionModalState = {
   session: {
-    date: new Date().toLocaleString(),
+    date: today(),
     rateTypeId: 1,
     vehicleId: 1
   }
 };
 
 export default function SessionModal(props: SessionModalProps) {
-  const { allowCloseGesture, isNew, presentingElement, onSave, onCancel, onDidDismiss } = props;
-  const [state, setState] = useImmerState<SessionModalState>(FORM_STATE);
+  const { allowCloseGesture, isNew, presentingElement, session, onSave, onCancel, onDidDismiss } =
+    props;
+  const [state, setState] = useImmerState<SessionModalState>(INITIAL_FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
-  const vehicles = useRootSelector((s) => s.vehicles);
-  const rateTypes = useRootSelector((s) => s.rateTypes);
+
+  useEffect(() => {
+    if (!isNew) {
+      setState((s) => {
+        s.session = session!;
+      });
+    }
+  }, []);
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
     if (allowCloseGesture) {
@@ -62,7 +69,7 @@ export default function SessionModal(props: SessionModalProps) {
     });
 
     if (errorMsg) {
-      // don't raise if there are errors
+      // don't raise save if there are errors
       return;
     }
 
@@ -91,8 +98,8 @@ export default function SessionModal(props: SessionModalProps) {
       ></Header>
       <IonContent color="light">
         <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
-        <VehicleSection state={state} setState={setState} vehicles={vehicles}></VehicleSection>
-        <RateSection state={state} setState={setState} rateTypes={rateTypes}></RateSection>
+        <VehicleSection state={state} setState={setState}></VehicleSection>
+        <RateSection state={state} setState={setState}></RateSection>
       </IonContent>
     </IonModal>
   );

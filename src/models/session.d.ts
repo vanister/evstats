@@ -12,6 +12,8 @@ export interface SessionLog {
   id: number;
   date: string;
   kWh: number;
+  vehicleId: number;
   vehicleName: string;
+  rateTypeId: number;
   rateType: string;
 }

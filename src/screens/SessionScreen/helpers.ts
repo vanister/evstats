@@ -2,7 +2,7 @@ import { RateType } from '../../models/rateType';
 import { Session, SessionLog } from '../../models/session';
 import { Vehicle } from '../../models/vehicle';
 
-export function createSessionLogItem(
+export function toSessionLogItem(
   session: Session,
   vehicles: Vehicle[],
   rateTypes: RateType[]
@@ -12,7 +12,15 @@ export function createSessionLogItem(
   const vehicleName =
     vehicles.find((v) => v.id === session.vehicleId)?.model ?? 'Vehicle not found ';
 
-  const vm: SessionLog = { id, date, kWh: kWhAdded, vehicleName, rateType };
+  const vm: SessionLog = {
+    id,
+    date,
+    kWh: kWhAdded,
+    rateType,
+    rateTypeId: session.rateTypeId,
+    vehicleName,
+    vehicleId: session.vehicleId
+  };
 
   return vm;
 }

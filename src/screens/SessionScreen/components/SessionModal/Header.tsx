@@ -2,11 +2,11 @@ import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from
 import { IonSlots } from '../../../../constants';
 import { CommonSessionModalSectionProps } from '../../session-types';
 
-export interface HeaderProps extends CommonSessionModalSectionProps {
+export type HeaderProps = CommonSessionModalSectionProps & {
   title: string;
   onCancelClick: VoidFunction;
   onSaveClick: VoidFunction;
-}
+};
 
 export default function Header(props: HeaderProps) {
   const { state, setState } = props;

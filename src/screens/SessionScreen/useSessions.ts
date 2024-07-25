@@ -1,50 +1,77 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Session, SessionLog } from '../../models/session';
-import { createSessionLogItem } from './helpers';
+import { toSessionLogItem } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
 import { useRootSelector } from '../../hooks/useRootSelector';
 import { useImmerState } from '../../hooks/useImmerState';
 
-export type SessionHook = {
-  sessions: SessionLog[];
+export type UseSessionState = {
+  sessionLogs: SessionLog[];
   loading: boolean;
 };
 
-export function useSessions() {
+export type SessionHook = {
+  loading: boolean;
+  sessionLogs: SessionLog[];
+  addSession: (session: Session) => Promise<number>;
+  getSession: (id: number) => Promise<Session>;
+  updateSession: (session: Session) => Promise<void>;
+};
+
+// todo - convert to provider and useReducer
+export function useSessions(): SessionHook {
+  const [state, setState] = useImmerState<UseSessionState>({ loading: true, sessionLogs: [] });
   const { sessionService } = useServices();
   const vehicles = useRootSelector((s) => s.vehicles);
   const rateTypes = useRootSelector((s) => s.rateTypes);
-  const [state, setState] = useImmerState<SessionHook>({ loading: true, sessions: [] });
 
   useEffect(() => {
     const loadSessions = async () => {
       const sessionsEntries = await sessionService.list();
-
-      const sessionLogItems = sessionsEntries.map((s) => {
-        const vm = createSessionLogItem(s as Session, vehicles, rateTypes);
-
-        return vm;
-      });
+      const sessionLogItems = sessionsEntries.map((s) => toSessionLogItem(s, vehicles, rateTypes));
 
       setState((d) => {
-        d.sessions = sessionLogItems;
+        d.sessionLogs = sessionLogItems;
+        d.loading = false;
       });
     };
 
     loadSessions();
   }, []);
 
-  const addSession = useCallback(
-    async (session: Session) => {
-      const sessionWithId = await sessionService.add(session);
-      const sessionLog = createSessionLogItem(sessionWithId, vehicles, rateTypes);
+  const addSession = async (session: Session) => {
+    const sessionWithId = await sessionService.add(session);
+    const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
 
-      setState((s) => {
-        s.sessions.push(sessionLog);
-      });
-    },
-    [state.sessions]
-  );
+    setState((s) => {
+      s.sessionLogs.push(sessionLog);
+    });
 
-  return { sessions: state.sessions, addSession };
+    return sessionWithId.id!;
+  };
+
+  const getSession = async (id: number) => {
+    const session = await sessionService.get(id);
+
+    return session;
+  };
+
+  const updateSession = async (session: Session) => {
+    await sessionService.update(session);
+    // find the session log item and update it with the updated values
+    setState((s) => {
+      const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
+      const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
+
+      s.sessionLogs[existingSessionLogId] = updatedSessionLog;
+    });
+  };
+
+  return {
+    loading: state.loading,
+    sessionLogs: state.sessionLogs,
+    addSession,
+    getSession,
+    updateSession
+  };
 }
