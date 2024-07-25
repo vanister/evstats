@@ -1,5 +1,5 @@
 import { SetImmerState } from '../../hooks/useImmerState';
-import { SessionLog as Session } from '../../models/session';
+import { Session } from '../../models/session';
 import { SessionModalState } from './components/SessionModal/SessionModal';
 
 export type CommonSessionModalSectionProps = {
@@ -10,4 +10,11 @@ export type CommonSessionModalSectionProps = {
 export type SessionModalState = {
   session: Partial<Session>;
   errorMsg?: string | null;
+};
+
+export type SessionState = {
+  showModal: boolean;
+  isNew: boolean;
+  loadingSession: boolean;
+  editingSession: Session | null;
 };

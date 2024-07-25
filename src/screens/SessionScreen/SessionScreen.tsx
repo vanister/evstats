@@ -8,23 +8,19 @@ import SessionList from './components/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
+import { SessionState } from './session-types';
 
-type SessionScreenState = {
-  showModal: boolean;
-  isNew: boolean;
-  loadingSession: boolean;
-  editingSession: Session | null;
+const INITIAL_SESSIONS_STATE: SessionState = {
+  showModal: false,
+  isNew: false,
+  loadingSession: false,
+  editingSession: null
 };
 
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const { sessionLogs, addSession, getSession, updateSession } = useSessions();
-  const [state, setState] = useImmerState<SessionScreenState>({
-    showModal: false,
-    isNew: false,
-    loadingSession: false,
-    editingSession: null
-  });
+  const [state, setState] = useImmerState<SessionState>(INITIAL_SESSIONS_STATE);
 
   const handleAddSessionFabClick = () => {
     setState((s) => {
