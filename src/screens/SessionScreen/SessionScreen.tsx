@@ -83,11 +83,8 @@ export default function SessionScreen() {
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
-
       <IonLoading message={'Loading session...'} isOpen={state.loadingSession} />
-
       <SessionList sessions={sessionLogs} onSelection={handleSessionSelection} />
-
       {state.showModal && (
         <SessionModal
           isNew={state.isNew}
