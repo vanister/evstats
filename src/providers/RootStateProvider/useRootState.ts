@@ -1,12 +1,13 @@
 import { Dispatch, useEffect, useReducer } from 'react';
 import { useImmerState } from '../../hooks/useImmerState';
 import { useServices } from '../ServiceProvider';
-import { loadRateTypes, loadVehicles } from './actions';
 import {
-  ROOT_INITIALIZED,
-  ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
-  ROOT_SET_LAST_SELECTED_VEHICLE_ID
-} from './actionTypes';
+  loadRateTypes,
+  loadVehicles,
+  setLastUsedRateTypeId,
+  setLastUsedVehicleId
+} from './actions';
+import { ROOT_INITIALIZE_FAILED, ROOT_INITIALIZED } from './actionTypes';
 import { INITIAL_ROOT_STATE, rootReducer } from './reducer';
 import { RootAction, RootState } from './root-state-types';
 
@@ -16,7 +17,7 @@ const LOCAL_STATE = {
   previousSelectionLoaded: false
 };
 
-export function useInitRootState(): [RootState, Dispatch<RootAction>] {
+export function useRootState(): [RootState, Dispatch<RootAction>] {
   const [rootState, dispatch] = useReducer(rootReducer, INITIAL_ROOT_STATE);
   const [localState, setLocalState] = useImmerState(LOCAL_STATE);
   const { rateService, vehicleService } = useServices();
@@ -33,9 +34,7 @@ export function useInitRootState(): [RootState, Dispatch<RootAction>] {
           d.vehiclesLoaded = true;
         });
       } catch (error) {
-        // todo - replace with ion-alert
-        // unhandled
-        alert(`Unexpected error: ${error}`);
+        dispatch({ type: ROOT_INITIALIZE_FAILED, payload: { error } });
       }
     };
 
@@ -48,20 +47,13 @@ export function useInitRootState(): [RootState, Dispatch<RootAction>] {
     }
 
     // look for the previous stored value locally
-    dispatch({
-      type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
-      payload: { lastSelectedVehicleId: rootState.rateTypes[0]?.id }
-    });
-
-    dispatch({
-      type: ROOT_SET_LAST_SELECTED_VEHICLE_ID,
-      payload: { lastSelectedVehicleId: rootState.vehicles[0]?.id }
-    });
+    setLastUsedRateTypeId(rootState, dispatch);
+    setLastUsedVehicleId(rootState, dispatch);
 
     setLocalState((d) => {
       d.previousSelectionLoaded = true;
     });
-  }, [localState.rateTypesLoaded, localState.vehiclesLoaded]);
+  }, [localState.rateTypesLoaded, localState.vehiclesLoaded, rootState]);
 
   useEffect(() => {
     const { rateTypesLoaded, vehiclesLoaded, previousSelectionLoaded } = localState;

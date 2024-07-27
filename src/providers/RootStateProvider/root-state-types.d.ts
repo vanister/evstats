@@ -1,3 +1,4 @@
+import { Dispatch } from 'react';
 import { RateType } from '../../models/rateType';
 import { Vehicle } from '../../models/vehicle';
 
@@ -11,9 +12,11 @@ export type RootState = {
   rateTypes: RateType[];
   lastSelectedVehicleId?: number;
   lastSelectedRateTypeId?: number;
-  error?: unknown;
+  error?: Error;
 };
 
 export type RootPayload = Partial<RootState>;
 
 export type RootAction = { type: string; payload?: RootPayload };
+
+export type RootDispatch = Dispatch<RootAction>;

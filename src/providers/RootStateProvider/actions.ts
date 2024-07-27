@@ -1,20 +1,22 @@
-import { Dispatch } from 'react';
+import { Preferences } from '@capacitor/preferences';
+import { RateService } from '../../services/RateService';
+import { VehicleService } from '../../services/VehicleService';
 import {
   ROOT_RATE_TYPES_LOADED,
   ROOT_RATE_TYPES_LOADING,
   ROOT_RATE_TYPES_LOADING_FAILED,
+  ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
+  ROOT_SET_LAST_SELECTED_VEHICLE_ID,
   ROOT_VEHICLES_LOADED,
   ROOT_VEHICLES_LOADING,
   ROOT_VEHICLES_LOADING_FAILED
 } from './actionTypes';
-import { RootAction } from './root-state-types';
-import { VehicleService } from '../../services/VehicleService';
-import { RateService } from '../../services/RateService';
+import { RootDispatch, RootState } from './root-state-types';
 
-export const loadVehicles = async (
-  vehicleService: VehicleService,
-  dispatch: Dispatch<RootAction>
-) => {
+const LAST_SELECTED_RATE_TYPE_ID = 'LAST_SELECTED_RATE_TYPE_ID';
+const LAST_SELECTED_VEHICLE_ID = 'LAST_SELECTED_VEHICLE_ID';
+
+export const loadVehicles = async (vehicleService: VehicleService, dispatch: RootDispatch) => {
   try {
     dispatch({ type: ROOT_VEHICLES_LOADING });
 
@@ -26,7 +28,7 @@ export const loadVehicles = async (
   }
 };
 
-export const loadRateTypes = async (rateService: RateService, dispatch: Dispatch<RootAction>) => {
+export const loadRateTypes = async (rateService: RateService, dispatch: RootDispatch) => {
   try {
     dispatch({ type: ROOT_RATE_TYPES_LOADING });
 
@@ -36,4 +38,18 @@ export const loadRateTypes = async (rateService: RateService, dispatch: Dispatch
   } catch (error) {
     dispatch({ type: ROOT_RATE_TYPES_LOADING_FAILED, payload: { error } });
   }
+};
+
+export const setLastUsedRateTypeId = async (state: RootState, dispatch: RootDispatch) => {
+  const { value } = await Preferences.get({ key: LAST_SELECTED_RATE_TYPE_ID });
+  const lastSelectedRateTypeId = value ? +value : state.rateTypes[0]?.id;
+
+  dispatch({ type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID, payload: { lastSelectedRateTypeId } });
+};
+
+export const setLastUsedVehicleId = async (state: RootState, dispatch: RootDispatch) => {
+  const { value } = await Preferences.get({ key: LAST_SELECTED_VEHICLE_ID });
+  const lastSelectedVehicleId = value ? +value : state.rateTypes[0]?.id;
+
+  dispatch({ type: ROOT_SET_LAST_SELECTED_VEHICLE_ID, payload: { lastSelectedVehicleId } });
 };

@@ -1,6 +1,7 @@
 import { createContext, Dispatch, ReactNode } from 'react';
 import { RootAction, RootState } from './root-state-types';
-import { useInitRootState } from './useInitRootState';
+import { useRootState } from './useRootState';
+import { IonAlert } from '@ionic/react';
 
 export type RootStateProviderProps = {
   children: ReactNode;
@@ -17,9 +18,12 @@ export const RootStateContext = createContext<RootStateContextType>({
 });
 
 export function RootStateProvider({ children }: RootStateProviderProps) {
-  const [state, dispatch] = useInitRootState();
+  const [state, dispatch] = useRootState();
 
   return (
-    <RootStateContext.Provider value={{ state, dispatch }}>{children}</RootStateContext.Provider>
+    <RootStateContext.Provider value={{ state, dispatch }}>
+      <IonAlert isOpen={!!state.error} message="Error!" header="Initialization Error" />
+      {children}
+    </RootStateContext.Provider>
   );
 }
