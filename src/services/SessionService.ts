@@ -1,28 +1,6 @@
+import { NotFoundError } from '../errors/NotFoundError';
 import { Session } from '../models/session';
-
-const MOCK_SESSIONS: Session[] = [
-  {
-    id: 1,
-    kWhAdded: 43,
-    date: '2024-05-22',
-    rateTypeId: 1,
-    vehicleId: 1
-  },
-  {
-    id: 2,
-    kWhAdded: 22,
-    date: '2024-04-16',
-    rateTypeId: 1,
-    vehicleId: 1
-  },
-  {
-    id: 3,
-    kWhAdded: 12,
-    date: '2024-04-08',
-    rateTypeId: 3,
-    vehicleId: 2
-  }
-];
+import { SessionRepository } from '../repositories/SessionRepository';
 
 export interface SessionService {
   list(limit?: number, page?: number): Promise<Session[]>;
@@ -33,40 +11,35 @@ export interface SessionService {
 }
 
 export class EvsSessionService implements SessionService {
-  private sessions: Session[] = [...MOCK_SESSIONS];
-  private lastId = 3;
+  constructor(private sessionRepository: SessionRepository) {}
 
   async list(limit = 20, page = 1): Promise<Session[]> {
-    return this.sessions.slice(page - 1, limit);
+    const sessions = await this.sessionRepository.list(limit, page);
+
+    return sessions;
   }
 
   async get(id: number): Promise<Session> {
-    const session = this.sessions.find((s) => s.id === id);
+    const session = await this.sessionRepository.get(id);
 
     if (!session) {
-      throw new Error('not found');
+      throw new NotFoundError();
     }
 
     return session;
   }
 
   async add(session: Session): Promise<Session> {
-    const newSession: Session = { ...session, id: ++this.lastId };
-
-    this.sessions.push(newSession);
+    const newSession = await this.sessionRepository.add(session);
 
     return newSession;
   }
 
   async update(session: Session): Promise<void> {
-    const existingIdx = this.sessions.findIndex((s) => s.id === session.id);
-    const existing = this.sessions[existingIdx];
-    const udpated: Session = { ...existing, ...session };
-
-    this.sessions[existingIdx] = udpated;
+    await this.sessionRepository.update(session);
   }
 
   async remove(id: number): Promise<void> {
-    this.sessions = this.sessions.filter((s) => s.id !== id);
+    await this.sessionRepository.remove(id);
   }
 }

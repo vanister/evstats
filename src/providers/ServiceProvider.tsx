@@ -2,6 +2,9 @@ import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { EvsSessionService, SessionService } from '../services/SessionService';
 import { EvsRateService, RateService } from '../services/RateService';
 import { EvsVehicleService, VehicleService } from '../services/VehicleService';
+import { EvsRateRepository, RateRepository } from '../repositories/RateRepository';
+import { EvsVehicleRepository, VehicleRepository } from '../repositories/VehicleRepository';
+import { EvsSessionRepository, SessionRepository } from '../repositories/SessionRepository';
 
 export type Services = {
   sessionService: SessionService;
@@ -18,9 +21,15 @@ const ServiceContext = createContext<Services | null>(null);
 /** Provides the services used throughout the app */
 export function ServiceProvider({ children }: ServiceProviderProps) {
   const services: Services = useMemo(() => {
-    const sessionService: SessionService = new EvsSessionService();
-    const rateService: RateService = new EvsRateService();
-    const vehicleService: VehicleService = new EvsVehicleService();
+    // repositories
+    const rateRepository: RateRepository = new EvsRateRepository();
+    const vehicleRepository: VehicleRepository = new EvsVehicleRepository();
+    const sessionRepository: SessionRepository = new EvsSessionRepository();
+
+    // services
+    const sessionService: SessionService = new EvsSessionService(sessionRepository);
+    const rateService: RateService = new EvsRateService(rateRepository);
+    const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository);
 
     return {
       sessionService,
