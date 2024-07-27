@@ -16,19 +16,19 @@ const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
 
   return (
     <IonPage ref={ref} className={classNames('evs-page', className)}>
-      <IonHeader>
+      <IonHeader className="evs-page-header">
         <IonToolbar>
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent
-        className={classNames({ 'ion-padding': padding })}
+        className={classNames('evs-page-content', { 'ion-padding': padding })}
         color={color}
         fullscreen
         fixedSlotPlacement={fixedSlotPlacement}
       >
         {/* todo - props.collapsable */}
-        <IonHeader collapse="condense">
+        <IonHeader className="evs-page-content-header" collapse="condense">
           <IonToolbar color={color}>
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
