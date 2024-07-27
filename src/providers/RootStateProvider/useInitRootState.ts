@@ -1,16 +1,16 @@
 import { Dispatch, useEffect, useReducer } from 'react';
-import { loadRateTypes, loadVehicles } from './actions';
 import { useImmerState } from '../../hooks/useImmerState';
 import { useServices } from '../ServiceProvider';
+import { loadRateTypes, loadVehicles } from './actions';
 import {
+  ROOT_INITIALIZED,
   ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
-  ROOT_SET_LAST_SELECTED_VEHICLE_ID,
-  ROOT_INITIALIZED
+  ROOT_SET_LAST_SELECTED_VEHICLE_ID
 } from './actionTypes';
-import { rootReducer, INITIAL_ROOT_STATE } from './reducer';
+import { INITIAL_ROOT_STATE, rootReducer } from './reducer';
 import { RootAction, RootState } from './root-state-types';
 
-const ROOT_LOCAL_STATE = {
+const LOCAL_STATE = {
   rateTypesLoaded: false,
   vehiclesLoaded: false,
   previousSelectionLoaded: false
@@ -18,10 +18,9 @@ const ROOT_LOCAL_STATE = {
 
 export function useInitRootState(): [RootState, Dispatch<RootAction>] {
   const [rootState, dispatch] = useReducer(rootReducer, INITIAL_ROOT_STATE);
-  const [state, setState] = useImmerState(ROOT_LOCAL_STATE);
+  const [localState, setLocalState] = useImmerState(LOCAL_STATE);
   const { rateService, vehicleService } = useServices();
 
-  // todo - move thse hooks into a useRootState hook
   useEffect(() => {
     // todo - move into helper or custom hook
     const loadRootState = async () => {
@@ -29,7 +28,7 @@ export function useInitRootState(): [RootState, Dispatch<RootAction>] {
         await loadVehicles(vehicleService, dispatch);
         await loadRateTypes(rateService, dispatch);
 
-        setState((d) => {
+        setLocalState((d) => {
           d.rateTypesLoaded = true;
           d.vehiclesLoaded = true;
         });
@@ -44,7 +43,7 @@ export function useInitRootState(): [RootState, Dispatch<RootAction>] {
   }, []);
 
   useEffect(() => {
-    if (!(state.rateTypesLoaded && state.vehiclesLoaded)) {
+    if (!(localState.rateTypesLoaded && localState.vehiclesLoaded)) {
       return;
     }
 
@@ -59,18 +58,18 @@ export function useInitRootState(): [RootState, Dispatch<RootAction>] {
       payload: { lastSelectedVehicleId: rootState.vehicles[0]?.id }
     });
 
-    setState((d) => {
+    setLocalState((d) => {
       d.previousSelectionLoaded = true;
     });
-  }, [state.rateTypesLoaded, state.vehiclesLoaded]);
+  }, [localState.rateTypesLoaded, localState.vehiclesLoaded]);
 
   useEffect(() => {
-    const { rateTypesLoaded, vehiclesLoaded, previousSelectionLoaded } = state;
+    const { rateTypesLoaded, vehiclesLoaded, previousSelectionLoaded } = localState;
 
     if (rateTypesLoaded && vehiclesLoaded && previousSelectionLoaded) {
       dispatch({ type: ROOT_INITIALIZED });
     }
-  }, [state]);
+  }, [localState]);
 
   return [rootState, dispatch];
 }
