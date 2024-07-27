@@ -23,7 +23,7 @@ export default function Header(props: HeaderProps) {
           <IonAlert
             isOpen={!!state.errorMsg}
             header="Error"
-            message={state.errorMsg || ''}
+            message={state.errorMsg || 'An error occurred'}
             buttons={['OK']}
             onDidDismiss={() => {
               setState((s) => {
