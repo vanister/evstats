@@ -40,14 +40,14 @@ export const loadRateTypes = async (rateService: RateService, dispatch: RootDisp
   }
 };
 
-export const setLastUsedRateTypeId = async (state: RootState, dispatch: RootDispatch) => {
+export const getLastUsedRateTypeId = async (state: RootState, dispatch: RootDispatch) => {
   const { value } = await Preferences.get({ key: LAST_SELECTED_RATE_TYPE_ID });
   const lastSelectedRateTypeId = value ? +value : state.rateTypes[0]?.id;
 
   dispatch({ type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID, payload: { lastSelectedRateTypeId } });
 };
 
-export const setLastUsedVehicleId = async (state: RootState, dispatch: RootDispatch) => {
+export const getLastUsedVehicleId = async (state: RootState, dispatch: RootDispatch) => {
   const { value } = await Preferences.get({ key: LAST_SELECTED_VEHICLE_ID });
   const lastSelectedVehicleId = value ? +value : state.rateTypes[0]?.id;
 

@@ -9,13 +9,11 @@ export type RootStateProviderProps = {
 
 export type RootStateContextType = {
   state: RootState | null;
-  dispatch: Dispatch<RootAction> | null;
+  dispatch: Dispatch<RootAction>;
 };
 
-export const RootStateContext = createContext<RootStateContextType>({
-  state: null,
-  dispatch: null
-});
+/** DO NOT use outside of Provider */
+export const RootStateContext = createContext<RootStateContextType>(null);
 
 export function RootStateProvider({ children }: RootStateProviderProps) {
   const [state, dispatch] = useRootState();
