@@ -1,9 +1,9 @@
 import { IonList, IonItem, IonSelectOption } from '@ionic/react';
 import EvsSelect from '../../../../components/EvsSelect';
-import { CommonSessionModalSectionProps } from '../../session-types';
+import { SessionModalStateProps } from '../../session-types';
 import { useRootSelector } from '../../../../hooks/useRootSelector';
 
-export type VehicleSectionProps = CommonSessionModalSectionProps;
+export type VehicleSectionProps = SessionModalStateProps;
 
 export default function VehicleSection({ state, setState }: VehicleSectionProps) {
   const vehicles = useRootSelector((s) => s.vehicles);

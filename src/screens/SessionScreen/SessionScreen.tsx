@@ -32,13 +32,9 @@ export default function SessionScreen() {
   const handleSessionSave = async (session: Session) => {
     if (state.isNew) {
       await addSession(session);
-
-      return true;
     }
 
     await updateSession(session);
-
-    return true;
   };
 
   const handleSessionModalDismiss = () => {

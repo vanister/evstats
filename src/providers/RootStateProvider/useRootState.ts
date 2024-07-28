@@ -4,8 +4,8 @@ import { useServices } from '../ServiceProvider';
 import {
   loadRateTypes,
   loadVehicles,
-  getLastUsedRateTypeId,
-  getLastUsedVehicleId
+  getLastUsedRateTypeIdFromStorage,
+  getLastUsedVehicleIdFromStorage
 } from './actions';
 import { ROOT_INITIALIZE_FAILED, ROOT_INITIALIZED } from './actionTypes';
 import { INITIAL_ROOT_STATE, rootReducer } from './reducer';
@@ -22,8 +22,8 @@ export function useRootState(): [RootState, Dispatch<RootAction>] {
   const [localState, setLocalState] = useImmerState(LOCAL_STATE);
   const { rateService, vehicleService } = useServices();
 
+  // todo - move into helper or custom hook
   useEffect(() => {
-    // todo - move into helper or custom hook
     const loadRootState = async () => {
       try {
         await loadVehicles(vehicleService, dispatch);
@@ -52,8 +52,8 @@ export function useRootState(): [RootState, Dispatch<RootAction>] {
 
     const loadLastUsedRateAndVehicleIds = async () => {
       // look for the previous stored value locally
-      await getLastUsedRateTypeId(rootState, dispatch);
-      await getLastUsedVehicleId(rootState, dispatch);
+      await getLastUsedRateTypeIdFromStorage(dispatch);
+      await getLastUsedVehicleIdFromStorage(dispatch);
 
       setLocalState((d) => {
         d.previousSelectionLoaded = true;

@@ -19,7 +19,7 @@ import {
 } from '@ionic/react';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
-import { IonSlots } from '../../constants';
+import { IonSlotsOld } from '../../constants';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import { add } from 'ionicons/icons';
 
@@ -51,7 +51,7 @@ export default function VehiclePage() {
           {/* todo - unify Header */}
           <IonHeader>
             <IonToolbar>
-              <IonButtons slot={IonSlots.start}>
+              <IonButtons slot={IonSlotsOld.start}>
                 <IonButton onClick={handleCloseClick} disabled={!hasVehicles}>
                   Close
                 </IonButton>

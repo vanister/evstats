@@ -1,6 +1,11 @@
 import { RateType } from '../../models/rateType';
 import { Session, SessionLog } from '../../models/session';
 import { Vehicle } from '../../models/vehicle';
+import {
+  setLastUsedRateTypeId,
+  setLastUsedVehicleId
+} from '../../providers/RootStateProvider/actions';
+import { RootDispatch } from '../../providers/RootStateProvider/root-state-types';
 
 export function toSessionLogItem(
   session: Session,
@@ -23,4 +28,14 @@ export function toSessionLogItem(
   };
 
   return vm;
+}
+
+export async function updateLastUsedRateAndVehicle(
+  session: Session,
+  dispatch: RootDispatch
+): Promise<void> {
+  const { rateTypeId, vehicleId } = session;
+
+  await setLastUsedRateTypeId(rateTypeId, dispatch);
+  await setLastUsedVehicleId(vehicleId, dispatch);
 }

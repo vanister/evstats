@@ -5,18 +5,16 @@ import {
   ROOT_RATE_TYPES_LOADED,
   ROOT_RATE_TYPES_LOADING,
   ROOT_RATE_TYPES_LOADING_FAILED,
+  ROOT_GET_LAST_SELECTED_RATE_TYPE_ID,
+  ROOT_GET_LAST_SELECTED_VEHICLE_ID,
   ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
   ROOT_SET_LAST_SELECTED_VEHICLE_ID,
-  ROOT_UPDATE_LAST_SELECTED_RATE_TYPE_ID,
-  ROOT_UPDATE_LAST_SELECTED_VEHICLE_ID,
   ROOT_VEHICLES_LOADED,
   ROOT_VEHICLES_LOADING,
   ROOT_VEHICLES_LOADING_FAILED
 } from './actionTypes';
-import { RootDispatch, RootState } from './root-state-types';
-
-const LAST_SELECTED_RATE_TYPE_ID = 'LAST_SELECTED_RATE_TYPE_ID';
-const LAST_SELECTED_VEHICLE_ID = 'LAST_SELECTED_VEHICLE_ID';
+import { RootDispatch } from './root-state-types';
+import { PreferenceKeys } from '../../constants';
 
 export const loadVehicles = async (vehicleService: VehicleService, dispatch: RootDispatch) => {
   try {
@@ -42,34 +40,34 @@ export const loadRateTypes = async (rateService: RateService, dispatch: RootDisp
   }
 };
 
-export const getLastUsedRateTypeId = async (state: RootState, dispatch: RootDispatch) => {
-  const { value } = await Preferences.get({ key: LAST_SELECTED_RATE_TYPE_ID });
-  const lastSelectedRateTypeId = value ? +value : state.rateTypes[0]?.id;
+export const getLastUsedRateTypeIdFromStorage = async (dispatch: RootDispatch) => {
+  const { value } = await Preferences.get({ key: PreferenceKeys.LastSelectedRateTypeId });
+  const lastSelectedRateTypeId = +value || null;
 
-  dispatch({ type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID, payload: { lastSelectedRateTypeId } });
+  dispatch({ type: ROOT_GET_LAST_SELECTED_RATE_TYPE_ID, payload: { lastSelectedRateTypeId } });
 };
 
-export const getLastUsedVehicleId = async (state: RootState, dispatch: RootDispatch) => {
-  const { value } = await Preferences.get({ key: LAST_SELECTED_VEHICLE_ID });
-  const lastSelectedVehicleId = value ? +value : state.rateTypes[0]?.id;
+export const getLastUsedVehicleIdFromStorage = async (dispatch: RootDispatch) => {
+  const { value } = await Preferences.get({ key: PreferenceKeys.LastSelectedVehicleId });
+  const lastSelectedVehicleId = +value || null;
 
-  dispatch({ type: ROOT_SET_LAST_SELECTED_VEHICLE_ID, payload: { lastSelectedVehicleId } });
+  dispatch({ type: ROOT_GET_LAST_SELECTED_VEHICLE_ID, payload: { lastSelectedVehicleId } });
 };
 
 export const setLastUsedRateTypeId = async (id: number, dispatch: RootDispatch) => {
-  await Preferences.set({ key: LAST_SELECTED_RATE_TYPE_ID, value: `${id}` });
+  await Preferences.set({ key: PreferenceKeys.LastSelectedRateTypeId, value: `${id}` });
 
   dispatch({
-    type: ROOT_UPDATE_LAST_SELECTED_RATE_TYPE_ID,
+    type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
     payload: { lastSelectedRateTypeId: id }
   });
 };
 
 export const setLastUsedVehicleId = async (id: number, dispatch: RootDispatch) => {
-  await Preferences.set({ key: ROOT_SET_LAST_SELECTED_VEHICLE_ID, value: `${id}` });
+  await Preferences.set({ key: PreferenceKeys.LastSelectedVehicleId, value: `${id}` });
 
   dispatch({
-    type: ROOT_UPDATE_LAST_SELECTED_VEHICLE_ID,
+    type: ROOT_SET_LAST_SELECTED_VEHICLE_ID,
     payload: { lastSelectedVehicleId: id }
   });
 };

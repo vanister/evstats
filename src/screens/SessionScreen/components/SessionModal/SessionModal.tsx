@@ -1,6 +1,6 @@
 import { IonContent, IonModal } from '@ionic/react';
 import { useEffect, useRef } from 'react';
-import { ModalRoles } from '../../../../constants';
+import { ModalRolesOld } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
@@ -10,6 +10,7 @@ import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
 import Header from './Header';
 import { today } from '../../../../utilities/dateUtility';
+import { useRootSelector } from '../../../../hooks/useRootSelector';
 
 export type SessionModalProps = {
   allowCloseGesture?: boolean;
@@ -18,7 +19,7 @@ export type SessionModalProps = {
   session?: Session | null;
   triggerId?: string;
   onCancel?: VoidFunction;
-  onSave: (session: Session) => Promise<boolean>;
+  onSave: (session: Session) => Promise<void>;
   onDidDismiss?: VoidFunction;
 };
 
@@ -33,15 +34,27 @@ const INITIAL_FORM_STATE: SessionModalState = {
 export default function SessionModal(props: SessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, session, onSave, onCancel, onDidDismiss } =
     props;
+
+  const lastUsedRateTypeId = useRootSelector((s) => s.lastSelectedRateTypeId);
+  const lastUsedVehicleId = useRootSelector((s) => s.lastSelectedVehicleId);
   const [state, setState] = useImmerState<SessionModalState>(INITIAL_FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
-    if (!isNew) {
-      setState((s) => {
-        s.session = session!;
-      });
-    }
+    setState((s) => {
+      if (!isNew) {
+        s.session = session;
+        return;
+      }
+
+      if (lastUsedRateTypeId) {
+        s.session.rateTypeId = lastUsedRateTypeId;
+      }
+
+      if (lastUsedVehicleId) {
+        s.session.vehicleId = lastUsedVehicleId;
+      }
+    });
   }, []);
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
@@ -49,7 +62,7 @@ export default function SessionModal(props: SessionModalProps) {
       return true;
     }
 
-    return role !== ModalRoles.gesture;
+    return role !== ModalRolesOld.gesture;
   };
 
   const handleDidDismiss = () => {
@@ -57,8 +70,8 @@ export default function SessionModal(props: SessionModalProps) {
   };
 
   const handleCancelClick = () => {
-    modal.current?.dismiss();
     onCancel?.();
+    modal.current?.dismiss();
   };
 
   const handleSaveClick = async () => {
@@ -73,18 +86,15 @@ export default function SessionModal(props: SessionModalProps) {
       return;
     }
 
-    const result = await onSave(state.session as Session);
-
-    if (result) {
-      modal.current?.dismiss();
-    }
+    await onSave(state.session as Session);
+    await modal.current?.dismiss();
   };
 
   return (
     <IonModal
       isOpen
       ref={modal}
-      className="add-edit-session-modal"
+      className="session-modal"
       canDismiss={modalCanDismiss}
       presentingElement={presentingElement}
       onDidDismiss={handleDidDismiss}

@@ -1,9 +1,9 @@
 import { IonList, IonItem, IonSelectOption, IonInput, IonNote } from '@ionic/react';
 import EvsSelect from '../../../../components/EvsSelect';
-import { CommonSessionModalSectionProps } from '../../session-types';
+import { SessionModalStateProps } from '../../session-types';
 import { useRootSelector } from '../../../../hooks/useRootSelector';
 
-export type RateSectionProps = CommonSessionModalSectionProps;
+export type RateSectionProps = SessionModalStateProps;
 
 export default function RateSection({ state, setState }: RateSectionProps) {
   const rateTypes = useRootSelector((s) => s.rateTypes);

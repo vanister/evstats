@@ -2,7 +2,7 @@ import { SetImmerState } from '../../hooks/useImmerState';
 import { Session } from '../../models/session';
 import { SessionModalState } from './components/SessionModal/SessionModal';
 
-export type CommonSessionModalSectionProps = {
+export type SessionModalStateProps = {
   state: SessionModalState;
   setState: SetImmerState<SessionModalState>;
 };

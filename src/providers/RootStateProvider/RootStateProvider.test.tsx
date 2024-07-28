@@ -8,8 +8,8 @@ import { MOCK_VEHICLES } from '../../__mocks__/vehicleData';
 import { MOCK_RATE_TYPES } from '../../__mocks__/rateData';
 import { useRootDispatch } from '../../hooks/useRootDispatch';
 import {
-  ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
-  ROOT_SET_LAST_SELECTED_VEHICLE_ID
+  ROOT_GET_LAST_SELECTED_RATE_TYPE_ID,
+  ROOT_GET_LAST_SELECTED_VEHICLE_ID
 } from './actionTypes';
 
 vi.mock('../ServiceProvider', () => ({
@@ -77,14 +77,14 @@ describe('RootStateProvider', () => {
         switch (type) {
           case 'rate':
             dispatch({
-              type: ROOT_SET_LAST_SELECTED_RATE_TYPE_ID,
+              type: ROOT_GET_LAST_SELECTED_RATE_TYPE_ID,
               payload: { lastSelectedRateTypeId: 42 }
             });
             break;
 
           case 'vehicle':
             dispatch({
-              type: ROOT_SET_LAST_SELECTED_VEHICLE_ID,
+              type: ROOT_GET_LAST_SELECTED_VEHICLE_ID,
               payload: { lastSelectedVehicleId: 142 }
             });
             break;

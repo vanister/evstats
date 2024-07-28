@@ -1,8 +1,8 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
-import { IonSlots } from '../../../../constants';
-import { CommonSessionModalSectionProps } from '../../session-types';
+import { IonSlotsOld } from '../../../../constants';
+import { SessionModalStateProps } from '../../session-types';
 
-export type HeaderProps = CommonSessionModalSectionProps & {
+export type HeaderProps = SessionModalStateProps & {
   title: string;
   onCancelClick: VoidFunction;
   onSaveClick: VoidFunction;
@@ -14,11 +14,11 @@ export default function Header(props: HeaderProps) {
   return (
     <IonHeader>
       <IonToolbar>
-        <IonButtons slot={IonSlots.start}>
+        <IonButtons slot={IonSlotsOld.start}>
           <IonButton onClick={props.onCancelClick}>Cancel</IonButton>
         </IonButtons>
         <IonTitle>{props.title}</IonTitle>
-        <IonButtons slot={IonSlots.end}>
+        <IonButtons slot={IonSlotsOld.end}>
           <IonButton onClick={props.onSaveClick}>Save</IonButton>
           <IonAlert
             isOpen={!!state.errorMsg}

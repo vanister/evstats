@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { Session, SessionLog } from '../../models/session';
-import { toSessionLogItem } from './helpers';
+import { toSessionLogItem, updateLastUsedRateAndVehicle } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
 import { useRootSelector } from '../../hooks/useRootSelector';
 import { useImmerState } from '../../hooks/useImmerState';
+import { useRootDispatch } from '../../hooks/useRootDispatch';
 
 export type UseSessionState = {
   sessionLogs: SessionLog[];
@@ -18,10 +19,10 @@ export type SessionHook = {
   updateSession: (session: Session) => Promise<void>;
 };
 
-// todo - convert to provider and useReducer
 export function useSessions(): SessionHook {
   const [state, setState] = useImmerState<UseSessionState>({ loading: true, sessionLogs: [] });
   const { sessionService } = useServices();
+  const dispatch = useRootDispatch();
   const vehicles = useRootSelector((s) => s.vehicles);
   const rateTypes = useRootSelector((s) => s.rateTypes);
 
@@ -43,6 +44,8 @@ export function useSessions(): SessionHook {
     const sessionWithId = await sessionService.add(session);
     const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
 
+    await updateLastUsedRateAndVehicle(session, dispatch);
+
     setState((s) => {
       s.sessionLogs.push(sessionLog);
     });
@@ -58,6 +61,8 @@ export function useSessions(): SessionHook {
 
   const updateSession = async (session: Session) => {
     await sessionService.update(session);
+    await updateLastUsedRateAndVehicle(session, dispatch);
+
     // find the session log item and update it with the updated values
     setState((s) => {
       const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
