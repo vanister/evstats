@@ -16,8 +16,7 @@ vi.mock('../ServiceProvider', () => ({
   useServices: vi.fn()
 }));
 
-// todo - fix vitest unhandled promise rejection error
-describe.skip('RootStateProvider', () => {
+describe('RootStateProvider', () => {
   const mockVehicleService = { list: vi.fn().mockResolvedValue(MOCK_VEHICLES) };
   const mockRateService = { list: vi.fn().mockResolvedValue(MOCK_RATE_TYPES) };
   const mockUseServices = useServices as Mock;
