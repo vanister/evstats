@@ -24,6 +24,7 @@ export function useRootState(): [RootState, Dispatch<RootAction>] {
 
   // todo - move into helper or custom hook
   useEffect(() => {
+    // todo - move to actions
     const loadRootState = async () => {
       try {
         await loadVehicles(vehicleService, dispatch);
@@ -50,6 +51,7 @@ export function useRootState(): [RootState, Dispatch<RootAction>] {
       return;
     }
 
+    // todo - move to actions
     const loadLastUsedRateAndVehicleIds = async () => {
       // look for the previous stored value locally
       await getLastUsedRateTypeIdFromStorage(dispatch);

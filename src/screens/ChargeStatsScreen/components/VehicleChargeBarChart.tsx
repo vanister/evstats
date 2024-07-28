@@ -1,12 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart,
-  ChartConfiguration,
-  LinearScale
-} from 'chart.js';
+import { Chart, ChartConfiguration } from 'chart.js';
 
 export type VehicleChargeBarChartProps = {
   // data: any[];
@@ -14,14 +7,13 @@ export type VehicleChargeBarChartProps = {
   // title?: string;
 };
 
-Chart.register(CategoryScale, LinearScale, BarController, BarElement);
-
 export default function VehicleChargeBarChart(_props: VehicleChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
   const chartOptions: ChartConfiguration = {
     type: 'bar',
     options: {
+      animation: false,
       responsive: true,
       scales: {
         x: {

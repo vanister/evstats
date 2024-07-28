@@ -49,7 +49,7 @@ export default function App() {
       <IonReactRouter>
         <ServiceProvider>
           <RootStateProvider>
-            <StartupScreen minDuration={2000}>
+            <StartupScreen minDuration={1500}>
               <IonRouterOutlet>
                 <Route path="/" render={() => <MainLayout />} />
                 <Route exact path="/vehicles" render={() => <VehicleScreen />} />
