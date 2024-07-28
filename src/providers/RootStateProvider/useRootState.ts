@@ -46,13 +46,21 @@ export function useRootState(): [RootState, Dispatch<RootAction>] {
       return;
     }
 
-    // look for the previous stored value locally
-    setLastUsedRateTypeId(rootState, dispatch);
-    setLastUsedVehicleId(rootState, dispatch);
+    if (localState.previousSelectionLoaded) {
+      return;
+    }
 
-    setLocalState((d) => {
-      d.previousSelectionLoaded = true;
-    });
+    const loadLastUsedRateAndVehicleIds = async () => {
+      // look for the previous stored value locally
+      await setLastUsedRateTypeId(rootState, dispatch);
+      await setLastUsedVehicleId(rootState, dispatch);
+
+      setLocalState((d) => {
+        d.previousSelectionLoaded = true;
+      });
+    };
+
+    loadLastUsedRateAndVehicleIds();
   }, [localState.rateTypesLoaded, localState.vehiclesLoaded, rootState]);
 
   useEffect(() => {

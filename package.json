@@ -12,6 +12,7 @@
     "test.lcov": "vitest run --coverage",
     "test.lcov.all": "vitest run --coverage --coverage.all",
     "test.debug": "vitest --watch=false",
+    "test.once": "vitest --watch=false",
     "lint": "eslint",
     "start": "npm run dev -- --port=8100"
   },
@@ -43,7 +44,6 @@
     "@capacitor/cli": "6.1.0",
     "@eslint/js": "^9.5.0",
     "@testing-library/dom": ">=7.21.4",
-    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/eslint": "^8.56.10",
