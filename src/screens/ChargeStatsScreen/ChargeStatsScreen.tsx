@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
-import VehicleChargeBarChart from './components/VehicleChargeBarChart';
+import VehicleChargeBarChart from './components/VehicleChargeBarChart/VehicleChargeBarChart';
 import { ChargeStatData } from '../../services/ChargeStatsService';
 import { IonLoading } from '@ionic/react';
 
@@ -24,7 +24,7 @@ export default function ChargeStatsScreen() {
 
   return (
     <EvsPage className="charge-stats" title="Charge Stats" color="light" padding>
-      <IonLoading isOpen={!chartData || loading} />
+      <IonLoading isOpen={loading} />
       {!loading && <VehicleChargeBarChart data={chartData} title="Last 31 Days" />}
     </EvsPage>
   );
