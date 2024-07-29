@@ -1,69 +1,62 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Chart, ChartConfiguration } from 'chart.js';
+import { ChargeStatData } from '../../../services/ChargeStatsService';
 
 export type VehicleChargeBarChartProps = {
-  // data: any[];
-  // labels: any[];
-  // title?: string;
+  data: ChargeStatData;
+  title?: string;
 };
 
-export default function VehicleChargeBarChart(_props: VehicleChargeBarChartProps) {
+const DEFAULT_RADIUS = 10;
+const CHART_TYPE = 'bar';
+
+export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
-  const chartOptions: ChartConfiguration = {
-    type: 'bar',
-    options: {
-      animation: false,
-      responsive: true,
-      scales: {
-        x: {
-          stacked: true
+  const [chartConfig, setChartConfig] = useState<ChartConfiguration>(null);
+
+  useEffect(() => {
+    // todo - clean up
+    const { labels } = data;
+    const datasets = data.datasets.map((ds) => ({ borderRadius: DEFAULT_RADIUS, ...ds }));
+    const config: ChartConfiguration = {
+      type: CHART_TYPE,
+      options: {
+        animation: false,
+        responsive: true,
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          }
         },
-        y: {
-          stacked: true
+        plugins: {
+          title: { display: true, text: title }
         }
+      },
+      data: {
+        // the x-axis labels
+        labels,
+        datasets
       }
-    },
-    data: {
-      // the x-axis labels
-      labels: ['January', 'February', 'March', 'April'],
-      datasets: [
-        {
-          label: 'Home',
-          // must match the labels length?
-          data: [15, 23, 56, 10],
-          backgroundColor: 'Blue',
-          borderRadius: 10
-        },
-        {
-          label: 'Work',
-          data: [25, 0, 46, 9],
-          backgroundColor: 'Orange',
-          borderRadius: 10
-        },
-        {
-          label: 'Other',
-          data: [8, 33, 26, 12],
-          backgroundColor: 'Gray',
-          borderRadius: 10
-        },
-        {
-          label: 'DC',
-          data: [40, 14, 32, 8],
-          backgroundColor: 'Red',
-          borderRadius: 10
-        }
-      ]
-    }
-  };
+    };
+
+    setChartConfig(config);
+  }, [data]);
 
   useLayoutEffect(() => {
-    chart.current = new Chart(chartCanvasRef.current, chartOptions);
+    if (!chartConfig) {
+      return;
+    }
+
+    chart.current = new Chart(chartCanvasRef.current, chartConfig);
 
     return () => {
       chart.current?.destroy();
     };
-  }, []);
+  }, [chartConfig]);
 
   return (
     <div className="vehicle-charge-bar-chart">

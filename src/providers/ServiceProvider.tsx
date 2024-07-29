@@ -5,11 +5,13 @@ import { EvsVehicleService, VehicleService } from '../services/VehicleService';
 import { EvsRateRepository, RateRepository } from '../repositories/RateRepository';
 import { EvsVehicleRepository, VehicleRepository } from '../repositories/VehicleRepository';
 import { EvsSessionRepository, SessionRepository } from '../repositories/SessionRepository';
+import { ChargeStatsService, EvsChargeStatsService } from '../services/ChargeStatsService';
 
 export type Services = {
   sessionService: SessionService;
   rateService: RateService;
   vehicleService: VehicleService;
+  chargeStatsService: ChargeStatsService;
 };
 
 export type ServiceProviderProps = {
@@ -30,11 +32,13 @@ export function ServiceProvider({ children }: ServiceProviderProps) {
     const sessionService: SessionService = new EvsSessionService(sessionRepository);
     const rateService: RateService = new EvsRateService(rateRepository);
     const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository);
+    const chargeStatsService = new EvsChargeStatsService();
 
     return {
       sessionService,
       rateService,
-      vehicleService
+      vehicleService,
+      chargeStatsService
     };
   }, []);
 
