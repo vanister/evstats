@@ -1,13 +1,8 @@
 import './ChargeSummary.scss';
-
-export type ChargeAverage = {
-  name: string;
-  color: string;
-  percent: number;
-};
+import { ChargeAverage as ChargeAverageType } from '../../../../services/ChargeStatsService';
 
 export type ChargeSummaryProps = {
-  averages: ChargeAverage[];
+  averages: ChargeAverageType[];
 };
 
 export default function ChargeSummary({ averages }: ChargeSummaryProps) {
@@ -21,7 +16,7 @@ export default function ChargeSummary({ averages }: ChargeSummaryProps) {
 }
 
 export type ChargeAverageProps = {
-  average: ChargeAverage;
+  average: ChargeAverageType;
 };
 
 export function ChargeAverage({ average }: ChargeAverageProps) {

@@ -11,6 +11,7 @@ export default function ChargeStatsScreen() {
   const [chartData, setChartData] = useState<ChargeStatData>(null);
   const [selectedVehicleId, _setSelectedVehicleId] = useState(1);
 
+  // todo - useReducer
   useEffect(() => {
     const loadLast31Days = async () => {
       const data = await chargeStatsService.getLast31Days(selectedVehicleId);

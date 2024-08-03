@@ -30,6 +30,7 @@ export function toSessionLogItem(
   return vm;
 }
 
+// todo - move to root actions
 export async function updateLastUsedRateAndVehicle(
   session: Session,
   dispatch: RootDispatch

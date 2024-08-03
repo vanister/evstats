@@ -26,6 +26,8 @@ export function useSessions(): SessionHook {
   const vehicles = useRootSelector((s) => s.vehicles);
   const rateTypes = useRootSelector((s) => s.rateTypes);
 
+  // todo - useReducer
+
   useEffect(() => {
     const loadSessions = async () => {
       const sessionsEntries = await sessionService.list();
