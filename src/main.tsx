@@ -10,15 +10,52 @@ import {
   Title,
   Tooltip
 } from 'chart.js';
+import { DatabaseManager } from './DatabaseManager';
+import DatabaseManagerProvider from './DatabaseManagerProvider';
+import { App as IonicApp } from '@capacitor/app';
+import { logToConsole } from './logger';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
 
+const databaseManager = new DatabaseManager();
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// todo - clean up
+
+IonicApp.addListener('pause', async () => {
+  logToConsole('app paused');
+
+  try {
+    await databaseManager.closeConnection();
+  } catch (error) {
+    logToConsole('failed to close the sqlite connection:', error);
+  }
+});
+
+IonicApp.addListener('resume', async () => {
+  logToConsole('app resume');
+
+  try {
+    await databaseManager.openConnection();
+  } catch (error) {
+    logToConsole('failed to reopen sqlite connection');
+  }
+});
+
+databaseManager
+  .openConnection()
+  .then(() => databaseManager.initializeDb())
+  .then(() => {
+    root.render(
+      <React.StrictMode>
+        <DatabaseManagerProvider manager={databaseManager}>
+          <App />
+        </DatabaseManagerProvider>
+      </React.StrictMode>
+    );
+  })
+  .catch((error) => {
+    alert(`Error starting app: ${error?.message}`);
+  });

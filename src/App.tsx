@@ -33,13 +33,15 @@ import './theme/variables.scss';
 import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ServiceProvider } from './providers/ServiceProvider';
-
 import Routes from './Routes';
+import { logToConsole } from './logger';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
+  logToConsole('rendering the App component');
+
   return (
     <IonApp>
       <IonReactRouter>
