@@ -1,5 +1,7 @@
 import { SetImmerState } from '../../hooks/useImmerState';
+import { RateType } from '../../models/rateType';
 import { Session } from '../../models/session';
+import { Vehicle } from '../../models/vehicle';
 import { SessionModalState } from './components/SessionModal/SessionModal';
 
 export type SessionModalStateProps = {
@@ -8,7 +10,9 @@ export type SessionModalStateProps = {
 };
 
 export type SessionModalState = {
+  rateTypes: RateType[];
   session: Partial<Session>;
+  vehicles: Vehicle[];
   errorMsg?: string | null;
 };
 

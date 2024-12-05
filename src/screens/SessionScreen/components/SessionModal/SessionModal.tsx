@@ -10,7 +10,6 @@ import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
 import Header from './Header';
 import { today } from '../../../../utilities/dateUtility';
-import { useRootSelector } from '../../../../hooks/useRootSelector';
 
 export type SessionModalProps = {
   allowCloseGesture?: boolean;
@@ -24,19 +23,19 @@ export type SessionModalProps = {
 };
 
 const INITIAL_FORM_STATE: SessionModalState = {
+  rateTypes: [],
+  vehicles: [],
   session: {
     date: today(),
     rateTypeId: 1,
     vehicleId: 1
-  }
+  },
 };
 
 export default function SessionModal(props: SessionModalProps) {
   const { allowCloseGesture, isNew, presentingElement, session, onSave, onCancel, onDidDismiss } =
     props;
 
-  const lastUsedRateTypeId = useRootSelector((s) => s.lastSelectedRateTypeId);
-  const lastUsedVehicleId = useRootSelector((s) => s.lastSelectedVehicleId);
   const [state, setState] = useImmerState<SessionModalState>(INITIAL_FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
 
@@ -45,14 +44,6 @@ export default function SessionModal(props: SessionModalProps) {
       if (!isNew) {
         s.session = session;
         return;
-      }
-
-      if (lastUsedRateTypeId) {
-        s.session.rateTypeId = lastUsedRateTypeId;
-      }
-
-      if (lastUsedVehicleId) {
-        s.session.vehicleId = lastUsedVehicleId;
       }
     });
   }, []);

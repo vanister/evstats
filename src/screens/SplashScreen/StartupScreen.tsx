@@ -3,8 +3,6 @@ import './StartupScreen.scss';
 import { ReactNode, useEffect, useState } from 'react';
 import { SplashScreen as IonicSplashScreen } from '@capacitor/splash-screen';
 import { Loading } from '../../components/Loading';
-import { useRootSelector } from '../../hooks/useRootSelector';
-import { IonAlert } from '@ionic/react';
 
 export type StartupScreenProps = {
   minDuration: number;
@@ -14,8 +12,6 @@ export type StartupScreenProps = {
 // todo - rename to something other than screen
 export function StartupScreen({ children, minDuration }: StartupScreenProps) {
   const [splashLoaded, setSplashLoaded] = useState(false);
-  const initialized = useRootSelector((s) => s.initialized);
-  const error = useRootSelector((s) => s.error);
 
   // look up the last selected rate type and vehicle
   // and set those on the root state
@@ -32,7 +28,7 @@ export function StartupScreen({ children, minDuration }: StartupScreenProps) {
   }, []);
 
   useEffect(() => {
-    if (!(initialized && splashLoaded)) {
+    if (!(splashLoaded)) {
       return;
     }
 
@@ -41,13 +37,9 @@ export function StartupScreen({ children, minDuration }: StartupScreenProps) {
     };
 
     closeSplashScreen();
-  }, [initialized, splashLoaded]);
+  }, [splashLoaded]);
 
-  if (error) {
-    return <IonAlert isOpen message={error?.message} header="Initialization Error" />;
-  }
-
-  if (!(initialized && splashLoaded)) {
+  if (!(splashLoaded)) {
     return <Loading />;
   }
 

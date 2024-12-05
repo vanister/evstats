@@ -1,12 +1,10 @@
 import { IonList, IonItem, IonSelectOption } from '@ionic/react';
 import EvsSelect from '../../../../components/EvsSelect';
 import { SessionModalStateProps } from '../../session-types';
-import { useRootSelector } from '../../../../hooks/useRootSelector';
 
-export type VehicleSectionProps = SessionModalStateProps;
+type VehicleSectionProps = SessionModalStateProps;
 
 export default function VehicleSection({ state, setState }: VehicleSectionProps) {
-  const vehicles = useRootSelector((s) => s.vehicles);
 
   return (
     <IonList inset>
@@ -23,7 +21,7 @@ export default function VehicleSection({ state, setState }: VehicleSectionProps)
             })
           }
         >
-          {vehicles.map((v) => (
+          {state.vehicles.map((v) => (
             <IonSelectOption key={v.id} value={v.id}>
               {v.model}
             </IonSelectOption>

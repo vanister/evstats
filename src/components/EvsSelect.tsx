@@ -1,6 +1,6 @@
 import { IonSelect, IonSelectOption } from '@ionic/react';
 import classNames from 'classnames';
-import { ExplicitAny } from 'evs-types';
+import { ExplicitAny } from '@evs-core'
 
 type IonSelectChangeEvent = { detail: { value: ExplicitAny } };
 

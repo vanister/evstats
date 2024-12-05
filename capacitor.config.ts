@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.vanister.evstats',
-  appName: 'EV Charge Stats',
+  appName: 'EV Stats',
   webDir: 'dist',
   plugins: {
     CapacitorSQLite: {
@@ -23,21 +23,21 @@ const config: CapacitorConfig = {
       electronWindowsLocation: 'C:\\ProgramData\\CapacitorDatabases',
       electronMacLocation: '/Volumes/Development_Lacie/Development/Databases',
       electronLinuxLocation: 'Databases'
-    },
-    SplashScreen: {
-      launchAutoHide: false,
-      backgroundColor: '#ffffffff',
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
-      showSpinner: true,
-      androidSpinnerStyle: 'large',
-      iosSpinnerStyle: 'small',
-      spinnerColor: '#999999',
-      splashFullScreen: true,
-      splashImmersive: true,
-      layoutName: 'launch_screen',
-      useDialog: true
     }
+    // SplashScreen: {
+    //   launchAutoHide: false,
+    //   backgroundColor: '#ffffffff',
+    //   androidSplashResourceName: 'splash',
+    //   androidScaleType: 'CENTER_CROP',
+    //   showSpinner: true,
+    //   androidSpinnerStyle: 'large',
+    //   iosSpinnerStyle: 'small',
+    //   spinnerColor: '#999999',
+    //   splashFullScreen: true,
+    //   splashImmersive: true,
+    //   layoutName: 'launch_screen',
+    //   useDialog: true
+    // }
   }
 };
 

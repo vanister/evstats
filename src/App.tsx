@@ -30,15 +30,11 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.scss';
 
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ServiceProvider } from './providers/ServiceProvider';
-import { Route } from 'react-router';
-// lazy load
-import MainLayout from './MainLayout';
-import { StartupScreen } from './screens/SplashScreen/StartupScreen';
-import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
-import { RootStateProvider } from './providers/RootStateProvider/RootStateProvider';
+
+import Routes from './Routes';
 
 // todo - remove
 setupIonicReact({ mode: 'ios' });
@@ -48,14 +44,7 @@ export default function App() {
     <IonApp>
       <IonReactRouter>
         <ServiceProvider>
-          <RootStateProvider>
-            <StartupScreen minDuration={1500}>
-              <IonRouterOutlet>
-                <Route path="/" render={() => <MainLayout />} />
-                <Route exact path="/vehicles" render={() => <VehicleScreen />} />
-              </IonRouterOutlet>
-            </StartupScreen>
-          </RootStateProvider>
+          <Routes />
         </ServiceProvider>
       </IonReactRouter>
     </IonApp>

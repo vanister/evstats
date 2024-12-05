@@ -1,13 +1,10 @@
 import { IonList, IonItem, IonSelectOption, IonInput, IonNote } from '@ionic/react';
 import EvsSelect from '../../../../components/EvsSelect';
 import { SessionModalStateProps } from '../../session-types';
-import { useRootSelector } from '../../../../hooks/useRootSelector';
 
-export type RateSectionProps = SessionModalStateProps;
+type RateSectionProps = SessionModalStateProps;
 
 export default function RateSection({ state, setState }: RateSectionProps) {
-  const rateTypes = useRootSelector((s) => s.rateTypes);
-
   return (
     <IonList inset>
       <IonItem>
@@ -22,7 +19,7 @@ export default function RateSection({ state, setState }: RateSectionProps) {
             })
           }
         >
-          {rateTypes.map((r) => (
+          {state.rateTypes.map((r) => (
             <IonSelectOption key={r.id} value={r.id}>
               {r.name}
             </IonSelectOption>

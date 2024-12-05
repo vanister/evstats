@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { Session, SessionLog } from '../../models/session';
-import { toSessionLogItem, updateLastUsedRateAndVehicle } from './helpers';
+import { toSessionLogItem } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
-import { useRootSelector } from '../../hooks/useRootSelector';
 import { useImmerState } from '../../hooks/useImmerState';
-import { useRootDispatch } from '../../hooks/useRootDispatch';
+import { RateType } from '../../models/rateType';
+import { Vehicle } from '../../models/vehicle';
 
 export type UseSessionState = {
   sessionLogs: SessionLog[];
   loading: boolean;
+  rateTypes: RateType[];
+  vehicles: Vehicle[];
 };
 
 export type SessionHook = {
@@ -19,22 +21,31 @@ export type SessionHook = {
   updateSession: (session: Session) => Promise<void>;
 };
 
-export function useSessions(): SessionHook {
-  const [state, setState] = useImmerState<UseSessionState>({ loading: true, sessionLogs: [] });
-  const { sessionService } = useServices();
-  const dispatch = useRootDispatch();
-  const vehicles = useRootSelector((s) => s.vehicles);
-  const rateTypes = useRootSelector((s) => s.rateTypes);
+const INITIAL_STATE: UseSessionState = {
+  loading: true,
+  sessionLogs: [],
+  rateTypes: [],
+  vehicles: []
+};
 
-  // todo - useReducer
+export function useSessions(): SessionHook {
+  const getService = useServices();
+  const sessionService = getService('sessionService');
+  const rateService = getService('rateService');
+  const vehicleService = getService('vehicleService');
+  const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
 
   useEffect(() => {
     const loadSessions = async () => {
+      const vehicles = await vehicleService.list();
+      const rateTypes = await rateService.list();
       const sessionsEntries = await sessionService.list();
       const sessionLogItems = sessionsEntries.map((s) => toSessionLogItem(s, vehicles, rateTypes));
 
       setState((d) => {
         d.sessionLogs = sessionLogItems;
+        d.rateTypes = rateTypes;
+        d.vehicles = vehicles;
         d.loading = false;
       });
     };
@@ -44,9 +55,9 @@ export function useSessions(): SessionHook {
 
   const addSession = async (session: Session) => {
     const sessionWithId = await sessionService.add(session);
-    const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
+    const sessionLog = toSessionLogItem(sessionWithId, state.vehicles, state.rateTypes);
 
-    await updateLastUsedRateAndVehicle(session, dispatch);
+    // await updateLastUsedRateAndVehicle(session, dispatch);
 
     setState((s) => {
       s.sessionLogs.push(sessionLog);
@@ -63,12 +74,12 @@ export function useSessions(): SessionHook {
 
   const updateSession = async (session: Session) => {
     await sessionService.update(session);
-    await updateLastUsedRateAndVehicle(session, dispatch);
+    // await updateLastUsedRateAndVehicle(session, dispatch);
 
     // find the session log item and update it with the updated values
     setState((s) => {
       const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
-      const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
+      const updatedSessionLog = toSessionLogItem(session, state.vehicles, state.rateTypes);
 
       s.sessionLogs[existingSessionLogId] = updatedSessionLog;
     });
