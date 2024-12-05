@@ -35,12 +35,21 @@ import { IonReactRouter } from '@ionic/react-router';
 import { ServiceProvider } from './providers/ServiceProvider';
 import Routes from './Routes';
 import { logToConsole } from './logger';
+import { useEffect } from 'react';
+import { SplashScreen } from '@capacitor/splash-screen';
 
-// todo - remove
+// todo - remove once andriod is supported
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
-  logToConsole('rendering the App component');
+  useEffect(() => {
+    const hideSplashScreen = async () => {
+      logToConsole('app initialized, taking down splash screen');
+      await SplashScreen.hide();
+    };
+
+    hideSplashScreen();
+  }, []);
 
   return (
     <IonApp>

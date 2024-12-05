@@ -23,7 +23,6 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 
 // todo - clean up
-
 IonicApp.addListener('pause', async () => {
   logToConsole('app paused');
 
@@ -44,10 +43,14 @@ IonicApp.addListener('resume', async () => {
   }
 });
 
+logToConsole('starting up...');
+
 databaseManager
   .openConnection()
   .then(() => databaseManager.initializeDb())
   .then(() => {
+    logToConsole('rendering the root component');
+
     root.render(
       <React.StrictMode>
         <DatabaseManagerProvider manager={databaseManager}>
@@ -57,5 +60,6 @@ databaseManager
     );
   })
   .catch((error) => {
+    logToConsole('error starting up...', error);
     alert(`Error starting app: ${error?.message}`);
   });
