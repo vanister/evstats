@@ -1,13 +1,11 @@
-import { createContext, ReactNode, useContext } from 'react';
-import { getService } from '../services/ServiceInjector';
+import { createContext, ReactNode, useContext, useEffect } from 'react';
+import { buildServiceContainer, getService, ServiceContainer } from '../services/ServiceInjector';
+import { useDatabaseManager } from './DatabaseManagerProvider';
+import { logToConsole } from '../logger';
 
 type GetServiceFunction = typeof getService;
 
-export type ServiceContextType = {
-  getService: GetServiceFunction
-};
-
-const ServiceContext = createContext<ServiceContextType>({ getService });
+const ServiceContext = createContext<GetServiceFunction>(null);
 
 type ServiceProviderProps = {
   children: ReactNode;
@@ -15,19 +13,22 @@ type ServiceProviderProps = {
 
 /** Provides the services used throughout the app */
 export function ServiceProvider({ children }: ServiceProviderProps) {
-  return (
-    <ServiceContext.Provider value={{ getService }}>
-      {children}
-    </ServiceContext.Provider>
-  );
+  const databaseManager = useDatabaseManager();
+
+  useEffect(() => {
+    logToConsole('building the service container');
+    buildServiceContainer({ databaseManager });
+  }, []);
+
+  return <ServiceContext.Provider value={getService}>{children}</ServiceContext.Provider>;
 }
 
-export function useServices(): GetServiceFunction {
-  const services = useContext(ServiceContext);
+export function useServices<Service extends keyof ServiceContainer>(name: Service) {
+  const serviceLocator = useContext(ServiceContext);
 
-  if (!services) {
+  if (!serviceLocator) {
     throw new Error('ServiceContext must be used within a ServiceProvider');
   }
 
-  return services.getService;
+  return serviceLocator(name);
 }

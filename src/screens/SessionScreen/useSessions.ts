@@ -29,10 +29,9 @@ const INITIAL_STATE: UseSessionState = {
 };
 
 export function useSessions(): SessionHook {
-  const getService = useServices();
-  const sessionService = getService('sessionService');
-  const rateService = getService('rateService');
-  const vehicleService = getService('vehicleService');
+  const sessionService = useServices('sessionService');
+  const rateService = useServices('rateService');
+  const vehicleService = useServices('vehicleService');
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
 
   useEffect(() => {

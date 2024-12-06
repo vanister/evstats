@@ -1,3 +1,5 @@
+// todo use enums
+
 export const ModalRolesOld = {
   gesture: 'gesture'
 };

@@ -6,8 +6,7 @@ import { ChargeStatData } from '../../services/ChargeStatsService';
 import { IonLoading } from '@ionic/react';
 
 export default function ChargeStatsScreen() {
-  const getService = useServices();
-  const chargeStatsService = getService('chargeStatsService');
+  const chargeStatsService = useServices('chargeStatsService');
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState<ChargeStatData>(null);
   const [selectedVehicleId, _setSelectedVehicleId] = useState(1);

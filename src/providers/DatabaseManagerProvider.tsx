@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { DatabaseManager } from './DatabaseManager';
+import { DatabaseManager } from '../data/DatabaseManager';
 
 type DatabaseManagerProviderProps = PropsWithChildren<{
   manager: DatabaseManager;

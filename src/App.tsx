@@ -52,12 +52,12 @@ export default function App() {
   }, []);
 
   return (
-    <IonApp>
-      <IonReactRouter>
-        <ServiceProvider>
+    <ServiceProvider>
+      <IonApp>
+        <IonReactRouter>
           <Routes />
-        </ServiceProvider>
-      </IonReactRouter>
-    </IonApp>
+        </IonReactRouter>
+      </IonApp>
+    </ServiceProvider>
   );
 }

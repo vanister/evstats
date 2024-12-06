@@ -1,7 +1,7 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { logToConsole } from './logger';
-import { InitTableSql } from './data/sql/InitTableSql';
-import { SeedSql } from './data/sql/SeedSql';
+import { logToConsole } from '../logger';
+import { InitTableSql } from './sql/InitTableSql';
+import { SeedSql } from './sql/SeedSql';
 
 export type ConnectionOptions = {
   encrypted?: boolean;
@@ -16,6 +16,17 @@ const DEFAULT_CONNECTION_OPTIONS: ConnectionOptions = {
   readOnly: false,
   version: 1
 };
+
+let instance: DatabaseManager;
+
+/** Gets a singleton instance of a DatabaseManager. */
+export function getInstance(): DatabaseManager {
+  if (!instance) {
+    instance = new DatabaseManager();
+  }
+
+  return instance;
+}
 
 export class DatabaseManager {
   private readonly sqlite: SQLiteConnection;
