@@ -2,14 +2,14 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/rea
 import classNames from 'classnames';
 import React from 'react';
 
-interface EvsPageProps {
+type EvsPageProps = {
   children: React.ReactNode;
   className?: string;
   color?: string;
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
   title?: string;
-}
+};
 
 const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
   const { children, className, color, fixedSlotPlacement, padding, title } = props;

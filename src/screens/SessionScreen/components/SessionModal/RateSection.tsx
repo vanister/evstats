@@ -15,7 +15,7 @@ export default function RateSection({ state, setState }: RateSectionProps) {
           value={state.session.rateTypeId}
           onSelect={(value) =>
             setState((s) => {
-              s.session.rateTypeId = value;
+              s.session.rateTypeId = +value;
             })
           }
         >
@@ -36,9 +36,9 @@ export default function RateSection({ state, setState }: RateSectionProps) {
           max={99}
           maxlength={2}
           value={state.session.rateOverride}
-          onIonChange={(e) =>
+          onIonInput={(e) =>
             setState((s) => {
-              s.session.rateOverride = +e.detail.value! || undefined;
+              s.session.rateOverride = parseFloat(e.detail.value) || null;
             })
           }
         />

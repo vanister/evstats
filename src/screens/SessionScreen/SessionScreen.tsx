@@ -1,4 +1,4 @@
-import { IonIcon, IonLoading } from '@ionic/react';
+import { IonIcon } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
@@ -13,7 +13,6 @@ import { SessionState } from './session-types';
 const INITIAL_SESSIONS_STATE: SessionState = {
   showModal: false,
   isNew: false,
-  loadingSession: false,
   editingSession: null
 };
 
@@ -41,7 +40,6 @@ export default function SessionScreen() {
     setState((s) => {
       s.showModal = false;
       s.isNew = false;
-      s.loadingSession = false;
       s.editingSession = null;
     });
   };
@@ -49,15 +47,13 @@ export default function SessionScreen() {
   const handleSessionSelection = async (sessionLog: SessionLog) => {
     // find the session that was selected
     setState((s) => {
-      s.loadingSession = true;
+      s.showModal = true;
     });
 
     const session = await getSession(sessionLog.id);
 
     setState((s) => {
       s.isNew = false;
-      s.showModal = true;
-      s.loadingSession = false;
       s.editingSession = session;
     });
   };
@@ -79,7 +75,6 @@ export default function SessionScreen() {
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
-      <IonLoading message={'Loading session...'} isOpen={state.loadingSession} />
       <SessionList sessions={sessionLogs} onSelection={handleSessionSelection} />
       {state.showModal && (
         <SessionModal

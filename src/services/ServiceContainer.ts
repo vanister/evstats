@@ -8,7 +8,8 @@ import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { DatabaseManager } from '../data/DatabaseManager';
 
-// list the services that can get injected here
+// start here by listing the services that can get injected
+// then add it to the `initializeServiceContainer` function below
 export type ServiceContainer = {
   sessionService: SessionService;
   rateService: RateService;
@@ -20,10 +21,21 @@ export type ContainerContext = {
   databaseManager: DatabaseManager;
 };
 
+export type ServiceLocator = typeof getService;
+export type ServiceContainerIntializer = typeof initializeServiceContainer;
+
 const container = new Map<keyof ServiceContainer, ExplicitAny>();
 let isContainerBuilt = false;
 
-export function buildServiceContainer({ databaseManager }: ContainerContext) {
+/**
+ * Initializes the services needed throughout the app.
+ *
+ * Register more services directly in this function.
+ * It will be called by the `ServiceProvider` when it is mounted
+ *
+ * @param context The context that will be used to initialize the service container.
+ */
+export function initializeServiceContainer({ databaseManager }: ContainerContext) {
   if (isContainerBuilt) {
     return;
   }
@@ -51,6 +63,11 @@ export function buildServiceContainer({ databaseManager }: ContainerContext) {
   isContainerBuilt = true;
 }
 
+/**
+ * Gets a service from the service container.
+ *
+ * @param name The name of the service.
+ */
 export function getService<Service extends keyof ServiceContainer>(name: Service) {
   return container.get(name) as ServiceContainer[Service];
 }

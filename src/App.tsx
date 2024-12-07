@@ -37,6 +37,7 @@ import Routes from './Routes';
 import { logToConsole } from './logger';
 import { useEffect } from 'react';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { initializeServiceContainer, getService } from './services/ServiceContainer';
 
 // todo - remove once andriod is supported
 setupIonicReact({ mode: 'ios' });
@@ -52,7 +53,7 @@ export default function App() {
   }, []);
 
   return (
-    <ServiceProvider>
+    <ServiceProvider containerInitializer={initializeServiceContainer} serviceLocator={getService}>
       <IonApp>
         <IonReactRouter>
           <Routes />

@@ -1,26 +1,33 @@
-import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { buildServiceContainer, getService, ServiceContainer } from '../services/ServiceInjector';
+import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
+import {
+  ServiceContainerIntializer,
+  ServiceLocator,
+  ServiceContainer
+} from '../services/ServiceContainer';
 import { useDatabaseManager } from './DatabaseManagerProvider';
 import { logToConsole } from '../logger';
 
-type GetServiceFunction = typeof getService;
+const ServiceContext = createContext<ServiceLocator>(null);
 
-const ServiceContext = createContext<GetServiceFunction>(null);
-
-type ServiceProviderProps = {
-  children: ReactNode;
-};
+type ServiceProviderProps = PropsWithChildren<{
+  serviceLocator: ServiceLocator;
+  containerInitializer: ServiceContainerIntializer;
+}>;
 
 /** Provides the services used throughout the app */
-export function ServiceProvider({ children }: ServiceProviderProps) {
+export function ServiceProvider({
+  children,
+  containerInitializer,
+  serviceLocator
+}: ServiceProviderProps) {
   const databaseManager = useDatabaseManager();
 
   useEffect(() => {
     logToConsole('building the service container');
-    buildServiceContainer({ databaseManager });
+    containerInitializer({ databaseManager });
   }, []);
 
-  return <ServiceContext.Provider value={getService}>{children}</ServiceContext.Provider>;
+  return <ServiceContext.Provider value={serviceLocator}>{children}</ServiceContext.Provider>;
 }
 
 export function useServices<Service extends keyof ServiceContainer>(name: Service) {

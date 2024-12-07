@@ -1,7 +1,7 @@
 import { IonList, IonItem, IonInput } from '@ionic/react';
 import { SessionModalStateProps } from '../../session-types';
 
-export type RequiredFieldSectionProps = SessionModalStateProps;
+type RequiredFieldSectionProps = SessionModalStateProps;
 
 export default function RequiredFieldSection({ state, setState }: RequiredFieldSectionProps) {
   return (
@@ -16,9 +16,9 @@ export default function RequiredFieldSection({ state, setState }: RequiredFieldS
           maxlength={3}
           type="number"
           value={state.session.kWhAdded}
-          onIonChange={(e) =>
+          onIonInput={(e) =>
             setState((s) => {
-              s.session.kWhAdded = +e.detail.value! || undefined;
+              s.session.kWhAdded = +e.detail.value;
             })
           }
         />

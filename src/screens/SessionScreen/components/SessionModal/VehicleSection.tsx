@@ -5,7 +5,6 @@ import { SessionModalStateProps } from '../../session-types';
 type VehicleSectionProps = SessionModalStateProps;
 
 export default function VehicleSection({ state, setState }: VehicleSectionProps) {
-
   return (
     <IonList inset>
       <IonItem>
@@ -17,7 +16,7 @@ export default function VehicleSection({ state, setState }: VehicleSectionProps)
           value={state.session.vehicleId}
           onSelect={(value) =>
             setState((s) => {
-              s.session.vehicleId = value;
+              s.session.vehicleId = +value;
             })
           }
         >

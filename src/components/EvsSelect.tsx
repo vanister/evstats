@@ -1,21 +1,21 @@
 import { IonSelect, IonSelectOption } from '@ionic/react';
 import classNames from 'classnames';
-import { ExplicitAny } from '@evs-core'
+import { ExplicitAny } from '@evs-core';
+
+export type EvsSelectOptionItem = {
+  value: unknown;
+  display: React.ReactNode;
+};
 
 type IonSelectChangeEvent = { detail: { value: ExplicitAny } };
 
-export interface EvsSelectOptionItem {
-  value: unknown;
-  display: React.ReactNode;
-}
-
-export interface EvsSelectProps {
+type EvsSelectProps = {
   className?: string;
   inset?: boolean;
   label: string;
   labelPlacement?: 'fixed' | 'start' | 'end' | 'floating' | 'stacked';
   /** The Selected value */
-  value?: unknown;
+  value?: number | string;
   /** The header that is shown on the opened select list. */
   header?: string;
   /** The sub header that is shown below the header of the opened select list. */
@@ -30,8 +30,8 @@ export interface EvsSelectProps {
    *
    * @param value The value of the selected option.
    */
-  onSelect?: (value: unknown) => void;
-}
+  onSelect?: (value: number | string) => void;
+};
 
 export default function EvsSelect(props: EvsSelectProps) {
   const headerOptions = {
@@ -64,11 +64,11 @@ export default function EvsSelect(props: EvsSelectProps) {
   );
 }
 
-export interface EvsSelectOption {
+type EvsSelectOptionProps = {
   value?: unknown;
   children: React.ReactNode;
-}
+};
 
-export function EvsSelectOption(props: EvsSelectOption) {
+export function EvsSelectOption(props: EvsSelectOptionProps) {
   return <IonSelectOption value={props.value}>{props.children}</IonSelectOption>;
 }

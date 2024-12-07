@@ -2,7 +2,7 @@ import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from
 import { IonSlotsOld } from '../../../../constants';
 import { SessionModalStateProps } from '../../session-types';
 
-export type HeaderProps = SessionModalStateProps & {
+type HeaderProps = SessionModalStateProps & {
   title: string;
   onCancelClick: VoidFunction;
   onSaveClick: VoidFunction;
@@ -19,7 +19,9 @@ export default function Header(props: HeaderProps) {
         </IonButtons>
         <IonTitle>{props.title}</IonTitle>
         <IonButtons slot={IonSlotsOld.end}>
-          <IonButton onClick={props.onSaveClick}>Save</IonButton>
+          <IonButton onClick={props.onSaveClick} disabled={state.loading}>
+            Save
+          </IonButton>
           <IonAlert
             isOpen={!!state.errorMsg}
             header="Error"

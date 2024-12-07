@@ -1,4 +1,4 @@
-import { IonContent, IonModal } from '@ionic/react';
+import { IonContent, IonModal, IonProgressBar } from '@ionic/react';
 import { useEffect, useRef } from 'react';
 import { ModalRolesOld } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
@@ -10,8 +10,9 @@ import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
 import Header from './Header';
 import { today } from '../../../../utilities/dateUtility';
+import { useServices } from '../../../../providers/ServiceProvider';
 
-export type SessionModalProps = {
+type SessionModalProps = {
   allowCloseGesture?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
@@ -23,21 +24,37 @@ export type SessionModalProps = {
 };
 
 const INITIAL_FORM_STATE: SessionModalState = {
+  loading: true,
   rateTypes: [],
   vehicles: [],
   session: {
     date: today(),
     rateTypeId: 1,
     vehicleId: 1
-  },
+  }
 };
 
-export default function SessionModal(props: SessionModalProps) {
-  const { allowCloseGesture, isNew, presentingElement, session, onSave, onCancel, onDidDismiss } =
-    props;
-
+export default function SessionModal({ isNew, session, ...props }: SessionModalProps) {
+  const rateService = useServices('rateService');
+  const vehicleService = useServices('vehicleService');
   const [state, setState] = useImmerState<SessionModalState>(INITIAL_FORM_STATE);
   const modal = useRef<HTMLIonModalElement>(null);
+  const loaded = !state.loading && (isNew ? true : !!session);
+
+  useEffect(() => {
+    const loadVehiclesAndRates = async () => {
+      const rateTypes = await rateService.list();
+      const vehicles = await vehicleService.list();
+
+      setState((s) => {
+        s.rateTypes = rateTypes;
+        s.vehicles = vehicles;
+        s.loading = false;
+      });
+    };
+
+    loadVehiclesAndRates();
+  }, []);
 
   useEffect(() => {
     setState((s) => {
@@ -46,10 +63,10 @@ export default function SessionModal(props: SessionModalProps) {
         return;
       }
     });
-  }, []);
+  }, [session]);
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
-    if (allowCloseGesture) {
+    if (props.allowCloseGesture) {
       return true;
     }
 
@@ -57,11 +74,11 @@ export default function SessionModal(props: SessionModalProps) {
   };
 
   const handleDidDismiss = () => {
-    onDidDismiss?.();
+    props.onDidDismiss?.();
   };
 
   const handleCancelClick = () => {
-    onCancel?.();
+    props.onCancel?.();
     modal.current?.dismiss();
   };
 
@@ -77,7 +94,7 @@ export default function SessionModal(props: SessionModalProps) {
       return;
     }
 
-    await onSave(state.session as Session);
+    await props.onSave(state.session as Session);
     await modal.current?.dismiss();
   };
 
@@ -87,7 +104,7 @@ export default function SessionModal(props: SessionModalProps) {
       ref={modal}
       className="session-modal"
       canDismiss={modalCanDismiss}
-      presentingElement={presentingElement}
+      presentingElement={props.presentingElement}
       onDidDismiss={handleDidDismiss}
     >
       <Header
@@ -98,9 +115,15 @@ export default function SessionModal(props: SessionModalProps) {
         onSaveClick={handleSaveClick}
       ></Header>
       <IonContent color="light">
-        <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
-        <VehicleSection state={state} setState={setState}></VehicleSection>
-        <RateSection state={state} setState={setState}></RateSection>
+        {!loaded ? (
+          <IonProgressBar type="indeterminate" />
+        ) : (
+          <>
+            <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
+            <VehicleSection state={state} setState={setState}></VehicleSection>
+            <RateSection state={state} setState={setState}></RateSection>
+          </>
+        )}
       </IonContent>
     </IonModal>
   );
