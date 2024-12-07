@@ -20,9 +20,8 @@ export type ContainerContext = {
   databaseManager: DatabaseManager;
 };
 
-let isContainerBuilt = false;
-
 const container = new Map<keyof ServiceContainer, ExplicitAny>();
+let isContainerBuilt = false;
 
 export function buildServiceContainer({ databaseManager }: ContainerContext) {
   if (isContainerBuilt) {
