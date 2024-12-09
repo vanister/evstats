@@ -7,6 +7,7 @@ export interface RateService {
   get(id: number): Promise<RateType>;
 }
 
+// todo - implement simple caching
 export class EvsRateService implements RateService {
   constructor(private rateRepository: RateRepository) {}
 

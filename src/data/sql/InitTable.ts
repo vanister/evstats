@@ -36,6 +36,8 @@ export class InitTableSql {
       FOREIGN KEY (rate_type_id) REFERENCES rate_types(Id)
     );
   `;
+
+  static readonly CREATE_MIGRATIONS_TABLE = ``;
 }
 
 export type SchemaOptions = {

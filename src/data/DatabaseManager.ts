@@ -59,8 +59,10 @@ export class DatabaseManager {
       const isConnection = (await this.sqlite.isConnection(dbName, readOnly)).result;
 
       if (isConnConsistent && isConnection) {
+        logToConsole('connection exists, retrieving');
         this.db = await this.sqlite.retrieveConnection(dbName, readOnly);
       } else {
+        logToConsole('creating new connection');
         this.db = await this.sqlite.createConnection(dbName, encrypted, mode, version, readOnly);
       }
 

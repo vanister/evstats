@@ -27,7 +27,7 @@ registerAppStateListeners(databaseManager);
 
 databaseManager
   .openConnection()
-  // .then(() => databaseManager.initializeDb())
+  .then(() => databaseManager.initializeDb())
   .then(() => {
     logToConsole('rendering the root component');
 
