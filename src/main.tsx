@@ -14,6 +14,8 @@ import DatabaseManagerProvider from './providers/DatabaseManagerProvider';
 import { logToConsole } from './logger';
 import { getInstance } from './data/DatabaseManager';
 import { registerAppStateListeners } from './appStateListeners';
+import { initializeServiceContainer, getService } from './services/ServiceContainer';
+import { ServiceProvider } from './providers/ServiceProvider';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
@@ -34,7 +36,12 @@ databaseManager
     root.render(
       <React.StrictMode>
         <DatabaseManagerProvider manager={databaseManager}>
-          <App />
+          <ServiceProvider
+            containerInitializer={initializeServiceContainer}
+            serviceLocator={getService}
+          >
+            <App />
+          </ServiceProvider>
         </DatabaseManagerProvider>
       </React.StrictMode>
     );

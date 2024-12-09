@@ -7,6 +7,7 @@ import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { DatabaseManager } from '../data/DatabaseManager';
+import { logToConsole } from '../logger';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
@@ -37,14 +38,17 @@ let isContainerBuilt = false;
  */
 export function initializeServiceContainer({ databaseManager }: ContainerContext) {
   if (isContainerBuilt) {
+    logToConsole('service container already initialized');
     return;
   }
+
+  logToConsole('initializing service container');
 
   const { context } = databaseManager;
 
   // repositories
   const rateRepository: RateRepository = new EvsRateRepository(context);
-  const vehicleRepository: VehicleRepository = new EvsVehicleRepository();
+  const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
   const sessionRepository: SessionRepository = new EvsSessionRepository();
 
   // services
@@ -61,6 +65,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     .set('vehicleService', vehicleService);
 
   isContainerBuilt = true;
+  logToConsole('service container initialized');
 }
 
 /**

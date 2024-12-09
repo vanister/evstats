@@ -32,33 +32,20 @@ import './theme/variables.scss';
 
 import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ServiceProvider } from './providers/ServiceProvider';
 import Routes from './Routes';
-import { logToConsole } from './logger';
-import { useEffect } from 'react';
-import { SplashScreen } from '@capacitor/splash-screen';
-import { initializeServiceContainer, getService } from './services/ServiceContainer';
+import { AppInitializer } from './AppInitializer';
 
 // todo - remove once andriod is supported
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
-  useEffect(() => {
-    const hideSplashScreen = async () => {
-      logToConsole('app initialized, taking down splash screen');
-      await SplashScreen.hide();
-    };
-
-    hideSplashScreen();
-  }, []);
-
   return (
-    <ServiceProvider containerInitializer={initializeServiceContainer} serviceLocator={getService}>
-      <IonApp>
-        <IonReactRouter>
+    <IonApp>
+      <IonReactRouter>
+        <AppInitializer>
           <Routes />
-        </IonReactRouter>
-      </IonApp>
-    </ServiceProvider>
+        </AppInitializer>
+      </IonReactRouter>
+    </IonApp>
   );
 }

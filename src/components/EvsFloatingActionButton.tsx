@@ -1,29 +1,24 @@
 import { IonFab, IonFabButton } from '@ionic/react';
+import classNames from 'classnames';
+import { PropsWithChildren } from 'react';
 
-interface EvsFloatingAddButtonProps {
+type EvsFloatingAddButtonProps = PropsWithChildren<{
+  className?: string;
   id?: string;
-  children: React.ReactNode;
   horizontal?: 'start' | 'end' | 'center';
   vertical?: 'top' | 'bottom' | 'center';
-  slot?: string;
+  slot?: 'fixed' | undefined;
   onClick?: VoidFunction;
-}
+}>;
 
 export default function EvsFloatingActionButton({
   id,
   children,
-  horizontal,
-  slot,
-  vertical,
-  onClick
+  onClick,
+  ...rest
 }: EvsFloatingAddButtonProps) {
   return (
-    <IonFab
-      className="evs-fab"
-      horizontal={horizontal}
-      vertical={vertical}
-      slot={slot}
-    >
+    <IonFab {...rest} className={classNames('evs-fab', rest.className)}>
       <IonFabButton id={id} onClick={onClick}>
         {children}
       </IonFabButton>
