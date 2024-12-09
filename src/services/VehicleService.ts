@@ -7,7 +7,7 @@ export interface VehicleService {
   get(id: number): Promise<Vehicle>;
   add(vehicle: Vehicle): Promise<Vehicle>;
   update(vehicle: Vehicle): Promise<void>;
-  remove(id: number): Promise<void>;
+  remove(id: number): Promise<boolean>;
 }
 
 export class EvsVehicleService implements VehicleService {
@@ -34,10 +34,15 @@ export class EvsVehicleService implements VehicleService {
   }
 
   async update(vehicle: Vehicle): Promise<void> {
-    await this.vehicleRepository.update(vehicle);
+    const existing = await this.get(vehicle.id);
+    const updates: Vehicle = { ...existing, ...vehicle };
+
+    await this.vehicleRepository.update(updates);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.vehicleRepository.remove(id);
+  async remove(id: number): Promise<boolean> {
+    const removed = await this.vehicleRepository.remove(id);
+
+    return removed;
   }
 }
