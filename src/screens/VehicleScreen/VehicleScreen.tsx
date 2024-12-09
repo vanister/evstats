@@ -46,7 +46,7 @@ export default function VehiclePage() {
         <div className="spinner-container">
           {!isOpen && <IonSpinner className="loading-spinner"></IonSpinner>}
         </div>
-        {/* todo - VehicleModal */}
+        {/* todo - <VehicleModal /> */}
         <IonModal isOpen={isOpen} onDidDismiss={handleModalDismiss}>
           {/* todo - unify Header */}
           <IonHeader>

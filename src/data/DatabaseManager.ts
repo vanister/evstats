@@ -1,7 +1,8 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { Preferences, PreferencesPlugin } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
-import { InitTableSql } from './sql/InitTableSql';
-import { SeedSql } from './sql/SeedSql';
+import { InitTableSql } from './sql/InitTable';
+import { SeedSql } from './sql/seedData';
 
 export type ConnectionOptions = {
   encrypted?: boolean;
@@ -30,38 +31,18 @@ export function getInstance(): DatabaseManager {
 
 export class DatabaseManager {
   private readonly sqlite: SQLiteConnection;
+  private readonly preferences: PreferencesPlugin;
   private db: SQLiteDBConnection | null;
+  private isConnectionOpen = false;
+  private isInitialized = false;
 
-  constructor(sqlite?: SQLiteConnection) {
+  constructor(sqlite?: SQLiteConnection, preferences?: PreferencesPlugin) {
     this.sqlite = sqlite ?? new SQLiteConnection(CapacitorSQLite);
+    this.preferences = preferences ?? Preferences;
   }
 
   get context(): SQLiteDBConnection | null {
     return this.db;
-  }
-
-  async initializeDb(): Promise<void> {
-    try {
-      logToConsole('inializing db');
-
-      const tableResults = await this.db.executeSet([
-        { statement: InitTableSql.CREATE_RATE_TYPE_TABLE, values: [] },
-        { statement: InitTableSql.CREATE_VEHICLES_TABLE, values: [] },
-        { statement: InitTableSql.CREATE_SESSIONS_TABLE, values: [] }
-      ]);
-
-      logToConsole('table created:', tableResults.changes);
-
-      const seedResults = await this.db.execute(SeedSql.SEED_RATE_TYPES);
-
-      logToConsole('seeding tables:', seedResults.changes);
-      logToConsole('db initalized');
-    } catch (error) {
-      logToConsole('error initializing db', error);
-      alert(error);
-
-      throw error;
-    }
   }
 
   async openConnection(
@@ -70,6 +51,7 @@ export class DatabaseManager {
   ): Promise<SQLiteDBConnection> {
     const { encrypted, mode, readOnly, version } = options;
 
+    // todo - consider switching to json import/export
     try {
       logToConsole('attempting to open a sqlite connection');
 
@@ -86,9 +68,11 @@ export class DatabaseManager {
       logToConsole('opening db:', dbName);
 
       await this.db.open();
+      this.isConnectionOpen = true;
 
       return this.db;
     } catch (error) {
+      this.isConnectionOpen = false;
       logToConsole('Connection error:', error);
       alert(error);
 
@@ -102,10 +86,38 @@ export class DatabaseManager {
 
       await this.db?.close();
       this.db = null;
+      this.isConnectionOpen = false;
 
       logToConsole('db connection closed');
     } catch (error) {
       logToConsole('Error closing db connection', error);
+    }
+  }
+
+  async initializeDb(): Promise<void> {
+    // todo - look into versioning/migrations
+    try {
+      logToConsole('inializing db');
+
+      const tableResults = await this.db.executeSet([
+        { statement: InitTableSql.CREATE_RATE_TYPE_TABLE, values: [] },
+        { statement: InitTableSql.CREATE_VEHICLES_TABLE, values: [] },
+        { statement: InitTableSql.CREATE_SESSIONS_TABLE, values: [] }
+      ]);
+
+      logToConsole('table created:', tableResults.changes);
+
+      const seedResults = await this.db.execute(SeedSql.SEED_RATE_TYPES);
+      this.isInitialized = true;
+
+      logToConsole('seeding tables:', seedResults.changes);
+      logToConsole('db initalized');
+    } catch (error) {
+      this.isInitialized = false;
+      logToConsole('error initializing db', error);
+      alert(error);
+
+      throw error;
     }
   }
 }

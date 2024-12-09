@@ -11,6 +11,8 @@ export const IonSlotsOld = {
 };
 
 export const enum PreferenceKeys {
+  DbInitialized = 'DB_INITIALIZED',
+  DbVersion = 'DB_VERSION',
   LastSelectedRateTypeId = 'LAST_SELECTED_RATE_TYPE_ID',
   LastSelectedVehicleId = 'LAST_SELECTED_VEHICLE_ID'
 }
