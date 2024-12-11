@@ -6,7 +6,7 @@ export function validateSession(session: Partial<Session>): string | null {
     return 'Date is required';
   }
 
-  if (!session.kWhAdded || session.kWhAdded <= 0) {
+  if (!session.kWh || session.kWh <= 0) {
     return 'kWh must be a value greater than 0.';
   }
 

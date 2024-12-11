@@ -14,6 +14,7 @@ export class InitTableSql {
       range INTEGER NULL
     );
   `;
+  2;
 
   static readonly CREATE_RATE_TYPE_TABLE = `
     CREATE TABLE IF NOT EXISTS rate_types (
@@ -37,7 +38,7 @@ export class InitTableSql {
     );
   `;
 
-  static readonly CREATE_MIGRATIONS_TABLE = ``;
+  static readonly SET_INITIAL_VERSION = `PRAGMA user_version = 1;`;
 }
 
 export type SchemaOptions = {

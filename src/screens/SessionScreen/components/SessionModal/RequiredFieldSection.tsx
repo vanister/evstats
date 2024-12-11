@@ -15,10 +15,10 @@ export default function RequiredFieldSection({ state, setState }: RequiredFieldS
           max={999}
           maxlength={3}
           type="number"
-          value={state.session.kWhAdded}
+          value={state.session.kWh}
           onIonInput={(e) =>
             setState((s) => {
-              s.session.kWhAdded = +e.detail.value;
+              s.session.kWh = +e.detail.value;
             })
           }
         />

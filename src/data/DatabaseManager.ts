@@ -2,7 +2,8 @@ import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacito
 import { Preferences, PreferencesPlugin } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
 import { InitTableSql } from './sql/InitTable';
-import { SeedSql } from './sql/seedData';
+import { PragmaSql } from './sql/PragmaSql';
+import { SeedSql } from './sql/SeedData';
 
 export type ConnectionOptions = {
   encrypted?: boolean;
@@ -33,8 +34,7 @@ export class DatabaseManager {
   private readonly sqlite: SQLiteConnection;
   private readonly preferences: PreferencesPlugin;
   private db: SQLiteDBConnection | null;
-  private isConnectionOpen = false;
-  private isInitialized = false;
+  private currentVersion: number | null;
 
   constructor(sqlite?: SQLiteConnection, preferences?: PreferencesPlugin) {
     this.sqlite = sqlite ?? new SQLiteConnection(CapacitorSQLite);
@@ -59,10 +59,10 @@ export class DatabaseManager {
       const isConnection = (await this.sqlite.isConnection(dbName, readOnly)).result;
 
       if (isConnConsistent && isConnection) {
-        logToConsole('connection exists, retrieving');
+        logToConsole('sqlite connection exists, retrieving');
         this.db = await this.sqlite.retrieveConnection(dbName, readOnly);
       } else {
-        logToConsole('creating new connection');
+        logToConsole('creating new sqlite connection');
         this.db = await this.sqlite.createConnection(dbName, encrypted, mode, version, readOnly);
       }
 
@@ -70,11 +70,9 @@ export class DatabaseManager {
       logToConsole('opening db:', dbName);
 
       await this.db.open();
-      this.isConnectionOpen = true;
 
       return this.db;
     } catch (error) {
-      this.isConnectionOpen = false;
       logToConsole('Connection error:', error);
       alert(error);
 
@@ -88,7 +86,6 @@ export class DatabaseManager {
 
       await this.db?.close();
       this.db = null;
-      this.isConnectionOpen = false;
 
       logToConsole('db connection closed');
     } catch (error) {
@@ -101,25 +98,45 @@ export class DatabaseManager {
     try {
       logToConsole('inializing db');
 
+      const dbVersion = await this.getVersion();
+
+      if (dbVersion > 0) {
+        logToConsole('db already initalized, current version:', dbVersion);
+        return;
+      }
+
       const tableResults = await this.db.executeSet([
         { statement: InitTableSql.CREATE_RATE_TYPE_TABLE, values: [] },
         { statement: InitTableSql.CREATE_VEHICLES_TABLE, values: [] },
-        { statement: InitTableSql.CREATE_SESSIONS_TABLE, values: [] }
+        { statement: InitTableSql.CREATE_SESSIONS_TABLE, values: [] },
+        { statement: InitTableSql.SET_INITIAL_VERSION, values: [] }
       ]);
 
       logToConsole('table created:', tableResults.changes);
 
       const seedResults = await this.db.execute(SeedSql.SEED_RATE_TYPES);
-      this.isInitialized = true;
 
       logToConsole('seeding tables:', seedResults.changes);
       logToConsole('db initalized');
     } catch (error) {
-      this.isInitialized = false;
       logToConsole('error initializing db', error);
       alert(error);
 
       throw error;
     }
+  }
+
+  async getVersion(): Promise<number> {
+    if (this.currentVersion != null) {
+      return this.currentVersion;
+    }
+
+    const { values } = await this.db.query(PragmaSql.GET_DB_VERSION);
+    const result = values?.[0];
+    const version = result?.user_version ?? 0;
+
+    this.currentVersion = version;
+
+    return version;
   }
 }
