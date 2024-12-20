@@ -1,69 +1,62 @@
 import './VehicleScreen.scss';
 
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonIcon
-} from '@ionic/react';
+import { IonIcon } from '@ionic/react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import { add } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
+import { useServices } from '../../providers/ServiceProvider';
+import { useEffect } from 'react';
+import { useImmerState } from '../../hooks/useImmerState';
+import { Vehicle } from '../../models/vehicle';
+import VehicleCard from './components/VehicleCard';
+
+type VehiclePageState = {
+  vehicles: Vehicle[];
+  loading: boolean;
+};
 
 export default function VehiclePage() {
-  // const [isOpen, setIsOpen] = useState(true);
-  // const [hasVehicles, setHasVehicles] = useState(false);
-  // const history = useHistory();
-  // const presentingElement = useRef<HTMLElement>();
+  const vehicleService = useServices('vehicleService');
+  const [state, setState] = useImmerState<VehiclePageState>({ vehicles: [], loading: true });
+  const { vehicles } = state;
 
-  // const modalCanDismiss = async (_: unknown, _role: string) => {
-  //   return false;
-  // };
+  useEffect(() => {
+    const loadVehicles = async () => {
+      const vehicles = await vehicleService.list();
 
-  // const handleModalDismiss = () => {
-  //   history.replace('/sessions');
-  // };
+      setState((s) => {
+        s.vehicles = vehicles;
+      });
+    };
+
+    loadVehicles();
+  }, []);
 
   const handleAddClick = () => {
     /* noop */
   };
 
-  // const handleCloseClick = () => {
-  //   setIsOpen(false);
-  // };
-
   return (
     <EvsPage className="vehicle-page" color="light" title="Vehicles" fixedSlotPlacement="before">
+      {vehicles.length === 0 && (
+        <div className="no-vehicles-container">
+          <h5>Click the add button to add a vehicle</h5>
+        </div>
+      )}
+
+      {vehicles.map((vehicle) => (
+        <VehicleCard key={vehicle.id} vehicle={vehicle} />
+      ))}
+
       <EvsFloatingActionButton
         className="add-vehicle-fab"
         horizontal="end"
         vertical="bottom"
-        onClick={handleAddClick}
         slot="fixed"
+        onClick={handleAddClick}
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
-      {Array(10)
-        .fill('card')
-        .map((c, i) => (
-          // todo - VehicleCard
-          <IonCard key={`${c}-${i}`}>
-            <IonCardHeader>
-              <IonCardTitle>Card Title</IonCardTitle>
-              <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-            </IonCardHeader>
-
-            <IonCardContent>
-              {"Here's a small text description for the card content. Nothing more, nothing less."}
-            </IonCardContent>
-
-            <IonButton fill="clear">Action 1</IonButton>
-            <IonButton fill="clear">Action 2</IonButton>
-          </IonCard>
-        ))}
     </EvsPage>
   );
 }

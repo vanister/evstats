@@ -1,6 +1,8 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { VehicleDbo } from '../models/vehicle';
 import { VehicleSql } from './sql/VehicleSql';
+import { ExplicitAny } from '@evs-core';
+import { DboKeys } from './repositories-types';
 
 export interface VehicleRepository {
   list(): Promise<VehicleDbo[]>;
@@ -26,10 +28,9 @@ export class EvsVehicleRepository implements VehicleRepository {
     return vehicle;
   }
 
-  async add(_vehicle: VehicleDbo): Promise<number> {
-    // todo - get the insert values
-    const vehicleValues = [];
-    const { changes } = await this.context.run(VehicleSql.add, vehicleValues);
+  async add(vehicle: VehicleDbo): Promise<number> {
+    const values = this.getValues(vehicle, ['id']);
+    const { changes } = await this.context.run(VehicleSql.add, values);
     const id = changes.lastId;
 
     return id;
@@ -46,5 +47,14 @@ export class EvsVehicleRepository implements VehicleRepository {
     const { changes } = await this.context.run(VehicleSql.delete, [id]);
 
     return changes.changes > 0;
+  }
+
+  private getValues(dbo: VehicleDbo, except: DboKeys<VehicleDbo>[] = []): ExplicitAny[] {
+    const values = Object.keys(dbo)
+      .filter((key) => !except.includes(key as DboKeys<VehicleDbo>))
+      .sort()
+      .map((key) => dbo[key]);
+
+    return values;
   }
 }

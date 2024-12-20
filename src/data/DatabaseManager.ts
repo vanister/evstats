@@ -5,6 +5,8 @@ import { InitTableSql } from './sql/InitTable';
 import { PragmaSql } from './sql/PragmaSql';
 import { SeedSql } from './sql/SeedData';
 
+// todo - create interfaces for this class
+
 export type ConnectionOptions = {
   encrypted?: boolean;
   mode?: 'no-encryption';

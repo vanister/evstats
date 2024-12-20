@@ -20,12 +20,12 @@ export type Vehicle = {
 /** The vehicle database object. */
 export type VehicleDbo = {
   id: number;
+  battery_size: number;
   make: string;
   model: string;
   nickname?: string;
+  range: number;
   trim?: string;
   vin?: string;
   year: number;
-  battery_size: number;
-  range: number;
 };
