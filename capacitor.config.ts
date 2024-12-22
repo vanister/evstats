@@ -9,7 +9,7 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   plugins: {
     CapacitorSQLite: {
-      // iosDatabaseLocation: 'Library/CapacitorDatabase',
+      iosDatabaseLocation: 'Library/CapacitorDatabase',
       iosIsEncryption: true,
       iosKeychainPrefix: 'com.vanister.evs',
       iosBiometric: {
