@@ -11,7 +11,7 @@ import { Vehicle } from '../../models/vehicle';
 import VehicleCard from './components/VehicleCard';
 import VehicleModal from './components/VehicleModal/VehicleModal';
 
-type VehiclePageState = {
+type VehicleScreenState = {
   vehicles: Vehicle[];
   loading: boolean;
   openModal: boolean;
@@ -19,11 +19,11 @@ type VehiclePageState = {
   editingVehicle?: Vehicle;
 };
 
-export default function VehiclePage() {
+export default function VehicleScreen() {
   const vehicleService = useServices('vehicleService');
   const [showAlert] = useIonAlert();
   const presentingElement = useRef<HTMLElement>();
-  const [state, setState] = useImmerState<VehiclePageState>({
+  const [state, setState] = useImmerState<VehicleScreenState>({
     vehicles: [],
     loading: true,
     openModal: false
@@ -40,6 +40,15 @@ export default function VehiclePage() {
 
     loadVehicles();
   }, []);
+
+  const deleteVehicle = async (vehicle: Vehicle) => {
+    await vehicleService.remove(vehicle.id);
+
+    setState((s) => {
+      const idx = s.vehicles.findIndex((v) => v.id === vehicle.id);
+      s.vehicles.splice(idx, 1);
+    });
+  };
 
   const handleAddClick = () => {
     setState((s) => {
@@ -77,7 +86,7 @@ export default function VehiclePage() {
     return;
   };
 
-  const handleVehicleEdit = (vehicle: Vehicle) => {
+  const handleVehicleClick = (vehicle: Vehicle) => {
     setState((s) => {
       s.editingVehicle = vehicle;
       s.isNew = false;
@@ -85,7 +94,7 @@ export default function VehiclePage() {
     });
   };
 
-  const handleDeleteVehicle = async (vehicle: Vehicle) => {
+  const handleDeleteClick = async (vehicle: Vehicle) => {
     await showAlert({
       header: 'Delete Vehicle',
       message: `Are you sure you want to delete ${vehicle.nickname ?? vehicle.model}?`,
@@ -94,14 +103,7 @@ export default function VehiclePage() {
         {
           text: 'Delete',
           role: 'destructive',
-          handler: async () => {
-            await vehicleService.remove(vehicle.id);
-
-            setState((s) => {
-              const idx = s.vehicles.findIndex((v) => v.id === vehicle.id);
-              s.vehicles.splice(idx, 1);
-            });
-          }
+          handler: deleteVehicle
         }
       ]
     });
@@ -127,8 +129,8 @@ export default function VehiclePage() {
           key={vehicle.id}
           selected
           vehicle={vehicle}
-          onEditClick={handleVehicleEdit}
-          onDeleteClick={handleDeleteVehicle}
+          onEditClick={handleVehicleClick}
+          onDeleteClick={handleDeleteClick}
         />
       ))}
 

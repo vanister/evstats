@@ -1,3 +1,5 @@
+import { BaseService } from './BaseService';
+
 export type ChargeAverage = {
   name: string;
   percent: number;
@@ -29,7 +31,7 @@ const ChargeColors = {
 };
 
 /** Charge stats chart data service. */
-export class EvsChargeStatsService implements ChargeStatsService {
+export class EvsChargeStatsService extends BaseService implements ChargeStatsService {
   async getLast31Days(vehicleId: number): Promise<ChargeStatData> {
     const randomKwh = (seed = 51) => Math.floor(Math.random() * seed);
     const randomDataset = () => Array.from({ length: 31 }, () => randomKwh()).reverse();

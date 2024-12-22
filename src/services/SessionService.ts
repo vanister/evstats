@@ -1,6 +1,7 @@
 import { NotFoundError } from '../errors/NotFoundError';
 import { Session } from '../models/session';
 import { SessionRepository } from '../repositories/SessionRepository';
+import { BaseService } from './BaseService';
 
 export interface SessionService {
   list(limit?: number, page?: number): Promise<Session[]>;
@@ -10,8 +11,10 @@ export interface SessionService {
   remove(id: number): Promise<void>;
 }
 
-export class EvsSessionService implements SessionService {
-  constructor(private sessionRepository: SessionRepository) {}
+export class EvsSessionService extends BaseService implements SessionService {
+  constructor(private sessionRepository: SessionRepository) {
+    super();
+  }
 
   async list(limit = 20, page = 1): Promise<Session[]> {
     const sessions = await this.sessionRepository.list(limit, page);

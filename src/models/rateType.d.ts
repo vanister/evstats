@@ -1,9 +1,11 @@
+export type RateUnits = 'kWh';
+
 /** The rate type model. */
 export type RateType = {
   id: number;
   name: string;
   amount: number;
-  unit: 'kWh';
+  unit: RateUnits;
 };
 
 /** The rate_type database object. */
@@ -11,5 +13,5 @@ export type RateTypeDbo = {
   id: number;
   name: string;
   amount: number;
-  unit: string;
+  unit: RateUnits;
 };
