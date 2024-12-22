@@ -1,4 +1,4 @@
-import { IonContent, IonModal, IonProgressBar } from '@ionic/react';
+import { IonContent, IonModal } from '@ionic/react';
 import { useEffect, useRef } from 'react';
 import { ModalRolesOld } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
@@ -8,9 +8,10 @@ import RequiredFieldSection from './RequiredFieldSection';
 import VehicleSection from './VehicleSection';
 import RateSection from './RateSection';
 import { SessionModalState } from '../../session-types';
-import Header from './Header';
+import ModalHeader from './ModalHeader';
 import { today } from '../../../../utilities/dateUtility';
 import { useServices } from '../../../../providers/ServiceProvider';
+import EvsProgressLoader from '../../../../components/EvsProgressLoader';
 
 type SessionModalProps = {
   allowCloseGesture?: boolean;
@@ -107,23 +108,19 @@ export default function SessionModal({ isNew, session, ...props }: SessionModalP
       presentingElement={props.presentingElement}
       onDidDismiss={handleDidDismiss}
     >
-      <Header
+      <ModalHeader
         title={isNew ? 'New Session' : 'Edit Session'}
-        state={state}
-        setState={setState}
+        errorMessage={state.errorMsg}
+        disableAction={!loaded}
         onCancelClick={handleCancelClick}
         onSaveClick={handleSaveClick}
-      ></Header>
+      ></ModalHeader>
       <IonContent color="light">
-        {!loaded ? (
-          <IonProgressBar type="indeterminate" />
-        ) : (
-          <>
-            <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
-            <VehicleSection state={state} setState={setState}></VehicleSection>
-            <RateSection state={state} setState={setState}></RateSection>
-          </>
-        )}
+        <EvsProgressLoader hide={loaded} type="indeterminate" />
+        {/* todo - add form and check validity */}
+        <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
+        <VehicleSection state={state} setState={setState}></VehicleSection>
+        <RateSection state={state} setState={setState}></RateSection>
       </IonContent>
     </IonModal>
   );

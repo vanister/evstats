@@ -1,34 +1,49 @@
+import './VehicleCard.scss';
+
 import {
   IonButton,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle
+  IonCardTitle,
+  IonIcon
 } from '@ionic/react';
+import { checkmark } from 'ionicons/icons';
 import { Vehicle } from '../../../models/vehicle';
 
 type VehicleCardProps = {
   key?: React.Key;
+  selected?: boolean;
   vehicle: Vehicle;
+  onSelectClick?: (vehicle: Vehicle) => void;
+  onEditClick?: (vehicle: Vehicle) => void;
+  onDeleteClick?: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleCard({ key, vehicle }: VehicleCardProps) {
-  const { make, model, year } = vehicle;
+export default function VehicleCard({ key, vehicle, selected, ...props }: VehicleCardProps) {
+  const { make, model, year, range, batterySize, trim } = vehicle;
 
   return (
     <IonCard key={key} className="vehicle-card">
       <IonCardHeader>
-        <IonCardTitle>{model}</IonCardTitle>
+        <IonCardTitle className="vehicle-model">
+          {model} {trim}
+          {selected && <IonIcon icon={checkmark} />}
+        </IonCardTitle>
         <IonCardSubtitle>{`${year} ${make}`}</IonCardSubtitle>
       </IonCardHeader>
-
       <IonCardContent>
-        {"Here's a small text description for the card content. Nothing more, nothing less."}
+        {range && <p>{`Range: ${range} miles`}</p>}
+        {batterySize && <p>{`Battery Size: ${vehicle.batterySize} kWh`}</p>}
       </IonCardContent>
-
-      <IonButton fill="clear">Edit</IonButton>
-      <IonButton fill="clear" color="danger">
+      <IonButton fill="clear" onClick={() => props.onSelectClick?.(vehicle)}>
+        Select
+      </IonButton>
+      <IonButton fill="clear" onClick={() => props.onEditClick?.(vehicle)}>
+        Edit
+      </IonButton>
+      <IonButton fill="clear" color="danger" onClick={() => props.onDeleteClick?.(vehicle)}>
         Delete
       </IonButton>
     </IonCard>

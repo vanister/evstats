@@ -1,16 +1,16 @@
 // todo use enums
 
-export const ModalRolesOld = {
-  gesture: 'gesture'
-};
+export enum ModalRolesOld {
+  gesture = 'gesture'
+}
 
-export const IonSlotsOld = {
-  start: 'start',
-  end: 'end',
-  fixed: 'fixed'
-};
+export enum IonSlotsOld {
+  start = 'start',
+  end = 'end',
+  fixed = 'fixed'
+}
 
-export const enum PreferenceKeys {
+export enum PreferenceKeys {
   DbInitialized = 'DB_INITIALIZED',
   DbVersion = 'DB_VERSION',
   LastSelectedRateTypeId = 'LAST_SELECTED_RATE_TYPE_ID',

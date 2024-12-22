@@ -1,15 +1,27 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
 import { IonSlotsOld } from '../../../../constants';
-import { SessionModalStateProps } from '../../session-types';
+import { useEffect, useState } from 'react';
 
-type HeaderProps = SessionModalStateProps & {
+type ModalHeaderProps = {
+  /** True, to disable the action button on the right, false otherwise. */
+  disableAction?: boolean;
   title: string;
+  errorMessage?: string;
   onCancelClick: VoidFunction;
   onSaveClick: VoidFunction;
 };
 
-export default function Header(props: HeaderProps) {
-  const { state, setState } = props;
+export default function ModalHeader({
+  disableAction,
+  title,
+  errorMessage,
+  ...props
+}: ModalHeaderProps) {
+  const [showError, setShowError] = useState(!!errorMessage);
+
+  useEffect(() => {
+    setShowError(!!errorMessage);
+  }, [errorMessage]);
 
   return (
     <IonHeader>
@@ -17,20 +29,18 @@ export default function Header(props: HeaderProps) {
         <IonButtons slot={IonSlotsOld.start}>
           <IonButton onClick={props.onCancelClick}>Cancel</IonButton>
         </IonButtons>
-        <IonTitle>{props.title}</IonTitle>
+        <IonTitle>{title}</IonTitle>
         <IonButtons slot={IonSlotsOld.end}>
-          <IonButton onClick={props.onSaveClick} disabled={state.loading}>
+          <IonButton onClick={props.onSaveClick} disabled={disableAction}>
             Save
           </IonButton>
           <IonAlert
-            isOpen={!!state.errorMsg}
+            isOpen={showError}
             header="Error"
-            message={state.errorMsg || 'An error occurred'}
+            message={errorMessage || 'An error occurred'}
             buttons={['OK']}
             onDidDismiss={() => {
-              setState((s) => {
-                s.errorMsg = null;
-              });
+              setShowError(false);
             }}
           ></IonAlert>
         </IonButtons>
