@@ -1,6 +1,6 @@
 /** The vehicle model */
 export type Vehicle = {
-  id: number;
+  id?: number;
   make: string;
   model: string;
   nickname?: string;

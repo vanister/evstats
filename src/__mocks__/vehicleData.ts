@@ -1,6 +1,6 @@
-import { Vehicle } from '../models/vehicle';
+import { VehicleDbo } from '../models/vehicle';
 
-export const MOCK_VEHICLES: Vehicle[] = [
+export const MOCK_VEHICLES: VehicleDbo[] = [
   {
     id: 1,
     year: 2022,
@@ -9,7 +9,7 @@ export const MOCK_VEHICLES: Vehicle[] = [
     trim: 'GT',
     vin: '1FM123AB456CD7890',
     nickname: 'Red Stallion',
-    batterySize: 91.0,
+    battery_size: 91.0,
     range: 290
   },
   {
@@ -20,7 +20,7 @@ export const MOCK_VEHICLES: Vehicle[] = [
     trim: 'Long Range',
     vin: '5TM123AB456CD7890',
     nickname: 'M3',
-    batterySize: 78.0,
+    battery_size: 78.0,
     range: 334
   },
   {
@@ -30,7 +30,7 @@ export const MOCK_VEHICLES: Vehicle[] = [
     model: 'R1S',
     trim: 'Quad Motor',
     vin: '1RM123AB456CD7890',
-    batterySize: 131,
+    battery_size: 131,
     range: 328
   }
 ];
