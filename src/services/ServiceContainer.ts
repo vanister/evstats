@@ -1,13 +1,14 @@
 import { ExplicitAny } from '@evs-core';
 import { RateRepository, EvsRateRepository } from '../repositories/RateRepository';
 import { SessionRepository, EvsSessionRepository } from '../repositories/SessionRepository';
-import { VehicleRepository, EvsVehicleRepository } from '../repositories/VehicleRepository';
+import { VehicleRepository } from '../repositories/VehicleRepository';
 import { ChargeStatsService, EvsChargeStatsService } from './ChargeStatsService';
 import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { DatabaseManager } from '../data/DatabaseManager';
 import { logToConsole } from '../logger';
+import { MockVehicleRepository } from '../__mocks__/MockVehicleRepository';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
@@ -48,7 +49,8 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
 
   // repositories
   const rateRepository: RateRepository = new EvsRateRepository(context);
-  const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
+  // const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
+  const vehicleRepository: VehicleRepository = new MockVehicleRepository();
   const sessionRepository: SessionRepository = new EvsSessionRepository();
 
   // services
