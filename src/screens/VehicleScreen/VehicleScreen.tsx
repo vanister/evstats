@@ -4,51 +4,42 @@ import { IonIcon, useIonAlert } from '@ionic/react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import { add } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
-import { useServices } from '../../providers/ServiceProvider';
-import { useEffect, useRef } from 'react';
 import { useImmerState } from '../../hooks/useImmerState';
 import { Vehicle } from '../../models/vehicle';
 import VehicleCard from './components/VehicleCard';
 import VehicleModal from './components/VehicleModal/VehicleModal';
+import { useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useServices } from '../../providers/ServiceProvider';
+import {
+  addVehicle,
+  deleteVehicle,
+  setSelectedVehicle,
+  updateVehicle
+} from '../../redux/vehicleSlice';
+import { useHistory } from 'react-router';
 
 type VehicleScreenState = {
-  vehicles: Vehicle[];
   loading: boolean;
   openModal: boolean;
   isNew?: boolean;
   editingVehicle?: Vehicle;
 };
 
+const INITIAL_STATE: VehicleScreenState = {
+  loading: true,
+  openModal: false
+};
+
 export default function VehicleScreen() {
-  const vehicleService = useServices('vehicleService');
   const [showAlert] = useIonAlert();
   const presentingElement = useRef<HTMLElement>();
-  const [state, setState] = useImmerState<VehicleScreenState>({
-    vehicles: [],
-    loading: true,
-    openModal: false
-  });
-
-  useEffect(() => {
-    const loadVehicles = async () => {
-      const vehicles = await vehicleService.list();
-
-      setState((s) => {
-        s.vehicles = vehicles;
-      });
-    };
-
-    loadVehicles();
-  }, []);
-
-  const deleteVehicle = async (vehicle: Vehicle) => {
-    await vehicleService.remove(vehicle.id);
-
-    setState((s) => {
-      const idx = s.vehicles.findIndex((v) => v.id === vehicle.id);
-      s.vehicles.splice(idx, 1);
-    });
-  };
+  const history = useHistory();
+  const vehicleService = useServices('vehicleService');
+  const dispatch = useAppDispatch();
+  const vehicles = useAppSelector((state) => state.vehicles.vehicles);
+  const selectedVehicleId = useAppSelector((state) => state.vehicles?.selectedVehicle?.id);
+  const [state, setState] = useImmerState<VehicleScreenState>(INITIAL_STATE);
 
   const handleAddClick = () => {
     setState((s) => {
@@ -68,20 +59,13 @@ export default function VehicleScreen() {
   const handleSaveClick = async (vehicle: Vehicle) => {
     if (!state.isNew) {
       await vehicleService.update(vehicle);
-      // update the vehicle in the list without making a new request
-      setState((s) => {
-        const existingIdx = s.vehicles.findIndex((v) => v.id === vehicle.id);
-        s.vehicles[existingIdx] = vehicle;
-      });
+      dispatch(updateVehicle(vehicle));
 
       return;
     }
 
     const newVehicle = await vehicleService.add(vehicle);
-
-    setState((s) => {
-      s.vehicles.push(newVehicle);
-    });
+    dispatch(addVehicle(newVehicle));
 
     return;
   };
@@ -103,10 +87,19 @@ export default function VehicleScreen() {
         {
           text: 'Delete',
           role: 'destructive',
-          handler: deleteVehicle
+          handler: async () => {
+            await vehicleService.remove(vehicle.id);
+            dispatch(deleteVehicle(vehicle));
+          }
         }
       ]
     });
+  };
+
+  const handleSelectClick = (vehicle: Vehicle) => {
+    dispatch(setSelectedVehicle(vehicle));
+    // once selected, navigate to the session screen
+    history.push('/sessions');
   };
 
   return (
@@ -115,20 +108,22 @@ export default function VehicleScreen() {
       ref={presentingElement}
       title="Vehicles"
       fixedSlotPlacement="before"
+      color="light"
     >
       {/* <VehicleEmptyState /> */}
-      {state.vehicles.length === 0 && (
+      {vehicles.length === 0 && (
         <div className="no-vehicles-container">
           <h5>Click the + button to add a vehicle</h5>
         </div>
       )}
 
       {/* <VehicleList */}
-      {state.vehicles.map((vehicle) => (
+      {vehicles.map((vehicle) => (
         <VehicleCard
           key={vehicle.id}
-          selected
+          selected={selectedVehicleId === vehicle.id}
           vehicle={vehicle}
+          onSelectClick={handleSelectClick}
           onEditClick={handleVehicleClick}
           onDeleteClick={handleDeleteClick}
         />
