@@ -1,82 +1,76 @@
 import './VehicleScreen.scss';
 
-import { IonIcon, useIonAlert } from '@ionic/react';
-import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
-import { add } from 'ionicons/icons';
-import EvsPage from '../../components/EvsPage';
-import { useImmerState } from '../../hooks/useImmerState';
+import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { Vehicle } from '../../models/vehicle';
 import VehicleCard from './components/VehicleCard';
-import VehicleModal from './components/VehicleModal/VehicleModal';
 import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useServices } from '../../providers/ServiceProvider';
-import {
-  addVehicle,
-  deleteVehicle,
-  setSelectedVehicle,
-  updateVehicle
-} from '../../redux/vehicleSlice';
-import { useHistory } from 'react-router';
+import { deleteVehicle } from '../../redux/vehicleSlice';
+import ModalHeader from '../SessionScreen/components/SessionModal/ModalHeader';
 
-type VehicleScreenState = {
-  loading: boolean;
-  openModal: boolean;
-  isNew?: boolean;
-  editingVehicle?: Vehicle;
+// type VehicleScreenState = {
+//   loading: boolean;
+//   openModal: boolean;
+//   isNew?: boolean;
+//   editingVehicle?: Vehicle;
+// };
+
+// const INITIAL_STATE: VehicleScreenState = {
+//   loading: true,
+//   openModal: false
+// };
+
+type VehicleScreenProps = {
+  onDismiss: () => void;
 };
 
-const INITIAL_STATE: VehicleScreenState = {
-  loading: true,
-  openModal: false
-};
-
-export default function VehicleScreen() {
+export default function VehicleScreen(props: VehicleScreenProps) {
   const [showAlert] = useIonAlert();
-  const presentingElement = useRef<HTMLElement>();
-  const history = useHistory();
+  // const presentingElement = useRef<HTMLElement>();
+  const modal = useRef<HTMLIonModalElement>();
   const vehicleService = useServices('vehicleService');
   const dispatch = useAppDispatch();
   const vehicles = useAppSelector((state) => state.vehicles.vehicles);
-  const selectedVehicleId = useAppSelector((state) => state.vehicles?.selectedVehicle?.id);
-  const [state, setState] = useImmerState<VehicleScreenState>(INITIAL_STATE);
+  // const selectedVehicleId = useAppSelector((state) => state.vehicles?.selectedVehicle?.id);
+  // const [state, setState] = useImmerState<VehicleScreenState>(INITIAL_STATE);
 
-  const handleAddClick = () => {
-    setState((s) => {
-      s.isNew = true;
-      s.openModal = true;
-    });
-  };
+  // const handleAddClick = () => {
+  //   setState((s) => {
+  //     s.isNew = true;
+  //     s.openModal = true;
+  //   });
+  // };
 
-  const handleModalDismiss = () => {
-    setState((s) => {
-      s.openModal = false;
-      s.editingVehicle = undefined;
-      s.isNew = false;
-    });
-  };
+  // const handleModalDismiss = () => {
+  //   setState((s) => {
+  //     s.openModal = false;
+  //     s.editingVehicle = undefined;
+  //     s.isNew = false;
+  //   });
+  // };
 
-  const handleSaveClick = async (vehicle: Vehicle) => {
-    if (!state.isNew) {
-      await vehicleService.update(vehicle);
-      dispatch(updateVehicle(vehicle));
+  // const handleSaveClick = async (vehicle: Vehicle) => {
+  //   if (!state.isNew) {
+  //     await vehicleService.update(vehicle);
+  //     dispatch(updateVehicle(vehicle));
 
-      return;
-    }
+  //     return;
+  //   }
 
-    const newVehicle = await vehicleService.add(vehicle);
-    dispatch(addVehicle(newVehicle));
+  //   const newVehicle = await vehicleService.add(vehicle);
+  //   dispatch(addVehicle(newVehicle));
 
-    return;
-  };
+  //   return;
+  // };
 
-  const handleVehicleClick = (vehicle: Vehicle) => {
-    setState((s) => {
-      s.editingVehicle = vehicle;
-      s.isNew = false;
-      s.openModal = true;
-    });
-  };
+  // const handleVehicleClick = (vehicle: Vehicle) => {
+  //   setState((s) => {
+  //     s.editingVehicle = vehicle;
+  //     s.isNew = false;
+  //     s.openModal = true;
+  //   });
+  // };
 
   const handleDeleteClick = async (vehicle: Vehicle) => {
     await showAlert({
@@ -96,59 +90,90 @@ export default function VehicleScreen() {
     });
   };
 
-  const handleSelectClick = (vehicle: Vehicle) => {
-    dispatch(setSelectedVehicle(vehicle));
-    // once selected, navigate to the session screen
-    history.push('/sessions');
+  const handleCloseClick = async () => {
+    modal.current.dismiss();
   };
 
   return (
-    <EvsPage
-      className="vehicle-page"
-      ref={presentingElement}
-      title="Vehicles"
-      fixedSlotPlacement="before"
-      color="light"
-    >
-      {/* <VehicleEmptyState /> */}
-      {vehicles.length === 0 && (
-        <div className="no-vehicles-container">
-          <h5>Click the + button to add a vehicle</h5>
-        </div>
-      )}
+    <IonModal ref={modal} className="vehicle-page" isOpen onDidDismiss={props.onDismiss}>
+      <ModalHeader
+        title="Vehicles"
+        actionOptions={{
+          primaryText: 'Add',
+          secondaryText: 'Close',
+          disableSecondary: vehicles.length === 0
+        }}
+        onSecondaryClick={handleCloseClick}
+      />
+      <IonContent color="light">
+        {/* <VehicleEmptyState /> */}
+        {vehicles.length === 0 && (
+          <div className="no-vehicles-container">
+            <h5>Click the + button to add a vehicle</h5>
+          </div>
+        )}
 
-      {/* <VehicleList */}
-      {vehicles.map((vehicle) => (
-        <VehicleCard
-          key={vehicle.id}
-          selected={selectedVehicleId === vehicle.id}
-          vehicle={vehicle}
-          onSelectClick={handleSelectClick}
-          onEditClick={handleVehicleClick}
-          onDeleteClick={handleDeleteClick}
-        />
-      ))}
-
-      {state.openModal && (
-        <VehicleModal
-          isNew={state.isNew}
-          vehicle={state.editingVehicle}
-          allowCloseGesture={!state.isNew}
-          presentingElement={presentingElement.current}
-          onDidDismiss={handleModalDismiss}
-          onSave={handleSaveClick}
-        />
-      )}
-
-      <EvsFloatingActionButton
-        className="add-vehicle-fab"
-        horizontal="end"
-        vertical="bottom"
-        slot="fixed"
-        onClick={handleAddClick}
-      >
-        <IonIcon icon={add} />
-      </EvsFloatingActionButton>
-    </EvsPage>
+        {/* <VehicleList */}
+        {vehicles.map((vehicle) => (
+          <VehicleCard
+            key={vehicle.id}
+            vehicle={vehicle}
+            // onSelectClick={handleSelectClick}
+            // onEditClick={handleVehicleClick}
+            onDeleteClick={handleDeleteClick}
+          />
+        ))}
+      </IonContent>
+    </IonModal>
   );
+
+  // return (
+  //   <EvsPage
+  //     className="vehicle-page"
+  //     ref={presentingElement}
+  //     title="Vehicles"
+  //     fixedSlotPlacement="before"
+  //     color="light"
+  //   >
+  //     {/* <VehicleEmptyState /> */}
+  //     {vehicles.length === 0 && (
+  //       <div className="no-vehicles-container">
+  //         <h5>Click the + button to add a vehicle</h5>
+  //       </div>
+  //     )}
+
+  //     {/* <VehicleList */}
+  //     {vehicles.map((vehicle) => (
+  //       <VehicleCard
+  //         key={vehicle.id}
+  //         selected={selectedVehicleId === vehicle.id}
+  //         vehicle={vehicle}
+  //         onSelectClick={handleSelectClick}
+  //         onEditClick={handleVehicleClick}
+  //         onDeleteClick={handleDeleteClick}
+  //       />
+  //     ))}
+
+  //     {state.openModal && (
+  //       <VehicleModal
+  //         isNew={state.isNew}
+  //         vehicle={state.editingVehicle}
+  //         allowCloseGesture={!state.isNew}
+  //         presentingElement={presentingElement.current}
+  //         onDidDismiss={handleModalDismiss}
+  //         onSave={handleSaveClick}
+  //       />
+  //     )}
+
+  //     <EvsFloatingActionButton
+  //       className="add-vehicle-fab"
+  //       horizontal="end"
+  //       vertical="bottom"
+  //       slot="fixed"
+  //       onClick={handleAddClick}
+  //     >
+  //       <IonIcon icon={add} />
+  //     </EvsFloatingActionButton>
+  //   </EvsPage>
+  // );
 }

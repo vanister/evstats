@@ -1,6 +1,17 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonPage,
+  IonTitle,
+  IonToolbar
+} from '@ionic/react';
 import classNames from 'classnames';
-import React from 'react';
+import { carOutline } from 'ionicons/icons';
+import React, { useState } from 'react';
+import VehicleScreen from '../screens/VehicleScreen/VehicleScreen';
 
 type EvsPageProps = {
   children: React.ReactNode;
@@ -11,32 +22,48 @@ type EvsPageProps = {
   title?: string;
 };
 
-const EvsPage = React.forwardRef((props: EvsPageProps, ref) => {
-  const { children, className, color, fixedSlotPlacement, padding, title } = props;
+function EvsPage(
+  { children, color, title, ...props }: EvsPageProps,
+  ref: React.MutableRefObject<HTMLElement>
+) {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleVehicleClick = () => {
+    setShowModal(true);
+  };
+
+  const handleModalDismiss = () => {
+    setShowModal(false);
+  };
 
   return (
-    <IonPage ref={ref} className={classNames('evs-page', className)}>
+    <IonPage ref={ref} className={classNames('evs-page', props.className)}>
       <IonHeader className="evs-page-header">
         <IonToolbar>
+          <IonButtons slot="primary">
+            <IonButton onClick={handleVehicleClick}>
+              <IonIcon slot="icon-only" icon={carOutline} />
+            </IonButton>
+          </IonButtons>
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent
-        className={classNames('evs-page-content', { 'ion-padding': padding })}
+        className={classNames('evs-page-content', { 'ion-padding': props.padding })}
         color={color}
         fullscreen
-        fixedSlotPlacement={fixedSlotPlacement}
+        fixedSlotPlacement={props.fixedSlotPlacement}
       >
-        {/* todo - props.collapsable */}
         <IonHeader className="evs-page-content-header" collapse="condense">
           <IonToolbar color={color}>
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
         {children}
+        {showModal && <VehicleScreen onDismiss={handleModalDismiss} />}
       </IonContent>
     </IonPage>
   );
-});
+}
 
-export default EvsPage;
+export default React.forwardRef(EvsPage);

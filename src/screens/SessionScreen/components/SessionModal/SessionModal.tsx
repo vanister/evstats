@@ -1,6 +1,6 @@
 import { IonContent, IonModal } from '@ionic/react';
 import { useEffect, useRef } from 'react';
-import { ModalRolesOld } from '../../../../constants';
+import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { validateSession } from '../../validator';
@@ -71,7 +71,7 @@ export default function SessionModal({ isNew, session, ...props }: SessionModalP
       return true;
     }
 
-    return role !== ModalRolesOld.gesture;
+    return role !== ModalRoles.Gesture;
   };
 
   const handleDidDismiss = () => {
@@ -111,9 +111,9 @@ export default function SessionModal({ isNew, session, ...props }: SessionModalP
       <ModalHeader
         title={isNew ? 'New Session' : 'Edit Session'}
         errorMessage={state.errorMsg}
-        disableAction={!loaded}
-        onCancelClick={handleCancelClick}
-        onSaveClick={handleSaveClick}
+        actionOptions={{ disablePrimary: !loaded }}
+        onSecondaryClick={handleCancelClick}
+        onPrimaryClick={handleSaveClick}
       ></ModalHeader>
       <IonContent color="light">
         <EvsProgressLoader hide={loaded} type="indeterminate" />

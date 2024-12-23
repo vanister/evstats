@@ -1,22 +1,27 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
-import { IonSlotsOld } from '../../../../constants';
+import { IonSlots } from '../../../../constants';
 import { useEffect, useState } from 'react';
 
 type ModalHeaderProps = {
-  /** True, to disable the action button on the right, false otherwise. */
-  disableAction?: boolean;
-  title: string;
   errorMessage?: string;
-  onCancelClick: VoidFunction;
-  onSaveClick: VoidFunction;
+  title: string;
+  actionOptions?: {
+    primaryText?: string;
+    secondaryText?: string;
+    disablePrimary?: boolean;
+    disableSecondary?: boolean;
+  };
+  onSecondaryClick?: VoidFunction;
+  onPrimaryClick?: VoidFunction;
 };
 
-export default function ModalHeader({
-  disableAction,
-  title,
-  errorMessage,
-  ...props
-}: ModalHeaderProps) {
+export default function ModalHeader({ title, errorMessage, ...props }: ModalHeaderProps) {
+  const {
+    primaryText = 'Save',
+    secondaryText = 'Cancel',
+    disablePrimary = false,
+    disableSecondary = false
+  } = props.actionOptions ?? {};
   const [showError, setShowError] = useState(!!errorMessage);
 
   useEffect(() => {
@@ -26,24 +31,30 @@ export default function ModalHeader({
   return (
     <IonHeader>
       <IonToolbar>
-        <IonButtons slot={IonSlotsOld.start}>
-          <IonButton onClick={props.onCancelClick}>Cancel</IonButton>
-        </IonButtons>
+        {props.onSecondaryClick && (
+          <IonButtons slot={IonSlots.Secondary}>
+            <IonButton disabled={disableSecondary} onClick={props.onSecondaryClick}>
+              {secondaryText}
+            </IonButton>
+          </IonButtons>
+        )}
         <IonTitle>{title}</IonTitle>
-        <IonButtons slot={IonSlotsOld.end}>
-          <IonButton onClick={props.onSaveClick} disabled={disableAction}>
-            Save
-          </IonButton>
-          <IonAlert
-            isOpen={showError}
-            header="Error"
-            message={errorMessage || 'An error occurred'}
-            buttons={['OK']}
-            onDidDismiss={() => {
-              setShowError(false);
-            }}
-          ></IonAlert>
-        </IonButtons>
+        {props.onPrimaryClick && (
+          <IonButtons slot={IonSlots.Primary}>
+            <IonButton onClick={props.onPrimaryClick} disabled={disablePrimary}>
+              {primaryText}
+            </IonButton>
+          </IonButtons>
+        )}
+        <IonAlert
+          isOpen={showError}
+          header="Error"
+          message={errorMessage || 'An error occurred'}
+          buttons={['OK']}
+          onDidDismiss={() => {
+            setShowError(false);
+          }}
+        ></IonAlert>
       </IonToolbar>
     </IonHeader>
   );

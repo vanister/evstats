@@ -1,18 +1,20 @@
 // todo use enums
 
-export enum ModalRolesOld {
-  gesture = 'gesture'
+export enum ModalRoles {
+  Gesture = 'gesture'
 }
 
-export enum IonSlotsOld {
-  start = 'start',
-  end = 'end',
-  fixed = 'fixed'
+export enum IonSlots {
+  Start = 'start',
+  End = 'end',
+  Fixed = 'fixed',
+  Primary = 'primary',
+  Secondary = 'secondary'
 }
 
 export enum PreferenceKeys {
-  DbInitialized = 'DB_INITIALIZED',
-  DbVersion = 'DB_VERSION',
-  LastSelectedRateTypeId = 'LAST_SELECTED_RATE_TYPE_ID',
-  LastSelectedVehicleId = 'LAST_SELECTED_VEHICLE_ID'
+  DbInitialized = 'EVS_DB_INITIALIZED',
+  DbVersion = 'EVS_DB_VERSION',
+  LastSelectedRateTypeId = 'EVS_LAST_SELECTED_RATE_TYPE_ID',
+  LastSelectedVehicleId = 'EVS_LAST_SELECTED_VEHICLE_ID'
 }

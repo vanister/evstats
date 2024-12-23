@@ -34,7 +34,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
       setLoading(false);
       // todo - check to see if there are vehicles in the db
-      history.replace('/vehicles');
+      history.replace('/sessions');
       logToConsole('app initialized');
     };
 

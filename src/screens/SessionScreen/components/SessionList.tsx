@@ -23,7 +23,7 @@ export default function SessionList(props: SessionListProps) {
             <p>{session.vehicleName}</p>
           </IonLabel>
           <IonLabel slot="end">
-            <h3>{`+ ${session.kWh} kWh`}</h3>
+            <h3>{`+${session.kWh} kWh`}</h3>
           </IonLabel>
         </IonItem>
       ))}

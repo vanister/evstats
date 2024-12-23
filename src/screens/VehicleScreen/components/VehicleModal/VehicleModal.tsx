@@ -2,7 +2,7 @@ import './VehicleModal.scss';
 
 import { IonContent, IonInput, IonItem, IonList, IonListHeader, IonModal } from '@ionic/react';
 import { useRef } from 'react';
-import { ModalRolesOld } from '../../../../constants';
+import { ModalRoles } from '../../../../constants';
 import { Vehicle } from '../../../../models/vehicle';
 import ModalHeader from '../../../SessionScreen/components/SessionModal/ModalHeader';
 import { useImmerState } from '../../../../hooks/useImmerState';
@@ -44,7 +44,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
       return true;
     }
 
-    return role !== ModalRolesOld.gesture;
+    return role !== ModalRoles.Gesture;
   };
 
   const handleSaveClick = () => {
@@ -72,8 +72,8 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
     >
       <ModalHeader
         title={isNew ? 'New Vehicle' : 'Edit Vehicle'}
-        onCancelClick={handleCancelClick}
-        onSaveClick={handleSaveClick}
+        onSecondaryClick={handleCancelClick}
+        onPrimaryClick={handleSaveClick}
       />
       <IonContent color="light">
         <form ref={form}>
