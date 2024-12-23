@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import {
   ServiceContainerIntializer,
   ServiceLocator,
@@ -20,14 +20,18 @@ export function ServiceProvider({
   containerInitializer,
   serviceLocator
 }: ServiceProviderProps) {
+  const [loading, setLoading] = useState(true);
   const databaseManager = useDatabaseManager();
 
   useEffect(() => {
     logToConsole('building the service container');
     containerInitializer({ databaseManager });
+    setLoading(false);
   }, []);
 
-  return <ServiceContext.Provider value={serviceLocator}>{children}</ServiceContext.Provider>;
+  return (
+    <ServiceContext.Provider value={serviceLocator}>{!loading && children}</ServiceContext.Provider>
+  );
 }
 
 export function useServices<Service extends keyof ServiceContainer>(name: Service) {

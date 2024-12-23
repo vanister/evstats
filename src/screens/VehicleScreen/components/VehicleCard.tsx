@@ -13,7 +13,6 @@ import { checkmark } from 'ionicons/icons';
 import { Vehicle } from '../../../models/vehicle';
 
 type VehicleCardProps = {
-  key?: React.Key;
   selected?: boolean;
   vehicle: Vehicle;
   onSelectClick?: (vehicle: Vehicle) => void;
@@ -21,11 +20,11 @@ type VehicleCardProps = {
   onDeleteClick?: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleCard({ key, vehicle, selected, ...props }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, selected, ...props }: VehicleCardProps) {
   const { make, model, year, range, batterySize, trim } = vehicle;
 
   return (
-    <IonCard key={key} className="vehicle-card">
+    <IonCard className="vehicle-card">
       <IonCardHeader>
         <IonCardTitle className="vehicle-model">
           {model} {trim}
