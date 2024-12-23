@@ -7,11 +7,11 @@ import VehicleCard from './VehicleCard/VehicleCard';
 import { useHistory } from 'react-router';
 
 export default function VehicleList() {
-  const history = useHistory();
+  const history = useHistory<{ isNew: boolean }>();
   const vehicles = useAppSelector((state) => state.vehicles.vehicles);
 
   const handleAddClick = () => {
-    history.push('/tabs/vehicles/details', { isNew: true });
+    history.push('/vehicles/details', { isNew: true });
   };
 
   return (

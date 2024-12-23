@@ -53,7 +53,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
       return;
     }
 
-    history.replace('/');
+    history.replace('/sessions');
   }, [initialized]);
 
   if (!initialized) {
