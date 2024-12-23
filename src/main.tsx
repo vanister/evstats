@@ -19,7 +19,7 @@ import { ServiceProvider } from './providers/ServiceProvider';
 import { ErrorBoundary } from 'react-error-boundary';
 import RootError from './components/RootError';
 import { Provider } from 'react-redux';
-import { store } from './store';
+import { store } from './redux/store';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);

@@ -4,10 +4,10 @@ import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { Vehicle } from '../../models/vehicle';
 import VehicleCard from './components/VehicleCard';
 import { useRef } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useServices } from '../../providers/ServiceProvider';
 import { deleteVehicle } from '../../redux/vehicleSlice';
 import ModalHeader from '../SessionScreen/components/SessionModal/ModalHeader';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 // type VehicleScreenState = {
 //   loading: boolean;

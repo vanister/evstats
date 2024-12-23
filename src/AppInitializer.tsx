@@ -4,9 +4,9 @@ import { useHistory } from 'react-router';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { IonSpinner } from '@ionic/react';
 import { useServices } from './providers/ServiceProvider';
-import { useAppDispatch } from './hooks';
 import { setRateTypes } from './redux/rateTypeSlice';
 import { setVehicles } from './redux/vehicleSlice';
+import { useAppDispatch } from './redux/hooks';
 
 type AppInitializerProps = PropsWithChildren;
 
