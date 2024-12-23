@@ -20,13 +20,14 @@ type EvsPageProps = {
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
   title?: string;
+  showVehicleModal?: boolean;
 };
 
 function EvsPage(
   { children, color, title, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(!!props.showVehicleModal);
 
   const handleVehicleClick = () => {
     setShowModal(true);

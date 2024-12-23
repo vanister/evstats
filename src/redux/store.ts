@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import rateTypeReducer from './redux/rateTypeSlice';
-import vehicleReducer from './redux/vehicleSlice';
+import rateTypeReducer from './rateTypeSlice';
+import vehicleReducer from './vehicleSlice';
 
 export const store = configureStore({
   reducer: {

@@ -7,12 +7,17 @@ import {
 import { useDatabaseManager } from './DatabaseManagerProvider';
 import { logToConsole } from '../logger';
 
-const ServiceContext = createContext<ServiceLocator>(null);
+type ServiceContextType = {
+  serviceLocator: ServiceLocator;
+  ready: boolean;
+};
 
 type ServiceProviderProps = PropsWithChildren<{
   serviceLocator: ServiceLocator;
   containerInitializer: ServiceContainerIntializer;
 }>;
+
+const ServiceContext = createContext<ServiceContextType>({ serviceLocator: null, ready: false });
 
 /** Provides the services used throughout the app */
 export function ServiceProvider({
@@ -20,24 +25,36 @@ export function ServiceProvider({
   containerInitializer,
   serviceLocator
 }: ServiceProviderProps) {
-  const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
   const databaseManager = useDatabaseManager();
 
   useEffect(() => {
     logToConsole('building the service container');
     containerInitializer({ databaseManager });
-    setLoading(false);
+    setReady(true);
   }, []);
 
   return (
-    <ServiceContext.Provider value={serviceLocator}>{!loading && children}</ServiceContext.Provider>
+    <ServiceContext.Provider value={{ serviceLocator, ready }}>{children}</ServiceContext.Provider>
   );
 }
 
-export function useServices<Service extends keyof ServiceContainer>(name: Service) {
-  const serviceLocator = useContext(ServiceContext);
+export function useServiceState() {
+  const context = useContext(ServiceContext);
+  const { ready } = context;
 
-  if (!serviceLocator) {
+  if (!context) {
+    throw new Error('ServiceContext must be used within a ServiceProvider');
+  }
+
+  return ready;
+}
+
+export function useServices<Service extends keyof ServiceContainer>(name: Service) {
+  const context = useContext(ServiceContext);
+  const { serviceLocator } = context;
+
+  if (!context) {
     throw new Error('ServiceContext must be used within a ServiceProvider');
   }
 

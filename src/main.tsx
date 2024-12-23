@@ -14,8 +14,6 @@ import DatabaseManagerProvider from './providers/DatabaseManagerProvider';
 import { logToConsole } from './logger';
 import { getInstance } from './data/DatabaseManager';
 import { registerAppStateListeners } from './appStateListeners';
-import { initializeServiceContainer, getService } from './services/ServiceContainer';
-import { ServiceProvider } from './providers/ServiceProvider';
 import { ErrorBoundary } from 'react-error-boundary';
 import RootError from './components/RootError';
 import { Provider } from 'react-redux';
@@ -42,12 +40,7 @@ databaseManager
         <ErrorBoundary fallbackRender={({ error }) => <RootError message={error.message} />}>
           <Provider store={store}>
             <DatabaseManagerProvider manager={databaseManager}>
-              <ServiceProvider
-                containerInitializer={initializeServiceContainer}
-                serviceLocator={getService}
-              >
-                <App />
-              </ServiceProvider>
+              <App />
             </DatabaseManagerProvider>
           </Provider>
         </ErrorBoundary>

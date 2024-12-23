@@ -5,6 +5,7 @@ import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
 import { RateType } from '../../models/rateType';
 import { Vehicle } from '../../models/vehicle';
+import { useAppSelector } from '../../redux/hooks';
 
 export type UseSessionState = {
   sessionLogs: SessionLog[];
@@ -30,14 +31,12 @@ const INITIAL_STATE: UseSessionState = {
 
 export function useSessions(): SessionHook {
   const sessionService = useServices('sessionService');
-  const rateService = useServices('rateService');
-  const vehicleService = useServices('vehicleService');
+  const vehicles = useAppSelector((state) => state.vehicles.vehicles);
+  const rateTypes = useAppSelector((state) => state.rateTypes.rateTypes);
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
 
   useEffect(() => {
     const loadSessions = async () => {
-      const vehicles = await vehicleService.list();
-      const rateTypes = await rateService.list();
       const sessionsEntries = await sessionService.list();
       const sessionLogItems = sessionsEntries.map((s) => toSessionLogItem(s, vehicles, rateTypes));
 

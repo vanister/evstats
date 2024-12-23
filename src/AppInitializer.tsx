@@ -2,8 +2,7 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { logToConsole } from './logger';
 import { useHistory } from 'react-router';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { IonSpinner } from '@ionic/react';
-import { useServices } from './providers/ServiceProvider';
+import { useServices, useServiceState } from './providers/ServiceProvider';
 import { setRateTypes } from './redux/rateTypeSlice';
 import { setVehicles } from './redux/vehicleSlice';
 import { useAppDispatch } from './redux/hooks';
@@ -11,38 +10,54 @@ import { useAppDispatch } from './redux/hooks';
 type AppInitializerProps = PropsWithChildren;
 
 export function AppInitializer({ children }: AppInitializerProps) {
-  const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const serviceReady = useServiceState();
   const rateService = useServices('rateService');
   const vehicleService = useServices('vehicleService');
 
   useEffect(() => {
+    if (!serviceReady) {
+      return;
+    }
+
     // todo - clean up
     const initializeApp = async () => {
-      logToConsole('initializing app');
-      logToConsole('loading rates');
+      try {
+        logToConsole('initializing app');
+        logToConsole('loading rates');
 
-      const rates = await rateService.list();
-      dispatch(setRateTypes(rates));
+        const rates = await rateService.list();
+        dispatch(setRateTypes(rates));
 
-      const vehicles = await vehicleService.list();
-      dispatch(setVehicles(vehicles));
+        const vehicles = await vehicleService.list();
+        dispatch(setVehicles(vehicles));
 
-      logToConsole('taking down splash screen');
-      await SplashScreen.hide();
+        setInitialized(true);
 
-      setLoading(false);
-      // todo - check to see if there are vehicles in the db
-      history.replace('/sessions');
-      logToConsole('app initialized');
+        logToConsole('app initialized');
+        logToConsole('taking down splash screen');
+        await SplashScreen.hide();
+      } catch (error) {
+        logToConsole('error initializing app:', error);
+        alert('Error initializing');
+      }
     };
 
     initializeApp();
-  }, []);
+  }, [serviceReady]);
 
-  if (loading) {
-    return <IonSpinner />;
+  useEffect(() => {
+    if (!initialized) {
+      return;
+    }
+
+    history.replace('/sessions');
+  }, [initialized]);
+
+  if (!initialized) {
+    return null;
   }
 
   return children;

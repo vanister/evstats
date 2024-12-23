@@ -32,17 +32,24 @@ import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Routes from './Routes';
 import { AppInitializer } from './AppInitializer';
+import { ServiceProvider } from './providers/ServiceProvider';
+import { getService, initializeServiceContainer } from './services/ServiceContainer';
 
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
   return (
     <IonApp>
-      <IonReactRouter>
-        <AppInitializer>
-          <Routes />
-        </AppInitializer>
-      </IonReactRouter>
+      <ServiceProvider
+        containerInitializer={initializeServiceContainer}
+        serviceLocator={getService}
+      >
+        <IonReactRouter>
+          <AppInitializer>
+            <Routes />
+          </AppInitializer>
+        </IonReactRouter>
+      </ServiceProvider>
     </IonApp>
   );
 }

@@ -20,10 +20,10 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (6.0.2):
     - Capacitor
-  - SQLCipher (4.6.0):
-    - SQLCipher/standard (= 4.6.0)
-  - SQLCipher/common (4.6.0)
-  - SQLCipher/standard (4.6.0):
+  - SQLCipher (4.6.1):
+    - SQLCipher/standard (= 4.6.1)
+  - SQLCipher/common (4.6.1)
+  - SQLCipher/standard (4.6.1):
     - SQLCipher/common
   - ZIPFoundation (0.9.19)
 
@@ -77,7 +77,7 @@ SPEC CHECKSUMS:
   CapacitorPreferences: 9f9935bce493977183511362131a93f7b260191a
   CapacitorSplashScreen: 68893659d77b5f82d753b3a70475082845e3039c
   CapacitorStatusBar: 3b9ac7d0684770522c532d1158a1434512ab1477
-  SQLCipher: 30a8e81afa6128e600b17ffa77d0f92fa05ed208
+  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
 PODFILE CHECKSUM: b3cc6b0ca167fee4b74a3449451b22f7e3e9ba3c
