@@ -1,4 +1,12 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar
+} from '@ionic/react';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -9,16 +17,20 @@ type EvsPageProps = {
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
   title?: string;
+  staticHeader?: boolean;
 };
 
 function EvsPage(
-  { children, color, title, ...props }: EvsPageProps,
+  { children, color = 'light', title, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
   return (
     <IonPage ref={ref} className={classNames('evs-page', props.className)}>
       <IonHeader className="evs-page-header">
         <IonToolbar>
+          <IonButtons>
+            <IonBackButton />
+          </IonButtons>
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -28,11 +40,13 @@ function EvsPage(
         fullscreen
         fixedSlotPlacement={props.fixedSlotPlacement}
       >
-        <IonHeader className="evs-page-content-header" collapse="condense">
-          <IonToolbar color={color}>
-            <IonTitle size="large">{title}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        {!props.staticHeader && (
+          <IonHeader className="evs-page-content-header" collapse="condense">
+            <IonToolbar color={color}>
+              <IonTitle size="large">{title}</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+        )}
         {children}
       </IonContent>
     </IonPage>

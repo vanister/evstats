@@ -1,11 +1,14 @@
 import { IonRouterOutlet } from '@ionic/react';
-import { Route } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import MainLayout from './MainLayout';
 
 export default function Routes() {
   return (
     <IonRouterOutlet>
-      <Route path="/" component={MainLayout} />
+      <Route path="/tabs" component={MainLayout} />
+      <Route exact path="/">
+        <Redirect to="/tabs" />
+      </Route>
     </IonRouterOutlet>
   );
 }

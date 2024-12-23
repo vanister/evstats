@@ -4,20 +4,24 @@ import EvsFloatingActionButton from '../../../components/EvsFloatingActionButton
 import EvsPage from '../../../components/EvsPage';
 import { useAppSelector } from '../../../redux/hooks';
 import VehicleCard from './VehicleCard/VehicleCard';
+import { useHistory } from 'react-router';
 
 export default function VehicleList() {
+  const history = useHistory();
   const vehicles = useAppSelector((state) => state.vehicles.vehicles);
 
+  const handleAddClick = () => {
+    history.push('/tabs/vehicles/details', { isNew: true });
+  };
+
   return (
-    <EvsPage className="vehicle-page" title="Vehicles" fixedSlotPlacement="before" color="light">
-      {/* <VehicleEmptyState /> */}
+    <EvsPage className="vehicle-page" title="Vehicles" fixedSlotPlacement="before">
       {vehicles.length === 0 && (
         <div className="no-vehicles-container">
           <h5>Click the + button to add a vehicle</h5>
         </div>
       )}
 
-      {/* <VehicleList */}
       {vehicles.map((vehicle) => (
         <VehicleCard
           key={vehicle.id}
@@ -28,22 +32,12 @@ export default function VehicleList() {
         />
       ))}
 
-      {/* {state.openModal && (
-   <VehicleModal
-     isNew={state.isNew}
-     vehicle={state.editingVehicle}
-     allowCloseGesture={!state.isNew}
-     presentingElement={presentingElement.current}
-     onDidDismiss={handleModalDismiss}
-     onSave={handleSaveClick}
-   />
- )} */}
-
       <EvsFloatingActionButton
         className="add-vehicle-fab"
         horizontal="end"
         vertical="bottom"
         slot="fixed"
+        onClick={handleAddClick}
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>

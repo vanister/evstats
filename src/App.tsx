@@ -40,16 +40,16 @@ setupIonicReact({ mode: 'ios' });
 export default function App() {
   return (
     <IonApp>
-      <ServiceProvider
-        containerInitializer={initializeServiceContainer}
-        serviceLocator={getService}
-      >
-        <IonReactRouter>
+      <IonReactRouter>
+        <ServiceProvider
+          containerInitializer={initializeServiceContainer}
+          serviceLocator={getService}
+        >
           <AppInitializer>
             <Routes />
           </AppInitializer>
-        </IonReactRouter>
-      </ServiceProvider>
+        </ServiceProvider>
+      </IonReactRouter>
     </IonApp>
   );
 }
