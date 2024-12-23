@@ -10,7 +10,7 @@ import {
   IonIcon
 } from '@ionic/react';
 import { checkmark } from 'ionicons/icons';
-import { Vehicle } from '../../../models/vehicle';
+import { Vehicle } from '../../../../models/vehicle';
 
 type VehicleCardProps = {
   selected?: boolean;
