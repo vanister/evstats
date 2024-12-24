@@ -47,7 +47,7 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
   });
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
-  const { vehicle, isValid } = formState;
+  const { vehicle } = formState;
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
     if (props.allowSwipeToClose) {
@@ -100,9 +100,6 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
         title={isNew ? 'New Vehicle' : 'Edit Vehicle'}
         onSecondaryClick={handleCancelClick}
         onPrimaryClick={handleSaveClick}
-        actionOptions={{
-          disablePrimary: !isValid
-        }}
       />
       <IonContent color="light">
         {/* todo - clean up */}
@@ -141,7 +138,7 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
                 value={vehicle.make}
                 maxlength={50}
                 required
-                onIonInput={(e) => handleVehicleFieldChange('make', +e.detail.value)}
+                onIonInput={(e) => handleVehicleFieldChange('make', e.detail.value)}
               />
             </IonItem>
             <IonItem>

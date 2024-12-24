@@ -3,12 +3,10 @@ import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../../components/EvsFloatingActionButton';
 import EvsPage from '../../../components/EvsPage';
-import { logToConsole } from '../../../logger';
 import { Vehicle } from '../../../models/vehicle';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { addVehicle, deleteVehicle, updateVehicle } from '../../../redux/vehicleSlice';
 import VehicleCard from './VehicleCard/VehicleCard';
 import VehicleModal from './VehicleModal/VehicleModal';
+import { useVehicles } from '../useVehicles';
 
 export default function VehicleScreen() {
   const [showModal, setShowModal] = useState(false);
@@ -16,16 +14,7 @@ export default function VehicleScreen() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const dispatch = useAppDispatch();
-  const vehicles = useAppSelector((state) => state.vehicles.vehicles);
-
-  const handleDeleteVehicle = (vehicle: Vehicle) => {
-    try {
-      dispatch(deleteVehicle(vehicle));
-    } catch (error) {
-      logToConsole(error);
-    }
-  };
+  const { vehicles, addNewVehicle, editVehicle, removeVehicle } = useVehicles();
 
   const handleAddClick = () => {
     setShowModal(true);
@@ -34,19 +23,13 @@ export default function VehicleScreen() {
   };
 
   const handleSaveClick = async (vehicle: Vehicle) => {
-    try {
-      if (isNew) {
-        dispatch(addVehicle(vehicle));
-        return true;
-      }
+    const errorMessage = isNew ? await addNewVehicle(vehicle) : await editVehicle(vehicle);
 
-      dispatch(updateVehicle(vehicle));
+    if (!errorMessage) {
       return true;
-    } catch (error) {
-      logToConsole('error saving vehicle:', error);
-      showAlert(error.message);
-      return false;
     }
+
+    return false;
   };
 
   const handleModalDismiss = () => {
@@ -61,13 +44,14 @@ export default function VehicleScreen() {
   };
 
   const handleDeleteClick = (vehicle: Vehicle) => {
+    // todo - warn about deleting session entries
     showAlert(`Are you sure you want to delete ${vehicle.nickname ?? vehicle.model}`, [
       { text: 'Cancel', role: 'cancel' },
       {
         text: 'Delete',
         role: 'destructive',
-        handler: () => {
-          handleDeleteVehicle(vehicle);
+        handler: async () => {
+          await removeVehicle(vehicle);
         }
       }
     ]);
