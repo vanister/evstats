@@ -8,16 +8,21 @@ import ModalHeader from '../../../SessionScreen/components/SessionModal/ModalHea
 import { useImmerState } from '../../../../hooks/useImmerState';
 
 type VehicleModalProps = {
-  allowCloseGesture?: boolean;
+  allowSwipeToClose?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
+  /** The editing vehicle. */
   vehicle?: Vehicle;
-  /** Raised when the cancel button is clicked. */
-  onCancel?: VoidFunction;
   /** Raised after the modal has been fully dismissed. */
-  onDidDismiss?: VoidFunction;
-  /** Raised when the save button is clicked. */
-  onSave?: (vehicle: Vehicle) => void;
+  onDidDismiss: (canceled?: boolean) => void;
+  /** Raised when the save button is clicked. If successful, the modal will dismiss. */
+  onSave: (vehicle: Vehicle) => boolean | Promise<boolean>;
+};
+
+type VehicleFormState = {
+  vehicle: Vehicle;
+  isDirty?: boolean;
+  isValid?: boolean;
 };
 
 const NEW_VEHICLE: Vehicle = {
@@ -31,34 +36,56 @@ const NEW_VEHICLE: Vehicle = {
   batterySize: null
 };
 
-export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
+export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: VehicleModalProps) {
+  const [formState, setFormState] = useImmerState<VehicleFormState>({
+    isValid: true,
+    isDirty: false,
+    vehicle: {
+      ...NEW_VEHICLE,
+      ...(props.vehicle ?? {})
+    }
+  });
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
-  const [vehicle, setVehicle] = useImmerState<Vehicle>({
-    ...NEW_VEHICLE,
-    ...(props.vehicle ?? {})
-  });
+  const { vehicle, isValid } = formState;
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
-    if (props.allowCloseGesture) {
+    if (props.allowSwipeToClose) {
       return true;
     }
 
     return role !== ModalRoles.Gesture;
   };
 
-  const handleSaveClick = () => {
-    if (!form.current.reportValidity()) {
+  const handleSaveClick = async () => {
+    const isValid = form.current.reportValidity();
+
+    setFormState((f) => {
+      f.isValid = isValid;
+    });
+
+    if (!isValid) {
       return;
     }
 
-    props.onSave(vehicle);
-    modal.current.dismiss();
+    const successful = (await onSave?.(vehicle)) ?? true;
+
+    if (successful) {
+      await modal.current.dismiss();
+      onDidDismiss?.();
+    }
   };
 
-  const handleCancelClick = () => {
-    props.onCancel?.();
-    modal.current?.dismiss();
+  const handleCancelClick = async () => {
+    await modal.current?.dismiss();
+    onDidDismiss?.(true);
+  };
+
+  const handleVehicleFieldChange = (field: keyof Vehicle, value: string | number) => {
+    setFormState((f) => {
+      f.isDirty = true;
+      f.vehicle[field as string] = value;
+    });
   };
 
   return (
@@ -68,14 +95,17 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
       isOpen
       presentingElement={props.presentingElement}
       canDismiss={modalCanDismiss}
-      onDidDismiss={props.onDidDismiss}
     >
       <ModalHeader
         title={isNew ? 'New Vehicle' : 'Edit Vehicle'}
         onSecondaryClick={handleCancelClick}
         onPrimaryClick={handleSaveClick}
+        actionOptions={{
+          disablePrimary: !isValid
+        }}
       />
       <IonContent color="light">
+        {/* todo - clean up */}
         <form ref={form}>
           <IonList inset>
             <IonListHeader>Details</IonListHeader>
@@ -86,11 +116,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 labelPlacement="fixed"
                 maxlength={17}
                 value={vehicle.vin}
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.vin = e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('vin', e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -103,11 +129,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 max={2100}
                 value={vehicle.year}
                 required
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.year = +e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('year', +e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -119,11 +141,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 value={vehicle.make}
                 maxlength={50}
                 required
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.make = e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('make', +e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -135,11 +153,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 value={vehicle.model}
                 maxlength={50}
                 required
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.model = e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('model', e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -149,11 +163,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 labelPlacement="fixed"
                 maxlength={50}
                 value={vehicle.trim}
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.trim = e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('trim', e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -163,11 +173,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 labelPlacement="fixed"
                 maxlength={50}
                 value={vehicle.nickname}
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.nickname = e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('nickname', e.detail.value)}
               />
             </IonItem>
           </IonList>
@@ -181,11 +187,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 min={1}
                 max={1000}
                 value={vehicle.range}
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.range = +e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('range', +e.detail.value)}
               />
             </IonItem>
             <IonItem>
@@ -196,11 +198,7 @@ export default function VehicleModal({ isNew, ...props }: VehicleModalProps) {
                 min={1}
                 max={500}
                 value={vehicle.batterySize}
-                onIonInput={(e) =>
-                  setVehicle((s) => {
-                    s.batterySize = +e.detail.value;
-                  })
-                }
+                onIonInput={(e) => handleVehicleFieldChange('batterySize', +e.detail.value)}
               />
             </IonItem>
           </IonList>

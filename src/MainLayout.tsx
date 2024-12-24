@@ -3,8 +3,7 @@ import { car, flash, statsChart } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router';
 import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
-import VehicleList from './screens/VehicleScreen/components/VehicleList';
-import VehicleDetails from './screens/VehicleScreen/components/VehicleDetails';
+import VehicleScreen from './screens/VehicleScreen/components/VehicleScreen';
 
 export default function MainLayout() {
   return (
@@ -12,8 +11,7 @@ export default function MainLayout() {
       <IonRouterOutlet>
         <Route exact path="/sessions" component={SessionScreen} />
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
-        <Route exact path="/vehicles" component={VehicleList} />
-        <Route exact path="/vehicles/details" component={VehicleDetails} />
+        <Route exact path="/vehicles" component={VehicleScreen} />
         <Route exact path="/">
           <Redirect to="/sessions" />
         </Route>

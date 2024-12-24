@@ -34,7 +34,7 @@ import { AppInitializer } from './AppInitializer';
 import { Route } from 'react-router';
 import MainLayout from './MainLayout';
 
-setupIonicReact({ mode: 'ios' });
+setupIonicReact();
 
 export default function App() {
   return (
