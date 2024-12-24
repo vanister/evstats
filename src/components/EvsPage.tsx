@@ -1,5 +1,6 @@
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -18,12 +19,29 @@ type EvsPageProps = {
   padding?: boolean;
   title?: string;
   staticHeader?: boolean;
+  actionConfig?: {
+    primaryText?: string;
+    primaryDisabled?: boolean;
+    secondaryText?: string;
+    secondaryDisabled?: boolean;
+    onPrimaryAction?: VoidFunction;
+    onSecondaryAction?: VoidFunction;
+  };
 };
 
 function EvsPage(
   { children, color = 'light', title, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
+  const {
+    primaryText = 'Save',
+    primaryDisabled = false,
+    secondaryText = 'Cancel',
+    secondaryDisabled = false,
+    onPrimaryAction = undefined,
+    onSecondaryAction = undefined
+  } = props.actionConfig ?? {};
+
   return (
     <IonPage ref={ref} className={classNames('evs-page', props.className)}>
       <IonHeader className="evs-page-header">
@@ -31,7 +49,21 @@ function EvsPage(
           <IonButtons>
             <IonBackButton />
           </IonButtons>
+          {onSecondaryAction && (
+            <IonButtons slot="secondary">
+              <IonButton onClick={onSecondaryAction} disabled={secondaryDisabled}>
+                {secondaryText}
+              </IonButton>
+            </IonButtons>
+          )}
           <IonTitle>{title}</IonTitle>
+          {onPrimaryAction && (
+            <IonButtons slot="primary">
+              <IonButton onClick={onPrimaryAction} disabled={primaryDisabled}>
+                {primaryText}
+              </IonButton>
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent
