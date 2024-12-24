@@ -34,7 +34,7 @@ export default function VehicleDetails() {
     }
   });
 
-  const { isValid, isNew, vehicle } = state;
+  const { isNew, vehicle } = state;
 
   const handleVehicleFieldChange = (field: keyof Vehicle, value: string | number) => {
     setState((s) => {
@@ -42,28 +42,20 @@ export default function VehicleDetails() {
     });
   };
 
-  const handlePrimaryAction = () => {
-    const isValid = form.current?.reportValidity();
+  // const handlePrimaryAction = () => {
+  //   const isValid = form.current?.reportValidity();
 
-    setState((s) => {
-      s.isValid = isValid;
-    });
+  //   setState((s) => {
+  //     s.isValid = isValid;
+  //   });
 
-    if (!isValid) {
-      return;
-    }
-  };
+  //   if (!isValid) {
+  //     return;
+  //   }
+  // };
 
   return (
-    <EvsPage
-      title={isNew ? 'New Vehicle' : 'Edit Vehicle'}
-      staticHeader
-      actionConfig={{
-        primaryText: isNew ? 'Add' : 'Save',
-        primaryDisabled: !isValid,
-        onPrimaryAction: handlePrimaryAction
-      }}
-    >
+    <EvsPage title={isNew ? 'New Vehicle' : 'Edit Vehicle'} staticHeader>
       <form ref={form}>
         <IonList inset>
           <IonListHeader>Details</IonListHeader>

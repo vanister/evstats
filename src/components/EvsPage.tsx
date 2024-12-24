@@ -1,6 +1,5 @@
 import {
   IonBackButton,
-  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -9,7 +8,7 @@ import {
   IonToolbar
 } from '@ionic/react';
 import classNames from 'classnames';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 type EvsPageProps = {
   children: React.ReactNode;
@@ -19,51 +18,29 @@ type EvsPageProps = {
   padding?: boolean;
   title?: string;
   staticHeader?: boolean;
-  actionConfig?: {
-    primaryText?: string;
-    primaryDisabled?: boolean;
-    secondaryText?: string;
-    secondaryDisabled?: boolean;
-    onPrimaryAction?: VoidFunction;
-    onSecondaryAction?: VoidFunction;
-  };
+  hideBack?: boolean;
+  headerButtons?: { button: ReactNode; slot?: string; key: string | number }[];
 };
 
 function EvsPage(
   { children, color = 'light', title, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
-  const {
-    primaryText = 'Save',
-    primaryDisabled = false,
-    secondaryText = 'Cancel',
-    secondaryDisabled = false,
-    onPrimaryAction = undefined,
-    onSecondaryAction = undefined
-  } = props.actionConfig ?? {};
-
   return (
     <IonPage ref={ref} className={classNames('evs-page', props.className)}>
       <IonHeader className="evs-page-header">
         <IonToolbar>
-          <IonButtons>
-            <IonBackButton />
-          </IonButtons>
-          {onSecondaryAction && (
-            <IonButtons slot="secondary">
-              <IonButton onClick={onSecondaryAction} disabled={secondaryDisabled}>
-                {secondaryText}
-              </IonButton>
+          {!props.hideBack && (
+            <IonButtons>
+              <IonBackButton />
             </IonButtons>
           )}
           <IonTitle>{title}</IonTitle>
-          {onPrimaryAction && (
-            <IonButtons slot="primary">
-              <IonButton onClick={onPrimaryAction} disabled={primaryDisabled}>
-                {primaryText}
-              </IonButton>
+          {props.headerButtons?.map(({ key, button, slot }) => (
+            <IonButtons key={key} slot={slot}>
+              {button}
             </IonButtons>
-          )}
+          ))}
         </IonToolbar>
       </IonHeader>
       <IonContent

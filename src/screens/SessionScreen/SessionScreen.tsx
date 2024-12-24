@@ -9,7 +9,6 @@ import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
 import { SessionState } from './session-types';
-import { useAppSelector } from '../../redux/hooks';
 
 const INITIAL_SESSIONS_STATE: SessionState = {
   showModal: false,
@@ -19,7 +18,6 @@ const INITIAL_SESSIONS_STATE: SessionState = {
 
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
-  const hasVehicles = useAppSelector((s) => s.vehicles.vehicles.length > 0);
   const { sessionLogs, addSession, getSession, updateSession } = useSessions();
   const [state, setState] = useImmerState<SessionState>(INITIAL_SESSIONS_STATE);
 
@@ -67,8 +65,6 @@ export default function SessionScreen() {
       className="sessions"
       title="Sessions"
       fixedSlotPlacement="before"
-      color="light"
-      showVehicleModal={!hasVehicles}
     >
       <EvsFloatingActionButton
         horizontal="end"

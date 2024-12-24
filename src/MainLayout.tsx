@@ -3,14 +3,13 @@ import { car, flash, statsChart } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router';
 import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
-import VehicleDetails from './screens/VehicleScreen/components/VehicleDetails';
 import VehicleList from './screens/VehicleScreen/components/VehicleList';
+import VehicleDetails from './screens/VehicleScreen/components/VehicleDetails';
 
 export default function MainLayout() {
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <Redirect exact path="/" to="/sessions" />
         <Route exact path="/sessions" component={SessionScreen} />
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
         <Route exact path="/vehicles" component={VehicleList} />

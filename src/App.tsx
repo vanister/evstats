@@ -28,12 +28,11 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.scss';
 
-import { IonApp, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Routes from './Routes';
 import { AppInitializer } from './AppInitializer';
-import { ServiceProvider } from './providers/ServiceProvider';
-import { getService, initializeServiceContainer } from './services/ServiceContainer';
+import { Route } from 'react-router';
+import MainLayout from './MainLayout';
 
 setupIonicReact({ mode: 'ios' });
 
@@ -41,14 +40,11 @@ export default function App() {
   return (
     <IonApp>
       <IonReactRouter>
-        <ServiceProvider
-          containerInitializer={initializeServiceContainer}
-          serviceLocator={getService}
-        >
+        <IonRouterOutlet>
           <AppInitializer>
-            <Routes />
+            <Route path="/" component={MainLayout} />
           </AppInitializer>
-        </ServiceProvider>
+        </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
   );

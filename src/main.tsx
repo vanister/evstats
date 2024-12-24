@@ -18,6 +18,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import RootError from './components/RootError';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { ServiceProvider } from './providers/ServiceProvider';
+import { getService, initializeServiceContainer } from './services/ServiceContainer';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
@@ -40,7 +42,12 @@ databaseManager
         <ErrorBoundary fallbackRender={({ error }) => <RootError message={error.message} />}>
           <Provider store={store}>
             <DatabaseManagerProvider manager={databaseManager}>
-              <App />
+              <ServiceProvider
+                containerInitializer={initializeServiceContainer}
+                serviceLocator={getService}
+              >
+                <App />
+              </ServiceProvider>
             </DatabaseManagerProvider>
           </Provider>
         </ErrorBoundary>
