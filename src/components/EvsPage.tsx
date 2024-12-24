@@ -1,3 +1,4 @@
+import { PropsWithChildrenAndClass } from '@evs-core';
 import {
   IonBackButton,
   IonButtons,
@@ -10,17 +11,22 @@ import {
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 
-type EvsPageProps = {
-  children: React.ReactNode;
-  className?: string;
+// todo - turn into config
+type HeaderButton = {
+  button: ReactNode;
+  slot?: string;
+  key: string | number;
+};
+
+type EvsPageProps = PropsWithChildrenAndClass<{
   color?: string;
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
   title?: string;
   staticHeader?: boolean;
   hideBack?: boolean;
-  headerButtons?: { button: ReactNode; slot?: string; key: string | number }[];
-};
+  headerButtons?: HeaderButton[];
+}>;
 
 function EvsPage(
   { children, color = 'light', title, ...props }: EvsPageProps,
