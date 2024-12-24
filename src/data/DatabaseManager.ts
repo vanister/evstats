@@ -1,9 +1,9 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { Preferences, PreferencesPlugin } from '@capacitor/preferences';
+import { Preferences } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
 import { InitTableSql } from './sql/InitTable';
 import { PragmaSql } from './sql/PragmaSql';
-import { SeedSql } from './sql/SeedData';
+import { SeedSql } from './sql/seedData';
 
 // todo - create interfaces for this class
 
@@ -33,27 +33,25 @@ export function getInstance(): DatabaseManager {
 }
 
 export class DatabaseManager {
-  private readonly sqlite: SQLiteConnection;
-  private readonly preferences: PreferencesPlugin;
   private db: SQLiteDBConnection | null;
   private currentVersion: number | null;
 
-  constructor(sqlite?: SQLiteConnection, preferences?: PreferencesPlugin) {
-    this.sqlite = sqlite ?? new SQLiteConnection(CapacitorSQLite);
-    this.preferences = preferences ?? Preferences;
-  }
+  constructor(
+    private readonly dbName = 'evstats.db',
+    private readonly sqlite = new SQLiteConnection(CapacitorSQLite),
+    private readonly preferences = Preferences
+  ) {}
 
   get context(): SQLiteDBConnection | null {
     return this.db;
   }
 
   async openConnection(
-    dbName: string = 'evstats.db',
     options: ConnectionOptions = DEFAULT_CONNECTION_OPTIONS
   ): Promise<SQLiteDBConnection> {
+    const { dbName } = this;
     const { encrypted, mode, readOnly, version } = options;
 
-    // todo - consider switching to json import/export
     try {
       logToConsole('attempting to open a sqlite connection');
 
