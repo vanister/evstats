@@ -29,6 +29,8 @@ export default function VehicleScreen() {
       return true;
     }
 
+    await showAlert(errorMessage, [{ text: 'OK', role: 'cancel' }]);
+
     return false;
   };
 
