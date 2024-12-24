@@ -4,9 +4,9 @@ import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../../components/EvsFloatingActionButton';
 import EvsPage from '../../../components/EvsPage';
 import { Vehicle } from '../../../models/vehicle';
-import VehicleCard from './VehicleCard/VehicleCard';
 import VehicleModal from './VehicleModal/VehicleModal';
 import { useVehicles } from '../useVehicles';
+import VehicleList from './VehicleList';
 
 export default function VehicleScreen() {
   const [showModal, setShowModal] = useState(false);
@@ -67,30 +67,11 @@ export default function VehicleScreen() {
       fixedSlotPlacement="before"
       hideBack
     >
-      {vehicles.length === 0 && (
-        <div className="no-vehicles-container">
-          <h5>Click the + button to add a vehicle</h5>
-        </div>
-      )}
-
-      {vehicles.map((vehicle) => (
-        <VehicleCard
-          key={vehicle.id}
-          vehicle={vehicle}
-          onEditClick={handleEditClick}
-          onDeleteClick={handleDeleteClick}
-        />
-      ))}
-
-      {showModal && (
-        <VehicleModal
-          isNew={isNew}
-          presentingElement={pageRef.current}
-          vehicle={editingVehicle}
-          onDidDismiss={handleModalDismiss}
-          onSave={handleSaveClick}
-        />
-      )}
+      <VehicleList
+        vehicles={vehicles}
+        onDeleteClick={handleDeleteClick}
+        onEditClick={handleEditClick}
+      />
 
       <EvsFloatingActionButton
         className="add-vehicle-fab"
@@ -101,6 +82,16 @@ export default function VehicleScreen() {
       >
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
+
+      {showModal && (
+        <VehicleModal
+          isNew={isNew}
+          presentingElement={pageRef.current}
+          vehicle={editingVehicle}
+          onDidDismiss={handleModalDismiss}
+          onSave={handleSaveClick}
+        />
+      )}
     </EvsPage>
   );
 }
