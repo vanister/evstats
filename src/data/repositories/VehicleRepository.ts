@@ -1,6 +1,6 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { VehicleDbo } from '../models/vehicle';
-import { VehicleSql } from './sql/VehicleSql';
+import { VehicleSql } from '../sql/VehicleSql';
 import { ExplicitAny } from '@evs-core';
 import { DboKeys } from './repositories-types';
 

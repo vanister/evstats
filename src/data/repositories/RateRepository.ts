@@ -1,6 +1,6 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { RateTypeDbo } from '../models/rateType';
-import { RateSql } from './sql/RateSql';
+import { RateSql } from '../sql/RateSql';
 
 export interface RateRepository {
   get(id: number): Promise<RateTypeDbo>;

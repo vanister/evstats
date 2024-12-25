@@ -1,7 +1,4 @@
 import { ExplicitAny } from '@evs-core';
-import { RateRepository, EvsRateRepository } from '../repositories/RateRepository';
-import { SessionRepository, EvsSessionRepository } from '../repositories/SessionRepository';
-import { VehicleRepository } from '../repositories/VehicleRepository';
 import { ChargeStatsService, EvsChargeStatsService } from './ChargeStatsService';
 import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
@@ -10,6 +7,9 @@ import { DatabaseManager } from '../data/DatabaseManager';
 import { logToConsole } from '../logger';
 import { MockVehicleRepository } from '../__mocks__/MockVehicleRepository';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
+import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
+import { SessionRepository, EvsSessionRepository } from '../data/repositories/SessionRepository';
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
