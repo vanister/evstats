@@ -4,8 +4,16 @@ import { logToConsole } from '../logger';
 import { InitTableSql } from './sql/InitTable';
 import { PragmaSql } from './sql/PragmaSql';
 import { SeedSql } from './sql/seedData';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 
-// todo - create interfaces for this class
+export interface DatabaseManager {
+  get context(): SQLiteDBConnection | null;
+  get fullDatabaseName(): string;
+  openConnection(options?: ConnectionOptions): Promise<SQLiteDBConnection>;
+  closeConnection(): Promise<void>;
+  initializeDb(): Promise<void>;
+  getVersion(): Promise<number>;
+}
 
 export type ConnectionOptions = {
   encrypted?: boolean;
@@ -21,25 +29,26 @@ const DEFAULT_CONNECTION_OPTIONS: ConnectionOptions = {
   version: 1
 };
 
-let instance: DatabaseManager;
+let instance: SqliteDatabaseManager;
 
 /** Gets a singleton instance of a DatabaseManager. */
 export function getInstance(): DatabaseManager {
   if (!instance) {
-    instance = new DatabaseManager();
+    instance = new SqliteDatabaseManager();
   }
 
   return instance;
 }
 
-export class DatabaseManager {
+export class SqliteDatabaseManager implements DatabaseManager {
   private db: SQLiteDBConnection | null;
   private currentVersion: number | null;
 
   constructor(
     private readonly dbName = 'evstats.db',
     private readonly sqlite = new SQLiteConnection(CapacitorSQLite),
-    private readonly preferences = Preferences
+    private readonly preferences = Preferences,
+    private readonly fileSystem = Filesystem
   ) {}
 
   get context(): SQLiteDBConnection | null {
@@ -103,6 +112,7 @@ export class DatabaseManager {
     // todo - look into versioning/migrations
     try {
       logToConsole('inializing db');
+      await this.printDbPath();
 
       const dbVersion = await this.getVersion();
 
@@ -144,5 +154,14 @@ export class DatabaseManager {
     this.currentVersion = version;
 
     return version;
+  }
+
+  private async printDbPath() {
+    const dbPath = await this.fileSystem.getUri({
+      directory: Directory.Documents,
+      path: this.fullDatabaseName
+    });
+
+    logToConsole('db located at:', dbPath.uri);
   }
 }
