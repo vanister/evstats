@@ -46,6 +46,12 @@ export class DatabaseManager {
     return this.db;
   }
 
+  get fullDatabaseName() {
+    const fullDbName = `${this.dbName.replace('.db', 'SQLite.db')}`;
+
+    return fullDbName;
+  }
+
   async openConnection(
     options: ConnectionOptions = DEFAULT_CONNECTION_OPTIONS
   ): Promise<SQLiteDBConnection> {
