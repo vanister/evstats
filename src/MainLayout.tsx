@@ -1,9 +1,10 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { car, flash, statsChart } from 'ionicons/icons';
+import { car, flash, settings, statsChart } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router';
 import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
 import VehicleScreen from './screens/VehicleScreen/components/VehicleScreen';
+import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 
 export default function MainLayout() {
   return (
@@ -12,6 +13,7 @@ export default function MainLayout() {
         <Route exact path="/sessions" component={SessionScreen} />
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
         <Route exact path="/vehicles" component={VehicleScreen} />
+        <Route exact path="/settings" component={SettingsScreen} />
         <Route exact path="/">
           <Redirect to="/sessions" />
         </Route>
@@ -28,6 +30,10 @@ export default function MainLayout() {
         <IonTabButton tab="vehicles" href="/vehicles">
           <IonIcon icon={car} />
           <IonLabel>Vehicles</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="settings" href="/settings">
+          <IonIcon icon={settings} />
+          <IonLabel>Settings</IonLabel>
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
