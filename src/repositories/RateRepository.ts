@@ -11,14 +11,14 @@ export class EvsRateRepository implements RateRepository {
   constructor(private context: SQLiteDBConnection) {}
 
   async get(id: number): Promise<RateTypeDbo> {
-    const { values } = await this.context.query(RateSql.getById, [id]);
+    const { values } = await this.context.query(RateSql.GetById, [id]);
     const rate = values?.[0] as RateTypeDbo;
 
     return rate;
   }
 
   async list(): Promise<RateTypeDbo[]> {
-    const { values } = await this.context.query(RateSql.list);
+    const { values } = await this.context.query(RateSql.List);
 
     return (values as RateTypeDbo[]) ?? [];
   }

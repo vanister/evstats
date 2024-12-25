@@ -16,13 +16,13 @@ export class EvsVehicleRepository implements VehicleRepository {
   constructor(private readonly context: SQLiteDBConnection) {}
 
   async list(): Promise<VehicleDbo[]> {
-    const { values } = await this.context.query(VehicleSql.list);
+    const { values } = await this.context.query(VehicleSql.List);
 
     return (values as VehicleDbo[]) ?? [];
   }
 
   async get(id: number): Promise<VehicleDbo> {
-    const { values } = await this.context.query(VehicleSql.getById, [id]);
+    const { values } = await this.context.query(VehicleSql.GetById, [id]);
     const vehicle = values?.[0] as VehicleDbo;
 
     return vehicle;
@@ -30,7 +30,7 @@ export class EvsVehicleRepository implements VehicleRepository {
 
   async add(vehicle: VehicleDbo): Promise<number> {
     const values = this.getValues(vehicle, ['id']);
-    const { changes } = await this.context.run(VehicleSql.add, values);
+    const { changes } = await this.context.run(VehicleSql.Add, values);
     const id = changes.lastId;
 
     return id;
@@ -38,13 +38,13 @@ export class EvsVehicleRepository implements VehicleRepository {
 
   async update(_vehicle: VehicleDbo): Promise<number> {
     const updatedValues = [];
-    const { changes } = await this.context.run(VehicleSql.update, updatedValues);
+    const { changes } = await this.context.run(VehicleSql.Update, updatedValues);
 
     return changes.changes;
   }
 
   async remove(id: number): Promise<boolean> {
-    const { changes } = await this.context.run(VehicleSql.delete, [id]);
+    const { changes } = await this.context.run(VehicleSql.Delete, [id]);
 
     return changes.changes > 0;
   }
