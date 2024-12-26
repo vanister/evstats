@@ -1,25 +1,25 @@
-import { Session } from '../models/session';
+import { SessionDbo } from '../models/session';
 
-export const MOCK_SESSIONS: Partial<Session>[] = [
+export const MOCK_SESSIONS: SessionDbo[] = [
   {
     id: 1,
     kWh: 43,
     date: '2024-05-22',
-    rateTypeId: 1,
-    vehicleId: 1
+    rate_type_id: 1,
+    vehicle_id: 1
   },
   {
     id: 2,
     kWh: 22,
     date: '2024-04-16',
-    rateTypeId: 1,
-    vehicleId: 1
+    rate_type_id: 1,
+    vehicle_id: 1
   },
   {
     id: 3,
     kWh: 12,
     date: '2024-04-08',
-    rateTypeId: 3,
-    vehicleId: 2
+    rate_type_id: 3,
+    vehicle_id: 2
   }
 ];

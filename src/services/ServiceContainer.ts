@@ -5,11 +5,11 @@ import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { DatabaseManager } from '../data/DatabaseManager';
 import { logToConsole } from '../logger';
-import { MockVehicleRepository } from '../__mocks__/MockVehicleRepository';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
-import { SessionRepository, EvsSessionRepository } from '../data/repositories/SessionRepository';
-import { VehicleRepository } from '../data/repositories/VehicleRepository';
+import { SessionRepository } from '../data/repositories/SessionRepository';
+import { EvsVehicleRepository, VehicleRepository } from '../data/repositories/VehicleRepository';
+import { MockSessionRepository } from '../__mocks__/MockSessionRepository';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
@@ -51,9 +51,11 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
 
   // repositories
   const rateRepository: RateRepository = new EvsRateRepository(context);
-  const sessionRepository: SessionRepository = new EvsSessionRepository();
-  // const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
-  const vehicleRepository: VehicleRepository = new MockVehicleRepository();
+  // const rateRepository: RateRepository = new MockRateRepository();
+  // const sessionRepository: SessionRepository = new EvsSessionRepository();
+  const sessionRepository: SessionRepository = new MockSessionRepository();
+  const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
+  // const vehicleRepository: VehicleRepository = new MockVehicleRepository();
 
   // services
   const chargeStatsService: ChargeStatsService = new EvsChargeStatsService();

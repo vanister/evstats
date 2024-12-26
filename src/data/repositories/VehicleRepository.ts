@@ -1,7 +1,7 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { VehicleSql } from '../sql/VehicleSql';
-import { DboKeys } from './repositories-types';
 import { VehicleDbo } from '../../models/vehicle';
+import { BaseRepository } from './BaseRepository';
 
 export interface VehicleRepository {
   list(): Promise<VehicleDbo[]>;
@@ -11,8 +11,10 @@ export interface VehicleRepository {
   remove(id: number): Promise<boolean>;
 }
 
-export class EvsVehicleRepository implements VehicleRepository {
-  constructor(private readonly context: SQLiteDBConnection) {}
+export class EvsVehicleRepository extends BaseRepository<VehicleDbo> implements VehicleRepository {
+  constructor(private readonly context: SQLiteDBConnection) {
+    super();
+  }
 
   async list(): Promise<VehicleDbo[]> {
     const { values } = await this.context.query(VehicleSql.List);
@@ -35,8 +37,10 @@ export class EvsVehicleRepository implements VehicleRepository {
     return id;
   }
 
-  async update(_vehicle: VehicleDbo): Promise<number> {
-    const updatedValues = [];
+  async update(vehicle: VehicleDbo): Promise<number> {
+    const valuesWithoutId = this.getValues(vehicle, ['id']);
+    // we want id at the end because that's where the where clause is
+    const updatedValues = [...valuesWithoutId, vehicle.id];
     const { changes } = await this.context.run(VehicleSql.Update, updatedValues);
 
     return changes.changes;
@@ -46,15 +50,5 @@ export class EvsVehicleRepository implements VehicleRepository {
     const { changes } = await this.context.run(VehicleSql.Delete, [id]);
 
     return changes.changes > 0;
-  }
-
-  // todo - base reposi
-  protected getValues(dbo: VehicleDbo, except: DboKeys<VehicleDbo>[] = []): unknown[] {
-    const values = Object.keys(dbo)
-      .filter((key) => !except.includes(key as DboKeys<VehicleDbo>))
-      .sort()
-      .map((key) => dbo[key]);
-
-    return values;
   }
 }
