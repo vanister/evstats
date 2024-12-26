@@ -1,8 +1,7 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { VehicleDbo } from '../models/vehicle';
 import { VehicleSql } from '../sql/VehicleSql';
-import { ExplicitAny } from '@evs-core';
 import { DboKeys } from './repositories-types';
+import { VehicleDbo } from '../../models/vehicle';
 
 export interface VehicleRepository {
   list(): Promise<VehicleDbo[]>;
@@ -49,7 +48,8 @@ export class EvsVehicleRepository implements VehicleRepository {
     return changes.changes > 0;
   }
 
-  private getValues(dbo: VehicleDbo, except: DboKeys<VehicleDbo>[] = []): ExplicitAny[] {
+  // todo - base reposi
+  protected getValues(dbo: VehicleDbo, except: DboKeys<VehicleDbo>[] = []): unknown[] {
     const values = Object.keys(dbo)
       .filter((key) => !except.includes(key as DboKeys<VehicleDbo>))
       .sort()

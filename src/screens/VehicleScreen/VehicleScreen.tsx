@@ -1,12 +1,12 @@
 import { IonIcon, useIonAlert } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
-import EvsFloatingActionButton from '../../../components/EvsFloatingActionButton';
-import EvsPage from '../../../components/EvsPage';
-import { Vehicle } from '../../../models/vehicle';
-import VehicleModal from './VehicleModal/VehicleModal';
-import { useVehicles } from '../useVehicles';
-import VehicleList from './VehicleList';
+import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
+import EvsPage from '../../components/EvsPage';
+import { Vehicle } from '../../models/vehicle';
+import VehicleList from './components/VehilceList/VehicleList';
+import VehicleModal from './components/VehicleModal/VehicleModal';
+import { useVehicles } from './useVehicles';
 
 export default function VehicleScreen() {
   const [showModal, setShowModal] = useState(false);

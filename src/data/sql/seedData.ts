@@ -2,7 +2,7 @@ import { JsonSQLite } from '@capacitor-community/sqlite';
 import { SchemaOptions } from './InitTable';
 
 export class SeedSql {
-  static readonly SEED_RATE_TYPES = `
+  static readonly RateTypes = `
     INSERT INTO rate_types (name, amount, unit)
     SELECT 'Home', 0.13, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
     UNION ALL

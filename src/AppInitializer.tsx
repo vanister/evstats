@@ -1,6 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { logToConsole } from './logger';
-import { useHistory } from 'react-router';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { useServices, useServiceState } from './providers/ServiceProvider';
 import { setRateTypes } from './redux/rateTypeSlice';
@@ -11,7 +10,6 @@ type AppInitializerProps = PropsWithChildren;
 
 export function AppInitializer({ children }: AppInitializerProps) {
   const [initialized, setInitialized] = useState(false);
-  const history = useHistory();
   const dispatch = useAppDispatch();
   const serviceReady = useServiceState();
   const rateService = useServices('rateService');
@@ -47,14 +45,6 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
     initializeApp();
   }, [serviceReady]);
-
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-
-    history.replace('/sessions');
-  }, [initialized]);
 
   if (!initialized) {
     return null;

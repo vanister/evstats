@@ -1,10 +1,10 @@
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 import { VehicleDbo } from '../models/vehicle';
-import { VehicleRepository } from '../repositories/VehicleRepository';
-import { MOCK_VEHICLES } from './vehicleData';
+// import { MOCK_VEHICLES } from './vehicleData';
 
 export class MockVehicleRepository implements VehicleRepository {
-  private vehicles: VehicleDbo[] = [...MOCK_VEHICLES];
-  // private vehicles: VehicleDbo[] = [];
+  // private vehicles: VehicleDbo[] = [...MOCK_VEHICLES];
+  private vehicles: VehicleDbo[] = [];
 
   async list(): Promise<VehicleDbo[]> {
     return this.vehicles;

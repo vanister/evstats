@@ -3,8 +3,8 @@ import { Preferences } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
 import { InitTableSql } from './sql/InitTable';
 import { PragmaSql } from './sql/PragmaSql';
-import { SeedSql } from './sql/seedData';
 import { Directory, Filesystem } from '@capacitor/filesystem';
+import { SeedSql } from './sql/seedData';
 
 export interface DatabaseManager {
   get context(): SQLiteDBConnection | null;
@@ -130,7 +130,7 @@ export class SqliteDatabaseManager implements DatabaseManager {
 
       logToConsole('table created:', tableResults.changes);
 
-      const seedResults = await this.db.execute(SeedSql.SEED_RATE_TYPES);
+      const seedResults = await this.db.execute(SeedSql.RateTypes);
 
       logToConsole('seeding tables:', seedResults.changes);
       logToConsole('db initalized');

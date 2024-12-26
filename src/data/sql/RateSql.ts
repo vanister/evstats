@@ -4,7 +4,7 @@ export class RateSql {
 
   static readonly Update = `
     UPDATE rate_types
-    SET name = ?, amount = ?, unit = ?
+    SET amount = ?, name = ?, unit = ?
     WHERE id = ?;
   `;
 }
