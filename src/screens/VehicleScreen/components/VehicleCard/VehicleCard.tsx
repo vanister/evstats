@@ -6,34 +6,31 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle,
-  IonIcon
+  IonCardTitle
 } from '@ionic/react';
-import { checkmark } from 'ionicons/icons';
 import { Vehicle } from '../../../../models/vehicle';
 
 type VehicleCardProps = {
-  selected?: boolean;
   vehicle: Vehicle;
   onEditClick?: (vehicle: Vehicle) => void;
   onDeleteClick?: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleCard({ vehicle, selected, ...props }: VehicleCardProps) {
-  const { make, model, year, range, batterySize, trim } = vehicle;
+export default function VehicleCard({ vehicle, ...props }: VehicleCardProps) {
+  const { make, model, year, range, batterySize, trim, nickname } = vehicle;
 
   return (
     <IonCard className="vehicle-card">
       <IonCardHeader>
         <IonCardTitle className="vehicle-model">
           {model} {trim}
-          {selected && <IonIcon icon={checkmark} />}
         </IonCardTitle>
         <IonCardSubtitle>{`${year} ${make}`}</IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
         {range && <p>{`Range: ${range} miles`}</p>}
         {batterySize && <p>{`Battery Size: ${vehicle.batterySize} kWh`}</p>}
+        {nickname && <p>{`Nickname: ${nickname}`}</p>}
       </IonCardContent>
       <IonButton fill="clear" onClick={() => props.onEditClick?.(vehicle)}>
         Edit
