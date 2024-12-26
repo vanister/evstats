@@ -10,7 +10,7 @@ export class InitTableSql {
       trim TEXT NULL,
       vin TEXT LENGTH(17) NULL,
       nickname TEXT NULL,
-      battery_capacity REAL NULL,
+      battery_size REAL NULL,
       range INTEGER NULL
     );
   `;
