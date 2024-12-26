@@ -1,5 +1,5 @@
 import { JsonSQLite } from '@capacitor-community/sqlite';
-import { SchemaOptions } from './InitTable';
+import { SchemaOptions } from './InitTableSql';
 
 export class SeedSql {
   static readonly RateTypes = `

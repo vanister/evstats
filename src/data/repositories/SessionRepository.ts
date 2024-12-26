@@ -1,5 +1,7 @@
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { SessionDbo } from '../../models/session';
 import { BaseRepository } from './BaseRepository';
+import { SessionSql } from '../sql/SessionSql';
 
 export interface SessionRepository {
   list(limit?: number, page?: number): Promise<SessionDbo[]>;
@@ -10,8 +12,15 @@ export interface SessionRepository {
 }
 
 export class EvsSessionRepository extends BaseRepository<SessionDbo> implements SessionRepository {
+  // todo - move context to base repo
+  constructor(private readonly context: SQLiteDBConnection) {
+    super();
+  }
+
   async list(_limit?: number, _page?: number): Promise<SessionDbo[]> {
-    throw new Error('not implemented');
+    const { values } = await this.context.query(SessionSql.List);
+
+    return (values as SessionDbo[]) ?? [];
   }
 
   async get(_id: number): Promise<SessionDbo> {

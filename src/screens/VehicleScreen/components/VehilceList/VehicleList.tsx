@@ -14,7 +14,7 @@ export default function VehicleList({ vehicles, ...props }: VehicleListProps) {
   if (vehicles.length === 0) {
     return (
       <div className="vehicle-list">
-        <div className="no-vehicles-container">
+        <div className="empty-list-message">
           <h3>{props.emptyMessage ?? 'Add a vehicle to get started'}</h3>
         </div>
       </div>

@@ -1,5 +1,7 @@
+import './SessionList.scss';
+
 import { IonList, IonItem, IonLabel } from '@ionic/react';
-import { SessionLog } from '../../../models/session';
+import { SessionLog } from '../../../../models/session';
 
 type SessionListProps = {
   sessions: SessionLog[];
@@ -12,6 +14,16 @@ export default function SessionList(props: SessionListProps) {
   const handleItemClick = (session: SessionLog) => {
     onSelection(session);
   };
+
+  if (sessions.length === 0) {
+    return (
+      <div className="session-list">
+        <div className="empty-list-message">
+          <h3>There are no sessions</h3>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <IonList className="session-list" inset>

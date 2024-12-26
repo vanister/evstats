@@ -1,10 +1,10 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { Preferences } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
-import { InitTableSql } from './sql/InitTable';
+import { InitTableSql } from './sql/InitTableSql';
 import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { SeedSql } from './sql/seedData';
+import { SeedSql } from './sql/SeedData';
 
 export interface DatabaseManager {
   get context(): SQLiteDBConnection | null;

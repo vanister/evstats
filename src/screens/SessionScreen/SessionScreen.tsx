@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { Session, SessionLog } from '../../models/session';
-import SessionList from './components/SessionList';
+import SessionList from './components/SessionList/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
