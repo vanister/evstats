@@ -1,4 +1,4 @@
-import { IonIcon } from '@ionic/react';
+import { IonIcon, useIonAlert } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
@@ -18,6 +18,7 @@ const INITIAL_SESSIONS_STATE: SessionState = {
 
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
+  const [showAlert] = useIonAlert();
   const { sessionLogs, addSession, getSession, updateSession } = useSessions();
   const [state, setState] = useImmerState<SessionState>(INITIAL_SESSIONS_STATE);
 
@@ -29,11 +30,15 @@ export default function SessionScreen() {
   };
 
   const handleSessionSave = async (session: Session) => {
-    if (state.isNew) {
-      await addSession(session);
+    const errorMessage = state.isNew ? await addSession(session) : await updateSession(session);
+
+    if (errorMessage) {
+      await showAlert(errorMessage);
+
+      return false;
     }
 
-    await updateSession(session);
+    return true;
   };
 
   const handleSessionModalDismiss = () => {
@@ -58,7 +63,6 @@ export default function SessionScreen() {
     });
   };
 
-  // a recent list of charge sessions
   return (
     <EvsPage
       ref={presentingElement}

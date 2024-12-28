@@ -1,6 +1,6 @@
 import { IonSelect, IonSelectOption } from '@ionic/react';
 import classNames from 'classnames';
-import { ExplicitAny } from '@evs-core';
+import { ExplicitAny, PropsWithChildrenAndClass } from '@evs-core';
 
 export type EvsSelectOptionItem = {
   value: unknown;
@@ -9,8 +9,7 @@ export type EvsSelectOptionItem = {
 
 type IonSelectChangeEvent = { detail: { value: ExplicitAny } };
 
-type EvsSelectProps = {
-  className?: string;
+type EvsSelectProps = PropsWithChildrenAndClass<{
   inset?: boolean;
   label: string;
   labelPlacement?: 'fixed' | 'start' | 'end' | 'floating' | 'stacked';
@@ -22,8 +21,7 @@ type EvsSelectProps = {
   subHeader?: string;
   /** The list options to choose from. If `children` is defined, that will take precedence. */
   options?: EvsSelectOptionItem[];
-  /** The options of the list */
-  children?: React.ReactNode;
+  placeholder?: string;
 
   /**
    * Raised when an option is selected.
@@ -31,7 +29,7 @@ type EvsSelectProps = {
    * @param value The value of the selected option.
    */
   onSelect?: (value: number | string) => void;
-};
+}>;
 
 export default function EvsSelect(props: EvsSelectProps) {
   const headerOptions = {
@@ -50,6 +48,7 @@ export default function EvsSelect(props: EvsSelectProps) {
       className={classNames('evs-select', props.className)}
       label={props.label}
       labelPlacement={props.labelPlacement}
+      placeholder={props.placeholder}
       value={props.value}
       onIonChange={handleSelectChange}
       interfaceOptions={headerOptions}

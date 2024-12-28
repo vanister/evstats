@@ -3,30 +3,24 @@ import { Session, SessionLog } from '../../models/session';
 import { toSessionLogItem } from './helpers';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
-import { RateType } from '../../models/rateType';
-import { Vehicle } from '../../models/vehicle';
 import { useAppSelector } from '../../redux/hooks';
 
 export type UseSessionState = {
   sessionLogs: SessionLog[];
   loading: boolean;
-  rateTypes: RateType[];
-  vehicles: Vehicle[];
 };
 
 export type SessionHook = {
   loading: boolean;
   sessionLogs: SessionLog[];
-  addSession: (session: Session) => Promise<number>;
-  getSession: (id: number) => Promise<Session>;
-  updateSession: (session: Session) => Promise<void>;
+  addSession: (session: Session) => Promise<string | null>;
+  getSession: (id: number) => Promise<Session | null>;
+  updateSession: (session: Session) => Promise<string | null>;
 };
 
 const INITIAL_STATE: UseSessionState = {
   loading: true,
-  sessionLogs: [],
-  rateTypes: [],
-  vehicles: []
+  sessionLogs: []
 };
 
 export function useSessions(): SessionHook {
@@ -42,8 +36,6 @@ export function useSessions(): SessionHook {
 
       setState((d) => {
         d.sessionLogs = sessionLogItems;
-        d.rateTypes = rateTypes;
-        d.vehicles = vehicles;
         d.loading = false;
       });
     };
@@ -52,35 +44,46 @@ export function useSessions(): SessionHook {
   }, []);
 
   const addSession = async (session: Session) => {
-    const sessionWithId = await sessionService.add(session);
-    const sessionLog = toSessionLogItem(sessionWithId, state.vehicles, state.rateTypes);
+    try {
+      const sessionWithId = await sessionService.add(session);
+      const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
 
-    // await updateLastUsedRateAndVehicle(session, dispatch);
+      setState((s) => {
+        // todo - sort by date
+        s.sessionLogs.push(sessionLog);
+      });
 
-    setState((s) => {
-      s.sessionLogs.push(sessionLog);
-    });
-
-    return sessionWithId.id!;
+      return null;
+    } catch (error) {
+      return error.message;
+    }
   };
 
-  const getSession = async (id: number) => {
-    const session = await sessionService.get(id);
+  const getSession = async (id: number): Promise<Session | null> => {
+    try {
+      const session = await sessionService.get(id);
 
-    return session;
+      return session;
+    } catch (error) {
+      // todo - check for not found error
+      return null;
+    }
   };
 
   const updateSession = async (session: Session) => {
-    await sessionService.update(session);
-    // await updateLastUsedRateAndVehicle(session, dispatch);
+    try {
+      await sessionService.update(session);
 
-    // find the session log item and update it with the updated values
-    setState((s) => {
-      const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
-      const updatedSessionLog = toSessionLogItem(session, state.vehicles, state.rateTypes);
+      // find the session log item and update it with the updated values
+      setState((s) => {
+        const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
+        const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
 
-      s.sessionLogs[existingSessionLogId] = updatedSessionLog;
-    });
+        s.sessionLogs[existingSessionLogId] = updatedSessionLog;
+      });
+    } catch (error) {
+      return error.message;
+    }
   };
 
   return {

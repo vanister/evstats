@@ -7,7 +7,11 @@ export function validateSession(session: Partial<Session>): string | null {
   }
 
   if (!session.kWh || session.kWh <= 0) {
-    return 'kWh must be a value greater than 0.';
+    return 'kWh must be a value greater than 0';
+  }
+
+  if (!session.vehicleId) {
+    return 'Vehicle selection is required';
   }
 
   if (session.rateOverride && session.rateOverride <= 0) {

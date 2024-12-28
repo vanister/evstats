@@ -1,6 +1,6 @@
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 import { NotFoundError } from '../errors/NotFoundError';
 import { Vehicle, VehicleDbo } from '../models/vehicle';
-import { VehicleRepository } from '../repositories/VehicleRepository';
 import { BaseService } from './BaseService';
 import { PartialPropertyRecord } from './service-types';
 

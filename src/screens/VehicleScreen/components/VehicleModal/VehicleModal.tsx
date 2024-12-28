@@ -4,9 +4,9 @@ import { IonContent, IonModal } from '@ionic/react';
 import { useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { Vehicle } from '../../../../models/vehicle';
-import ModalHeader from '../../../SessionScreen/components/SessionModal/ModalHeader';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import VehicleForm from './VehicleForm';
+import ModalHeader from '../../../../components/ModalHeader';
 
 type VehicleModalProps = {
   allowSwipeToClose?: boolean;
@@ -69,7 +69,7 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
       return;
     }
 
-    const successful = (await onSave?.(vehicle)) ?? true;
+    const successful = onSave ? await onSave(vehicle) : true;
 
     if (successful) {
       await modal.current.dismiss();

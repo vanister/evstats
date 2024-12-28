@@ -1,17 +1,12 @@
 import { IonContent, IonModal } from '@ionic/react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
-import { validateSession } from '../../validator';
-import RequiredFieldSection from './RequiredFieldSection';
-import VehicleSection from './VehicleSection';
-import RateSection from './RateSection';
-import { SessionModalState } from '../../session-types';
-import ModalHeader from './ModalHeader';
 import { today } from '../../../../utilities/dateUtility';
-import { useServices } from '../../../../providers/ServiceProvider';
-import EvsProgressLoader from '../../../../components/EvsProgressLoader';
+import { useAppSelector } from '../../../../redux/hooks';
+import SessionForm from '../SessionForm';
+import ModalHeader from '../../../../components/ModalHeader';
 
 type SessionModalProps = {
   allowCloseGesture?: boolean;
@@ -19,52 +14,38 @@ type SessionModalProps = {
   presentingElement?: HTMLElement;
   session?: Session | null;
   triggerId?: string;
-  onCancel?: VoidFunction;
-  onSave: (session: Session) => Promise<void>;
-  onDidDismiss?: VoidFunction;
+  onSave: (session: Session) => Promise<boolean>;
+  onDidDismiss?: (canceled?: boolean) => void;
 };
 
-const INITIAL_FORM_STATE: SessionModalState = {
-  loading: true,
-  rateTypes: [],
-  vehicles: [],
-  session: {
-    date: today(),
-    rateTypeId: 1,
-    vehicleId: 1
-  }
+type SessionModalState = {
+  isDirty?: boolean;
+  isValid?: boolean;
+  session: Session;
 };
 
-export default function SessionModal({ isNew, session, ...props }: SessionModalProps) {
-  const rateService = useServices('rateService');
-  const vehicleService = useServices('vehicleService');
-  const [state, setState] = useImmerState<SessionModalState>(INITIAL_FORM_STATE);
+const NEW_SESSION: Session = {
+  date: today(),
+  kWh: null,
+  rateTypeId: null,
+  vehicleId: null
+};
+
+// todo -simplify this like vehcile modal
+export default function SessionModal({
+  isNew,
+  session,
+  onSave,
+  onDidDismiss,
+  ...props
+}: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
-  const loaded = !state.loading && (isNew ? true : !!session);
-
-  useEffect(() => {
-    const loadVehiclesAndRates = async () => {
-      const rateTypes = await rateService.list();
-      const vehicles = await vehicleService.list();
-
-      setState((s) => {
-        s.rateTypes = rateTypes;
-        s.vehicles = vehicles;
-        s.loading = false;
-      });
-    };
-
-    loadVehiclesAndRates();
-  }, []);
-
-  useEffect(() => {
-    setState((s) => {
-      if (!isNew) {
-        s.session = session;
-        return;
-      }
-    });
-  }, [session]);
+  const form = useRef<HTMLFormElement>(null);
+  const vehicles = useAppSelector((s) => s.vehicles.vehicles);
+  const rateTypes = useAppSelector((s) => s.rateTypes.rateTypes);
+  const [state, setState] = useImmerState<SessionModalState>({
+    session: { ...NEW_SESSION, ...(session ?? {}) }
+  });
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
     if (props.allowCloseGesture) {
@@ -74,29 +55,34 @@ export default function SessionModal({ isNew, session, ...props }: SessionModalP
     return role !== ModalRoles.Gesture;
   };
 
-  const handleDidDismiss = () => {
-    props.onDidDismiss?.();
-  };
-
-  const handleCancelClick = () => {
-    props.onCancel?.();
-    modal.current?.dismiss();
+  const handleCancelClick = async () => {
+    await modal.current?.dismiss();
+    onDidDismiss?.(true);
   };
 
   const handleSaveClick = async () => {
-    const errorMsg = validateSession(state.session);
+    const isValid = form.current.reportValidity();
 
     setState((s) => {
-      s.errorMsg = errorMsg;
+      s.isValid = isValid;
     });
 
-    if (errorMsg) {
-      // don't raise save if there are errors
+    if (!isValid) {
       return;
     }
 
-    await props.onSave(state.session as Session);
-    await modal.current?.dismiss();
+    const successful = onSave ? await onSave(state.session) : true;
+
+    if (successful) {
+      await modal.current.dismiss();
+      onDidDismiss?.();
+    }
+  };
+
+  const handleSessionFieldValueChange = (field: keyof Session, value: string | number) => {
+    setState((s) => {
+      s.session[field as string] = value;
+    });
   };
 
   return (
@@ -106,21 +92,19 @@ export default function SessionModal({ isNew, session, ...props }: SessionModalP
       className="session-modal"
       canDismiss={modalCanDismiss}
       presentingElement={props.presentingElement}
-      onDidDismiss={handleDidDismiss}
     >
       <ModalHeader
         title={isNew ? 'New Session' : 'Edit Session'}
-        errorMessage={state.errorMsg}
-        actionOptions={{ disablePrimary: !loaded }}
         onSecondaryClick={handleCancelClick}
         onPrimaryClick={handleSaveClick}
       ></ModalHeader>
       <IonContent color="light">
-        <EvsProgressLoader hide={loaded} type="indeterminate" />
-        {/* todo - add form and check validity */}
-        <RequiredFieldSection state={state} setState={setState}></RequiredFieldSection>
-        <VehicleSection state={state} setState={setState}></VehicleSection>
-        <RateSection state={state} setState={setState}></RateSection>
+        <SessionForm
+          session={state.session}
+          vehicles={vehicles}
+          rateTypes={rateTypes}
+          onSessionFieldChange={handleSessionFieldValueChange}
+        />
       </IonContent>
     </IonModal>
   );

@@ -7,7 +7,7 @@ type VehicleFormProps = {
   onFieldValueChange: (field: keyof Vehicle, value: string | number) => void;
 };
 
-export function VehicleForm(
+function VehicleForm(
   { vehicle, onFieldValueChange }: VehicleFormProps,
   ref: MutableRefObject<HTMLFormElement>
 ) {
