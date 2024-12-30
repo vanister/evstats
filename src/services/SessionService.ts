@@ -14,12 +14,14 @@ export interface SessionService {
 
 export class EvsSessionService extends BaseService implements SessionService {
   private readonly sessionToDboPropMap: PartialPropertyRecord<Session, SessionDbo> = {
+    kWh: 'kwh',
     rateOverride: 'rate_override',
     rateTypeId: 'rate_type_id',
     vehicleId: 'vehicle_id'
   };
 
   private readonly dboToSessionPopMap: PartialPropertyRecord<SessionDbo, Session> = {
+    kwh: 'kWh',
     rate_override: 'rateOverride',
     rate_type_id: 'rateTypeId',
     vehicle_id: 'vehicleId'

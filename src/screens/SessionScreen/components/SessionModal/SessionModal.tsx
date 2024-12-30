@@ -24,11 +24,13 @@ type SessionModalState = {
   session: Session;
 };
 
+// make sure all non-id properties have values
 const NEW_SESSION: Session = {
   date: today(),
   kWh: null,
   rateTypeId: null,
-  vehicleId: null
+  vehicleId: null,
+  rateOverride: null
 };
 
 // todo -simplify this like vehcile modal
@@ -100,6 +102,7 @@ export default function SessionModal({
       ></ModalHeader>
       <IonContent color="light">
         <SessionForm
+          ref={form}
           session={state.session}
           vehicles={vehicles}
           rateTypes={rateTypes}

@@ -28,7 +28,11 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
   }
 
   async add(_session: SessionDbo): Promise<SessionDbo> {
-    throw new Error('not implemented');
+    const values = this.getValues(_session, ['id']);
+    const { changes } = await this.context.run(SessionSql.Add, values);
+    const newSession = { ..._session, id: changes.lastId };
+
+    return newSession;
   }
 
   async update(_session: SessionDbo): Promise<void> {

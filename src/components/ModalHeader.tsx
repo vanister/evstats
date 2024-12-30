@@ -1,6 +1,6 @@
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonAlert } from '@ionic/react';
-import { IonSlots } from '../../../../constants';
 import { useEffect, useState } from 'react';
+import { IonSlots } from '../constants';
 
 type ModalHeaderProps = {
   errorMessage?: string;

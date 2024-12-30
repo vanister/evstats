@@ -9,6 +9,7 @@ import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
 import { SessionState } from './session-types';
+import { validateSession } from './validator';
 
 const INITIAL_SESSIONS_STATE: SessionState = {
   showModal: false,
@@ -30,6 +31,13 @@ export default function SessionScreen() {
   };
 
   const handleSessionSave = async (session: Session) => {
+    const validationError = validateSession(session);
+
+    if (validationError) {
+      await showAlert(validationError);
+      return false;
+    }
+
     const errorMessage = state.isNew ? await addSession(session) : await updateSession(session);
 
     if (errorMessage) {
@@ -50,6 +58,7 @@ export default function SessionScreen() {
   };
 
   const handleSessionSelection = async (sessionLog: SessionLog) => {
+    // todo - move this into the modal?
     // find the session that was selected
     setState((s) => {
       s.showModal = true;

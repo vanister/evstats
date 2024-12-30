@@ -4,6 +4,7 @@ import vehicleReducer from './vehicleSlice';
 
 export const store = configureStore({
   reducer: {
+    // todo - break out last used into its own slice
     rateTypes: rateTypeReducer,
     vehicles: vehicleReducer
   }
