@@ -7,39 +7,49 @@ export interface SessionRepository {
   list(limit?: number, page?: number): Promise<SessionDbo[]>;
   get(id: number): Promise<SessionDbo>;
   add(session: SessionDbo): Promise<SessionDbo>;
-  update(session: SessionDbo): Promise<void>;
-  remove(id: number): Promise<void>;
+  update(session: SessionDbo): Promise<number>;
+  remove(id: number): Promise<boolean>;
 }
 
 export class EvsSessionRepository extends BaseRepository<SessionDbo> implements SessionRepository {
-  // todo - move context to base repo
-  constructor(private readonly context: SQLiteDBConnection) {
-    super();
+  constructor(context: SQLiteDBConnection) {
+    super(context);
   }
 
-  async list(_limit?: number, _page?: number): Promise<SessionDbo[]> {
-    const { values } = await this.context.query(SessionSql.List);
+  async list(limit = 50, page = 1): Promise<SessionDbo[]> {
+    // page is 1-based but offset starts at 0
+    const offsetPage = (page - 1) * limit;
+    const params = [limit, offsetPage];
+    const { values } = await this.context.query(SessionSql.List, params);
 
     return (values as SessionDbo[]) ?? [];
   }
 
-  async get(_id: number): Promise<SessionDbo> {
-    throw new Error('not implemented');
+  async get(id: number): Promise<SessionDbo> {
+    const { values } = await this.context.query(SessionSql.Get, [id]);
+    const session = values?.[0] as SessionDbo;
+
+    return session;
   }
 
-  async add(_session: SessionDbo): Promise<SessionDbo> {
-    const values = this.getValues(_session, ['id']);
-    const { changes } = await this.context.run(SessionSql.Add, values);
-    const newSession = { ..._session, id: changes.lastId };
+  async add(session: SessionDbo): Promise<SessionDbo> {
+    const params = this.getValues(session, ['id']);
+    const { changes } = await this.context.run(SessionSql.Add, params);
+    const newSession = { ...session, id: changes.lastId };
 
     return newSession;
   }
 
-  async update(_session: SessionDbo): Promise<void> {
-    throw new Error('not implemented');
+  async update(session: SessionDbo): Promise<number> {
+    const params = this.getValues(session, ['id']);
+    const { changes } = await this.context.run(SessionSql.Update, [...params, session.id]);
+
+    return changes.changes;
   }
 
-  async remove(_id: number): Promise<void> {
-    throw new Error('not implemented');
+  async remove(id: number): Promise<boolean> {
+    const { changes } = await this.context.run(SessionSql.Delete, [id]);
+
+    return changes.changes > 0;
   }
 }

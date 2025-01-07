@@ -12,19 +12,13 @@ type SessionModalProps = {
   allowCloseGesture?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
-  session?: Session | null;
+  session?: Session;
   triggerId?: string;
   onSave: (session: Session) => Promise<boolean>;
   onDidDismiss?: (canceled?: boolean) => void;
 };
 
-type SessionModalState = {
-  isDirty?: boolean;
-  isValid?: boolean;
-  session: Session;
-};
-
-// make sure all non-id properties have values
+// make sure all non-id properties are defined
 const NEW_SESSION: Session = {
   date: today(),
   kWh: null,
@@ -33,20 +27,14 @@ const NEW_SESSION: Session = {
   rateOverride: null
 };
 
-// todo -simplify this like vehcile modal
-export default function SessionModal({
-  isNew,
-  session,
-  onSave,
-  onDidDismiss,
-  ...props
-}: SessionModalProps) {
+export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
   const vehicles = useAppSelector((s) => s.vehicles.vehicles);
   const rateTypes = useAppSelector((s) => s.rateTypes.rateTypes);
-  const [state, setState] = useImmerState<SessionModalState>({
-    session: { ...NEW_SESSION, ...(session ?? {}) }
+  const [session, setSession] = useImmerState<Session>({
+    ...NEW_SESSION,
+    ...(props.session ?? {})
   });
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
@@ -65,15 +53,11 @@ export default function SessionModal({
   const handleSaveClick = async () => {
     const isValid = form.current.reportValidity();
 
-    setState((s) => {
-      s.isValid = isValid;
-    });
-
     if (!isValid) {
       return;
     }
 
-    const successful = onSave ? await onSave(state.session) : true;
+    const successful = onSave ? await onSave(session) : true;
 
     if (successful) {
       await modal.current.dismiss();
@@ -82,8 +66,8 @@ export default function SessionModal({
   };
 
   const handleSessionFieldValueChange = (field: keyof Session, value: string | number) => {
-    setState((s) => {
-      s.session[field as string] = value;
+    setSession((s) => {
+      s[field as string] = value;
     });
   };
 
@@ -103,7 +87,7 @@ export default function SessionModal({
       <IonContent color="light">
         <SessionForm
           ref={form}
-          session={state.session}
+          session={session}
           vehicles={vehicles}
           rateTypes={rateTypes}
           onSessionFieldChange={handleSessionFieldValueChange}

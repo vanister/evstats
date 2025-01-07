@@ -1,10 +1,9 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { Preferences } from '@capacitor/preferences';
 import { logToConsole } from '../logger';
 import { InitTableSql } from './sql/InitTableSql';
 import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { SeedSql } from './sql/SeedData';
+import { SeedSql } from './sql/seedData';
 
 export interface DatabaseManager {
   get context(): SQLiteDBConnection | null;
@@ -47,7 +46,6 @@ export class SqliteDatabaseManager implements DatabaseManager {
   constructor(
     private readonly dbName = 'evstats.db',
     private readonly sqlite = new SQLiteConnection(CapacitorSQLite),
-    private readonly preferences = Preferences,
     private readonly fileSystem = Filesystem
   ) {}
 

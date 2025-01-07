@@ -1,18 +1,16 @@
 import { useEffect } from 'react';
-import { Session, SessionLog } from '../../models/session';
-import { toSessionLogItem } from './helpers';
+import { Session } from '../../models/session';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
-import { useAppSelector } from '../../redux/hooks';
 
 export type UseSessionState = {
-  sessionLogs: SessionLog[];
+  sessions: Session[];
   loading: boolean;
 };
 
 export type SessionHook = {
   loading: boolean;
-  sessionLogs: SessionLog[];
+  sessions: Session[];
   addSession: (session: Session) => Promise<string | null>;
   getSession: (id: number) => Promise<Session | null>;
   updateSession: (session: Session) => Promise<string | null>;
@@ -20,22 +18,19 @@ export type SessionHook = {
 
 const INITIAL_STATE: UseSessionState = {
   loading: true,
-  sessionLogs: []
+  sessions: []
 };
 
 export function useSessions(): SessionHook {
   const sessionService = useServices('sessionService');
-  const vehicles = useAppSelector((state) => state.vehicles.vehicles);
-  const rateTypes = useAppSelector((state) => state.rateTypes.rateTypes);
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
 
   useEffect(() => {
     const loadSessions = async () => {
-      const sessionsEntries = await sessionService.list();
-      const sessionLogItems = sessionsEntries.map((s) => toSessionLogItem(s, vehicles, rateTypes));
+      const sessions = await sessionService.list();
 
       setState((d) => {
-        d.sessionLogs = sessionLogItems;
+        d.sessions = sessions;
         d.loading = false;
       });
     };
@@ -46,11 +41,11 @@ export function useSessions(): SessionHook {
   const addSession = async (session: Session) => {
     try {
       const sessionWithId = await sessionService.add(session);
-      const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
+      // const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
 
       setState((s) => {
         // todo - sort by date
-        s.sessionLogs.push(sessionLog);
+        s.sessions.push(sessionWithId);
       });
 
       return null;
@@ -76,10 +71,10 @@ export function useSessions(): SessionHook {
 
       // find the session log item and update it with the updated values
       setState((s) => {
-        const existingSessionLogId = s.sessionLogs.findIndex((sl) => sl.id === session.id);
-        const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
+        const existingSessionLogId = s.sessions.findIndex((sl) => sl.id === session.id);
+        // const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
 
-        s.sessionLogs[existingSessionLogId] = updatedSessionLog;
+        s.sessions[existingSessionLogId] = session;
       });
     } catch (error) {
       return error.message;
@@ -88,7 +83,7 @@ export function useSessions(): SessionHook {
 
   return {
     loading: state.loading,
-    sessionLogs: state.sessionLogs,
+    sessions: state.sessions,
     addSession,
     getSession,
     updateSession

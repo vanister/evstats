@@ -12,8 +12,8 @@ export interface VehicleRepository {
 }
 
 export class EvsVehicleRepository extends BaseRepository<VehicleDbo> implements VehicleRepository {
-  constructor(private readonly context: SQLiteDBConnection) {
-    super();
+  constructor(context: SQLiteDBConnection) {
+    super(context);
   }
 
   async list(): Promise<VehicleDbo[]> {

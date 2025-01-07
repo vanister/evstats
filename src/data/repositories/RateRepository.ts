@@ -9,8 +9,8 @@ export interface RateRepository {
 }
 
 export class EvsRateRepository extends BaseRepository<RateTypeDbo> implements RateRepository {
-  constructor(private context: SQLiteDBConnection) {
-    super();
+  constructor(context: SQLiteDBConnection) {
+    super(context);
   }
 
   async get(id: number): Promise<RateTypeDbo> {
