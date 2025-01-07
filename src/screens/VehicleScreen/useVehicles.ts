@@ -15,7 +15,7 @@ export type UseVehicleHook = {
 export function useVehicles() {
   const vehicleService = useServices('vehicleService');
   const dispatch = useAppDispatch();
-  const vehicles = useAppSelector((s) => s.vehicles.vehicles);
+  const vehicles = useAppSelector((s) => s.vehicle.vehicles);
 
   const addNewVehicle = async (vehicle: Vehicle): Promise<string | null> => {
     try {

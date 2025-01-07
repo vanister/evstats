@@ -22,8 +22,8 @@ const INITIAL_SESSIONS_STATE: SessionState = {
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const [showAlert] = useIonAlert();
-  const vehicles = useAppSelector((s) => s.vehicles.vehicles);
-  const rateTypes = useAppSelector((s) => s.rateTypes.rateTypes);
+  const vehicles = useAppSelector((s) => s.vehicle.vehicles);
+  const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
   const { sessions, addSession, updateSession } = useSessions();
   const [state, setState] = useImmerState<SessionState>(INITIAL_SESSIONS_STATE);
   const sessionLogs = useMemo(

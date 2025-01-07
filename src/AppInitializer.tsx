@@ -5,10 +5,12 @@ import { useServices, useServiceState } from './providers/ServiceProvider';
 import { setRateTypes } from './redux/rateTypeSlice';
 import { setVehicles } from './redux/vehicleSlice';
 import { useAppDispatch } from './redux/hooks';
+import { useIonAlert } from '@ionic/react';
 
 type AppInitializerProps = PropsWithChildren;
 
 export function AppInitializer({ children }: AppInitializerProps) {
+  const [showAlert] = useIonAlert();
   const [initialized, setInitialized] = useState(false);
   const dispatch = useAppDispatch();
   const serviceReady = useServiceState();
@@ -17,6 +19,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
   useEffect(() => {
     if (!serviceReady) {
+      logToConsole('app already initialized');
       return;
     }
 
@@ -32,6 +35,8 @@ export function AppInitializer({ children }: AppInitializerProps) {
         const vehicles = await vehicleService.list();
         dispatch(setVehicles(vehicles));
 
+        // todo - set last used rate and vehicle
+
         setInitialized(true);
 
         logToConsole('app initialized');
@@ -39,7 +44,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
         await SplashScreen.hide();
       } catch (error) {
         logToConsole('error initializing app:', error);
-        alert('Error initializing');
+        showAlert('Initialization error');
       }
     };
 

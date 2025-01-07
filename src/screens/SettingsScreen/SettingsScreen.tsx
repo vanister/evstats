@@ -16,11 +16,11 @@ export default function SettingsScreen() {
 
   return (
     <EvsPage title="Settings">
-      <section className="backup-section">
+      <div className="backup-section ion-padding">
         <IonButton expand="block" onClick={handleBackupClick}>
-          Share
+          Export data
         </IonButton>
-      </section>
+      </div>
     </EvsPage>
   );
 }

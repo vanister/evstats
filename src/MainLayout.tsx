@@ -9,7 +9,7 @@ import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
 import MainRouteRedirect from './MainRouteRedirect';
 
 export default function MainLayout() {
-  const hasVehicles = useAppSelector((s) => s.vehicles.vehicles.length > 0);
+  const hasVehicles = useAppSelector((s) => s.vehicle.vehicles.length > 0);
 
   return (
     <IonTabs>

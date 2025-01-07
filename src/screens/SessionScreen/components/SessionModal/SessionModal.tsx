@@ -30,8 +30,8 @@ const NEW_SESSION: Session = {
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
-  const vehicles = useAppSelector((s) => s.vehicles.vehicles);
-  const rateTypes = useAppSelector((s) => s.rateTypes.rateTypes);
+  const vehicles = useAppSelector((s) => s.vehicle.vehicles);
+  const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
   const [session, setSession] = useImmerState<Session>({
     ...NEW_SESSION,
     ...(props.session ?? {})

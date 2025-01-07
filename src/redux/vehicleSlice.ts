@@ -11,7 +11,7 @@ const initialState: VehicleState = {
 };
 
 export const vehicleSlice = createSlice({
-  name: 'vehicles',
+  name: 'vehicle',
   initialState,
   reducers: {
     setVehicles: (state, action: { payload: Vehicle[] }) => {

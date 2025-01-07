@@ -24,9 +24,11 @@ export default function ChargeStatsScreen() {
   }, []);
 
   return (
-    <EvsPage className="charge-stats" title="Charge Stats">
+    <EvsPage className="charge-stats-screen" title="Charge Stats">
       <IonLoading isOpen={loading} />
-      {!loading && <VehicleChargeBarChart data={chartData} title="Last 31 Days" />}
+      <div className="content-container ion-padding">
+        {!loading && <VehicleChargeBarChart data={chartData} title="Last 31 Days" />}
+      </div>
     </EvsPage>
   );
 }
