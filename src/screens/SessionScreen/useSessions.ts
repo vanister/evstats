@@ -3,14 +3,14 @@ import { Session } from '../../models/session';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
 
-export type UseSessionState = {
-  sessions: Session[];
+type UseSessionState = {
+  lastUsedRateTypeId?: number;
+  lastUsedVehicleId?: number;
   loading: boolean;
+  sessions: Session[];
 };
 
-export type SessionHook = {
-  loading: boolean;
-  sessions: Session[];
+export type SessionHook = UseSessionState & {
   addSession: (session: Session) => Promise<string | null>;
   getSession: (id: number) => Promise<Session | null>;
   updateSession: (session: Session) => Promise<string | null>;
@@ -41,11 +41,12 @@ export function useSessions(): SessionHook {
   const addSession = async (session: Session) => {
     try {
       const sessionWithId = await sessionService.add(session);
-      // const sessionLog = toSessionLogItem(sessionWithId, vehicles, rateTypes);
 
+      // add the new session with its id
       setState((s) => {
-        // todo - sort by date
         s.sessions.push(sessionWithId);
+        s.lastUsedRateTypeId = session.rateTypeId;
+        s.lastUsedVehicleId = session.vehicleId;
       });
 
       return null;
@@ -72,9 +73,10 @@ export function useSessions(): SessionHook {
       // find the session log item and update it with the updated values
       setState((s) => {
         const existingSessionLogId = s.sessions.findIndex((sl) => sl.id === session.id);
-        // const updatedSessionLog = toSessionLogItem(session, vehicles, rateTypes);
 
         s.sessions[existingSessionLogId] = session;
+        s.lastUsedRateTypeId = session.rateTypeId;
+        s.lastUsedVehicleId = session.vehicleId;
       });
     } catch (error) {
       return error.message;
@@ -82,8 +84,7 @@ export function useSessions(): SessionHook {
   };
 
   return {
-    loading: state.loading,
-    sessions: state.sessions,
+    ...state,
     addSession,
     getSession,
     updateSession

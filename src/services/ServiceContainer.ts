@@ -9,12 +9,15 @@ import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupSe
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
 import { EvsSessionRepository, SessionRepository } from '../data/repositories/SessionRepository';
 import { EvsVehicleRepository, VehicleRepository } from '../data/repositories/VehicleRepository';
+import { EvsPreferenceService, PreferenceService } from './PreferenceService';
+import { Preferences } from '@capacitor/preferences';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
 export type ServiceContainer = {
   chargeStatsService: ChargeStatsService;
   databaseBackupService: DatabaseBackupService;
+  preferenceService: PreferenceService;
   sessionService: SessionService;
   rateService: RateService;
   vehicleService: VehicleService;
@@ -50,15 +53,13 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
 
   // repositories
   const rateRepository: RateRepository = new EvsRateRepository(context);
-  // const rateRepository: RateRepository = new MockRateRepository();
   const sessionRepository: SessionRepository = new EvsSessionRepository(context);
-  // const sessionRepository: SessionRepository = new MockSessionRepository();
   const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
-  // const vehicleRepository: VehicleRepository = new MockVehicleRepository();
 
   // services
   const chargeStatsService: ChargeStatsService = new EvsChargeStatsService();
   const databaseBackupService: DatabaseBackupService = new SqliteDbBackupService(databaseManager);
+  const preferenceService: PreferenceService = new EvsPreferenceService(Preferences);
   const sessionService: SessionService = new EvsSessionService(sessionRepository);
   const rateService: RateService = new EvsRateService(rateRepository);
   const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository);
@@ -67,6 +68,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   container
     .set('chargeStatsService', chargeStatsService)
     .set('databaseBackupService', databaseBackupService)
+    .set('preferenceService', preferenceService)
     .set('rateService', rateService)
     .set('sessionService', sessionService)
     .set('vehicleService', vehicleService);

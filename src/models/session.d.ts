@@ -22,6 +22,7 @@ export type SessionDbo = {
   vehicle_id: number;
 };
 
+/** The session log entry view model */
 export type SessionLog = {
   id: number;
   date: string;

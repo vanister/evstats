@@ -13,8 +13,6 @@ export enum IonSlots {
 }
 
 export enum PreferenceKeys {
-  DbInitialized = 'EVS_DB_INITIALIZED',
-  DbVersion = 'EVS_DB_VERSION',
-  LastSelectedRateTypeId = 'EVS_LAST_SELECTED_RATE_TYPE_ID',
-  LastSelectedVehicleId = 'EVS_LAST_SELECTED_VEHICLE_ID'
+  lastUsedRateTypeId = 'EVS_LAST_USED_RATE_TYPE_ID',
+  LastUsedVehicleId = 'EVS_LAST_USED_VEHICLE_ID'
 }

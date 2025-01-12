@@ -1,41 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Vehicle } from '../models/vehicle';
 
-type VehicleState = {
-  vehicles: Vehicle[];
-  selectedVehicle?: Vehicle;
-};
-
-const initialState: VehicleState = {
-  vehicles: []
-};
+const initialState: Vehicle[] = [];
 
 export const vehicleSlice = createSlice({
-  name: 'vehicle',
+  name: 'vehicles',
   initialState,
   reducers: {
-    setVehicles: (state, action: { payload: Vehicle[] }) => {
-      state.vehicles = action.payload;
-    },
-    setSelectedVehicle: (state, action: { payload: Vehicle }) => {
-      state.selectedVehicle = action.payload;
+    setVehicles: (_, action: { payload: Vehicle[] }) => {
+      // todo - turn into a map of vehicles by id
+      return action.payload;
     },
     deleteVehicle: (state, action: { payload: Vehicle }) => {
-      state.vehicles = state.vehicles.filter((v) => v.id !== action.payload.id);
+      return state.filter((v) => v.id !== action.payload.id);
     },
     updateVehicle: (state, action: { payload: Vehicle }) => {
-      const idx = state.vehicles.findIndex((v) => v.id === action.payload.id);
-      const existing = state.vehicles[idx];
+      const idx = state.findIndex((v) => v.id === action.payload.id);
+      const existing = state[idx];
 
-      state.vehicles[idx] = { ...existing, ...action.payload };
+      state[idx] = { ...existing, ...action.payload };
     },
     addVehicle: (state, action: { payload: Vehicle }) => {
-      state.vehicles.push(action.payload);
+      state.push(action.payload);
     }
   }
 });
 
-export const { setVehicles, setSelectedVehicle, deleteVehicle, addVehicle, updateVehicle } =
-  vehicleSlice.actions;
+export const { setVehicles, deleteVehicle, addVehicle, updateVehicle } = vehicleSlice.actions;
 
 export default vehicleSlice.reducer;

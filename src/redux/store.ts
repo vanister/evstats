@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rateTypeReducer from './rateTypeSlice';
 import vehicleReducer from './vehicleSlice';
+import lastUsedReducer from './lastUsedSlice';
 
 export const store = configureStore({
   reducer: {
-    // todo - break out last used into its own slice
+    lastUsed: lastUsedReducer,
     rateType: rateTypeReducer,
-    vehicle: vehicleReducer
+    vehicles: vehicleReducer
   }
 });
 

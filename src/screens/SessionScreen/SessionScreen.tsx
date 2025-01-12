@@ -13,7 +13,7 @@ import { validateSession } from './validator';
 import { toSessionLogItem } from './helpers';
 import { useAppSelector } from '../../redux/hooks';
 
-const INITIAL_SESSIONS_STATE: SessionState = {
+const INITIAL_STATE: SessionState = {
   showModal: false,
   isNew: false,
   editingSession: null
@@ -22,17 +22,19 @@ const INITIAL_SESSIONS_STATE: SessionState = {
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const [showAlert] = useIonAlert();
-  const vehicles = useAppSelector((s) => s.vehicle.vehicles);
+  const { lastUsedRateTypeId, lastUsedVehicleId, sessions, addSession, updateSession } =
+    useSessions();
+  const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
-  const { sessions, addSession, updateSession } = useSessions();
-  const [state, setState] = useImmerState<SessionState>(INITIAL_SESSIONS_STATE);
+
+  const [localState, setLocalState] = useImmerState<SessionState>(INITIAL_STATE);
   const sessionLogs = useMemo(
     () => sessions.map((s) => toSessionLogItem(s, vehicles, rateTypes)),
     [sessions, vehicles, rateTypes]
   );
 
   const handleAddSessionFabClick = () => {
-    setState((s) => {
+    setLocalState((s) => {
       s.showModal = true;
       s.isNew = true;
     });
@@ -46,7 +48,9 @@ export default function SessionScreen() {
       return false;
     }
 
-    const errorMessage = state.isNew ? await addSession(session) : await updateSession(session);
+    const errorMessage = localState.isNew
+      ? await addSession(session)
+      : await updateSession(session);
 
     if (errorMessage) {
       await showAlert(errorMessage);
@@ -58,7 +62,7 @@ export default function SessionScreen() {
   };
 
   const handleSessionModalDismiss = () => {
-    setState((s) => {
+    setLocalState((s) => {
       s.showModal = false;
       s.isNew = false;
       s.editingSession = null;
@@ -68,7 +72,7 @@ export default function SessionScreen() {
   const handleSessionSelection = async (sessionLog: SessionLog) => {
     const editingSession = sessions.find((s) => s.id === sessionLog.id);
 
-    setState((s) => {
+    setLocalState((s) => {
       s.isNew = false;
       s.showModal = true;
       s.editingSession = editingSession;
@@ -91,10 +95,14 @@ export default function SessionScreen() {
         <IonIcon icon={add} />
       </EvsFloatingActionButton>
       <SessionList sessions={sessionLogs} onSelection={handleSessionSelection} />
-      {state.showModal && (
+      {localState.showModal && (
         <SessionModal
-          isNew={state.isNew}
-          session={state.editingSession}
+          isNew={localState.isNew}
+          rates={rateTypes}
+          selectedRateTypeId={lastUsedRateTypeId}
+          selectedVehicleId={lastUsedVehicleId}
+          session={localState.editingSession}
+          vehicles={vehicles}
           presentingElement={presentingElement.current}
           onSave={handleSaveSession}
           onDidDismiss={handleSessionModalDismiss}

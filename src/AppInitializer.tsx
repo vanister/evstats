@@ -6,6 +6,8 @@ import { setRateTypes } from './redux/rateTypeSlice';
 import { setVehicles } from './redux/vehicleSlice';
 import { useAppDispatch } from './redux/hooks';
 import { useIonAlert } from '@ionic/react';
+import { PreferenceKeys } from './constants';
+import { setRateTypeId, setVehicleId } from './redux/lastUsedSlice';
 
 type AppInitializerProps = PropsWithChildren;
 
@@ -14,6 +16,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
   const [initialized, setInitialized] = useState(false);
   const dispatch = useAppDispatch();
   const serviceReady = useServiceState();
+  const preferenceService = useServices('preferenceService');
   const rateService = useServices('rateService');
   const vehicleService = useServices('vehicleService');
 
@@ -23,19 +26,27 @@ export function AppInitializer({ children }: AppInitializerProps) {
       return;
     }
 
-    // todo - clean up
+    // todo - create thunk
     const initializeApp = async () => {
       try {
         logToConsole('initializing app');
         logToConsole('loading rates');
 
         const rates = await rateService.list();
-        dispatch(setRateTypes(rates));
-
         const vehicles = await vehicleService.list();
-        dispatch(setVehicles(vehicles));
+        const lastUsedRate = await preferenceService.get<number>(
+          PreferenceKeys.lastUsedRateTypeId,
+          'number'
+        );
+        const lastUsedVehicle = await preferenceService.get<number>(
+          PreferenceKeys.LastUsedVehicleId,
+          'number'
+        );
 
-        // todo - set last used rate and vehicle
+        dispatch(setRateTypes(rates));
+        dispatch(setVehicles(vehicles));
+        dispatch(setRateTypeId(lastUsedRate));
+        dispatch(setVehicleId(lastUsedVehicle));
 
         setInitialized(true);
 

@@ -4,16 +4,21 @@ import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import { Session } from '../../../../models/session';
 import { today } from '../../../../utilities/dateUtility';
-import { useAppSelector } from '../../../../redux/hooks';
 import SessionForm from '../SessionForm';
 import ModalHeader from '../../../../components/ModalHeader';
+import { Vehicle } from '../../../../models/vehicle';
+import { RateType } from '../../../../models/rateType';
 
 type SessionModalProps = {
   allowCloseGesture?: boolean;
   isNew?: boolean;
   presentingElement?: HTMLElement;
+  rates: RateType[];
+  selectedVehicleId?: number;
+  selectedRateTypeId?: number;
   session?: Session;
   triggerId?: string;
+  vehicles: Vehicle[];
   onSave: (session: Session) => Promise<boolean>;
   onDidDismiss?: (canceled?: boolean) => void;
 };
@@ -30,10 +35,10 @@ const NEW_SESSION: Session = {
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
-  const vehicles = useAppSelector((s) => s.vehicle.vehicles);
-  const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
   const [session, setSession] = useImmerState<Session>({
     ...NEW_SESSION,
+    rateTypeId: props.selectedRateTypeId,
+    vehicleId: props.selectedVehicleId,
     ...(props.session ?? {})
   });
 
@@ -88,8 +93,8 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
         <SessionForm
           ref={form}
           session={session}
-          vehicles={vehicles}
-          rateTypes={rateTypes}
+          vehicles={props.vehicles}
+          rateTypes={props.rates}
           onSessionFieldChange={handleSessionFieldValueChange}
         />
       </IonContent>
