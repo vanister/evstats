@@ -1,4 +1,4 @@
-import { IonInput, IonItem, IonList, IonListHeader } from '@ionic/react';
+import { IonInput, IonItem, IonList, IonListHeader, IonNote } from '@ionic/react';
 import { forwardRef, MutableRefObject } from 'react';
 import { Vehicle } from '../../../../models/vehicle';
 
@@ -99,7 +99,7 @@ function VehicleForm(
         <IonItem>
           <IonInput
             type="number"
-            label="Battery Size"
+            label="Battery size"
             labelPlacement="fixed"
             min={1}
             max={500}
@@ -108,6 +108,9 @@ function VehicleForm(
           />
         </IonItem>
       </IonList>
+      <IonNote color="medium" className="ion-margin-horizontal">
+        Range should in be miles and Battery Size should be in kWh
+      </IonNote>
     </form>
   );
 }

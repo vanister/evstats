@@ -100,7 +100,7 @@ function SessionForm(
         </IonItem>
       </IonList>
       <IonNote color="medium" className="ion-margin-horizontal">
-        This will override the preset rate type
+        Setting a Rate override will replace the preset rate
       </IonNote>
     </form>
   );
