@@ -5,13 +5,13 @@ type SupportedPreferenceTypes = 'string' | 'number' | 'object' | 'boolean';
 export interface PreferenceService {
   get<T>(key: string, type: SupportedPreferenceTypes): Promise<T | null>;
   remove(key: string): Promise<void>;
-  set(key: string, value: string | number): Promise<void>;
+  set(key: string, value: string): Promise<void>;
 }
 
 export class EvsPreferenceService implements PreferenceService {
   constructor(private readonly preferences: PreferencesPlugin) {}
 
-  async get<T>(key: string, type: SupportedPreferenceTypes): Promise<T | null> {
+  async get<T>(key: string, type: SupportedPreferenceTypes): Promise<T> {
     const { value } = await this.preferences.get({ key });
 
     if (!value) {

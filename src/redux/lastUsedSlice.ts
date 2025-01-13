@@ -16,10 +16,13 @@ const lastUsedSlice = createSlice({
     },
     setRateTypeId: (state: LastUsedState, action: { payload: number }) => {
       state.rateTypeId = action.payload;
+    },
+    setLastUsed: (state: LastUsedState, action: { payload: Partial<LastUsedState> }) => {
+      return { ...state, ...action.payload };
     }
   }
 });
 
-export const { setRateTypeId, setVehicleId } = lastUsedSlice.actions;
+export const { setLastUsed, setRateTypeId, setVehicleId } = lastUsedSlice.actions;
 
 export default lastUsedSlice.reducer;
