@@ -71,7 +71,7 @@ export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarC
   return (
     <div className="vehicle-charge-bar-chart">
       <canvas ref={chartCanvasRef} id="vehicle-charge-bar-chart-canvas" height={250}></canvas>
-      <ChargeSummary averages={data.averages} />
+      <ChargeSummary averages={data?.averages ?? []} />
     </div>
   );
 }
