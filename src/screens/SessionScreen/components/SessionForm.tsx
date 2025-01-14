@@ -1,4 +1,4 @@
-import { forwardRef, MutableRefObject } from 'react';
+import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
 import { Session } from '../../../models/session';
 import { IonInput, IonItem, IonList, IonNote, IonSelectOption } from '@ionic/react';
 import EvsSelect from '../../../components/EvsSelect';
@@ -16,11 +16,23 @@ function SessionForm(
   { rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps,
   ref: MutableRefObject<HTMLFormElement>
 ) {
+  const inputRef = useRef<HTMLIonInputElement>(null);
+
+  useEffect(() => {
+    // wait long enough for the modal to appear
+    const id = setTimeout(() => {
+      inputRef.current?.setFocus();
+    }, 500);
+
+    return () => clearTimeout(id);
+  }, []);
+
   return (
     <form ref={ref}>
       <IonList inset>
         <IonItem>
           <IonInput
+            ref={inputRef}
             label="kWh"
             labelPlacement="fixed"
             placeholder="required"
@@ -51,7 +63,6 @@ function SessionForm(
             inset
             label="Vehicle"
             labelPlacement="fixed"
-            header="Select a Vehicle"
             value={session.vehicleId}
             placeholder="required"
             onSelect={(value) => onSessionFieldChange('vehicleId', +value)}
@@ -72,7 +83,6 @@ function SessionForm(
           <EvsSelect
             label="Rate type"
             labelPlacement="fixed"
-            header="Select a Rate Type"
             value={session.rateTypeId}
             placeholder="required"
             onSelect={(value) => onSessionFieldChange('rateTypeId', +value)}
