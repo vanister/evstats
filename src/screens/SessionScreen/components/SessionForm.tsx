@@ -98,14 +98,8 @@ function SessionForm(
           <IonInput
             label="Rate override"
             labelPlacement="fixed"
-            type="number"
-            min={0}
-            max={99}
-            maxlength={2}
             value={session.rateOverride}
-            onIonInput={(e) =>
-              onSessionFieldChange('rateOverride', parseFloat(e.detail.value) || null)
-            }
+            onIonInput={(e) => onSessionFieldChange('rateOverride', e.detail.value)}
           />
         </IonItem>
       </IonList>

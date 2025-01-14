@@ -14,7 +14,9 @@ export function validateSession(session: Partial<Session>): string | null {
     return 'Vehicle selection is required';
   }
 
-  if (session.rateOverride && session.rateOverride <= 0) {
+  const rateOverride = +session.rateOverride;
+
+  if (session.rateOverride && (isNaN(rateOverride) || rateOverride <= 0)) {
     return 'Rate override must be a value greater than 0';
   }
 
