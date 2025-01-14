@@ -10,6 +10,7 @@ export type EvsSelectOptionItem = {
 type IonSelectChangeEvent = { detail: { value: ExplicitAny } };
 
 type EvsSelectProps = PropsWithChildrenAndClass<{
+  inteface?: 'popover' | 'alert';
   inset?: boolean;
   label: string;
   labelPlacement?: 'fixed' | 'start' | 'end' | 'floating' | 'stacked';
@@ -51,6 +52,7 @@ export default function EvsSelect(props: EvsSelectProps) {
       placeholder={props.placeholder}
       value={props.value}
       onIonChange={handleSelectChange}
+      interface={props.inteface ?? 'popover'}
       interfaceOptions={headerOptions}
     >
       {props.children ??
