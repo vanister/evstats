@@ -1,5 +1,3 @@
-// todo use enums
-
 export enum ModalRoles {
   Gesture = 'gesture'
 }
