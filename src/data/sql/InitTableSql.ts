@@ -1,7 +1,7 @@
 import { JsonSQLite } from '@capacitor-community/sqlite';
 
-export class InitTableSql {
-  static readonly CREATE_VEHICLES_TABLE = `
+export const InitTableSql = Object.freeze({
+  CreateVehiclesTable: `
     CREATE TABLE IF NOT EXISTS vehicles (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       year INTEGER NOT NULL,
@@ -13,19 +13,16 @@ export class InitTableSql {
       battery_size REAL NULL,
       range INTEGER NULL
     );
-  `;
-  2;
-
-  static readonly CREATE_RATE_TYPE_TABLE = `
+  `,
+  CreateRateTypeTable: `
     CREATE TABLE IF NOT EXISTS rate_types (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       amount REAL NOT NULL,
       unit TEXT LENGTH(5) NOT NULL
     );
-  `;
-
-  static readonly CREATE_SESSIONS_TABLE = `
+  `,
+  CreateSessionsTable: `
     CREATE TABLE IF NOT EXISTS sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       vehicle_id INTEGER NOT NULL,
@@ -36,10 +33,9 @@ export class InitTableSql {
       FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
       FOREIGN KEY (rate_type_id) REFERENCES rate_types(Id)
     );
-  `;
-
-  static readonly SET_INITIAL_VERSION = `PRAGMA user_version = 1;`;
-}
+  `,
+  SetInitialVersion: `PRAGMA user_version = 1;`
+});
 
 export type SchemaOptions = {
   database?: string;

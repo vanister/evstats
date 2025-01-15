@@ -4,6 +4,7 @@ import { InitTableSql } from './sql/InitTableSql';
 import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { SeedSql } from './sql/seedData';
+import { ViewSql } from './sql/ViewSql';
 
 export interface DatabaseManager {
   get context(): SQLiteDBConnection | null;
@@ -120,10 +121,11 @@ export class SqliteDatabaseManager implements DatabaseManager {
       }
 
       const tableResults = await this.db.executeSet([
-        { statement: InitTableSql.CREATE_RATE_TYPE_TABLE, values: [] },
-        { statement: InitTableSql.CREATE_VEHICLES_TABLE, values: [] },
-        { statement: InitTableSql.CREATE_SESSIONS_TABLE, values: [] },
-        { statement: InitTableSql.SET_INITIAL_VERSION, values: [] }
+        { statement: InitTableSql.CreateRateTypeTable, values: [] },
+        { statement: InitTableSql.CreateVehiclesTable, values: [] },
+        { statement: InitTableSql.CreateSessionsTable, values: [] },
+        { statement: InitTableSql.SetInitialVersion, values: [] },
+        { statement: ViewSql.VehicleChargeSummary, values: [] }
       ]);
 
       logToConsole('table created:', tableResults.changes);
@@ -145,7 +147,7 @@ export class SqliteDatabaseManager implements DatabaseManager {
       return this.currentVersion;
     }
 
-    const { values } = await this.db.query(PragmaSql.GET_DB_VERSION);
+    const { values } = await this.db.query(PragmaSql.GetDbVersion);
     const result = values?.[0];
     const version = result?.user_version ?? 0;
 

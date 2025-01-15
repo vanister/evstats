@@ -1,8 +1,8 @@
 import { JsonSQLite } from '@capacitor-community/sqlite';
 import { SchemaOptions } from './InitTableSql';
 
-export class SeedSql {
-  static readonly RateTypes = `
+export const SeedSql = Object.freeze({
+  RateTypes: `
     INSERT INTO rate_types (name, amount, unit)
     SELECT 'Home', 0.13, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
     UNION ALL
@@ -11,8 +11,8 @@ export class SeedSql {
     SELECT 'Other', 0.12, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
     UNION ALL
     SELECT 'DC', 0.32, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
-  `;
-}
+  `
+});
 
 export const getSeedData = (options?: SchemaOptions): JsonSQLite => {
   const { database = 'evstats.db', version = 1, encrypted = false, mode = 'full' } = options ?? {};

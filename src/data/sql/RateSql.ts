@@ -1,10 +1,9 @@
-export class RateSql {
-  static readonly GetById = `SELECT * FROM rate_types WHERE id = ?;`;
-  static readonly List = `SELECT * FROM rate_types;`;
-
-  static readonly Update = `
+export const RateSql = Object.freeze({
+  GetById: `SELECT * FROM rate_types WHERE id = ?;`,
+  List: `SELECT * FROM rate_types;`,
+  Update: `
     UPDATE rate_types
     SET amount = ?, name = ?, unit = ?
     WHERE id = ?;
-  `;
-}
+  `
+});

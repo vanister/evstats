@@ -1,22 +1,18 @@
-export class SessionSql {
-  static readonly List = `SELECT * FROM sessions LIMIT ? OFFSET ?;`;
-
-  static readonly Add = `
+export const SessionSql = Object.freeze({
+  List: `SELECT * FROM sessions LIMIT ? OFFSET ?;`,
+  Add: `
     INSERT INTO sessions(date, kwh, rate_override, rate_type_id, vehicle_id)
     VALUES(?, ?, ?, ?, ?);
-  `;
-
-  static readonly Get = `
+  `,
+  Get: `
     SELECT * FROM sessions WHERE id = ?;
-  `;
-
-  static readonly Update = `
+  `,
+  Update: `
     UPDATE sessions
     SET date = ?, kwh = ?, rate_override = ?, rate_type_id = ?, vehicle_id = ?
     WHERE id = ?;
-  `;
-
-  static readonly Delete = `
+  `,
+  Delete: `
     DELETE FROM sessions WHERE id = ?;
-  `;
-}
+  `
+});
