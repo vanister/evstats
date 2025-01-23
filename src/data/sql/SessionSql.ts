@@ -1,3 +1,7 @@
+export class SessionSql2 {
+  public static readonly Last31Days = ``;
+}
+
 export const SessionSql = Object.freeze({
   List: `SELECT * FROM sessions ORDER BY date DESC LIMIT ? OFFSET ?;`,
 

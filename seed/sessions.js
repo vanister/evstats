@@ -6,6 +6,7 @@ const {
   rate = 1,
   start = '2024-01-01',
   maxkwh = 100
+  // eslint-disable-next-line no-undef
 } = parseArgs(process.argv.slice(2));
 
 const writeln = (...msg) => {

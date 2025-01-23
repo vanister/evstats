@@ -1,3 +1,4 @@
+import { SessionRepository } from '../data/repositories/SessionRepository';
 import { BaseService } from './BaseService';
 
 export type ChargeAverage = {
@@ -32,6 +33,10 @@ const ChargeColors = {
 
 /** Charge stats chart data service. */
 export class EvsChargeStatsService extends BaseService implements ChargeStatsService {
+  constructor(private readonly sessionRepository: SessionRepository) {
+    super();
+  }
+
   async getLast31Days(vehicleId: number): Promise<ChargeStatData> {
     const randomKwh = (seed = 51) => Math.floor(Math.random() * seed);
     const randomDataset = () => Array.from({ length: 31 }, () => randomKwh()).reverse();
@@ -100,13 +105,10 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     switch (name) {
       case 'Work':
         return ChargeColors.Work;
-
       case 'Other':
         return ChargeColors.Other;
-
       case 'DC':
         return ChargeColors.DC;
-
       case 'Home':
       default:
         return ChargeColors.Home;
