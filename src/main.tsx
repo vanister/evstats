@@ -11,7 +11,7 @@ import {
   Tooltip
 } from 'chart.js';
 import DatabaseManagerProvider from './providers/DatabaseManagerProvider';
-import { logToConsole } from './logger';
+import { logToConsole, logToServer } from './logger';
 import { getInstance } from './data/DatabaseManager';
 import { registerAppStateListeners } from './appStateListeners';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -28,7 +28,8 @@ const databaseManager = getInstance();
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
-logToConsole('starting up...');
+// logToConsole('starting up...');
+logToServer('starting up...');
 registerAppStateListeners(databaseManager);
 
 databaseManager
