@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { logToConsole } from './logger';
+import { logToServer } from './logger';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { useServices, useServiceState } from './providers/ServiceProvider';
 import { setRateTypes } from './redux/rateTypeSlice';
@@ -22,15 +22,15 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
   useEffect(() => {
     if (!serviceReady) {
-      logToConsole('app already initialized');
+      logToServer('app already initialized');
       return;
     }
 
     // todo - create thunk
     const initializeApp = async () => {
       try {
-        logToConsole('initializing app');
-        logToConsole('loading rates');
+        logToServer('initializing app');
+        logToServer('loading rates');
 
         const rates = await rateService.list();
         const vehicles = await vehicleService.list();
@@ -50,11 +50,11 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
         setInitialized(true);
 
-        logToConsole('app initialized');
-        logToConsole('taking down splash screen');
+        logToServer('app initialized');
+        logToServer('taking down splash screen');
         await SplashScreen.hide();
       } catch (error) {
-        logToConsole('error initializing app:', error);
+        logToServer(`error initializing app: ${error}`);
         showAlert('Initialization error');
       }
     };

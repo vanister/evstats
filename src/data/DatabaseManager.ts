@@ -1,5 +1,5 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { logToConsole } from '../logger';
+import { logToServer } from '../logger';
 import { InitTableSql } from './sql/InitTableSql';
 import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
@@ -35,7 +35,7 @@ let instance: SqliteDatabaseManager;
 /** Gets a singleton instance of a DatabaseManager. */
 export function getInstance(): DatabaseManager {
   if (!instance) {
-    logToConsole('creating a new instance of the db context');
+    logToServer('creating a new instance of the db context');
     instance = new SqliteDatabaseManager();
   }
 
@@ -73,25 +73,25 @@ class SqliteDatabaseManager implements DatabaseManager {
     const { encrypted, mode, readOnly, version } = options;
 
     try {
-      logToConsole('attempting to open a sqlite connection');
+      logToServer('attempting to open a sqlite connection');
 
       const isConnConsistent = (await this.sqlite.checkConnectionsConsistency()).result;
       const isConnection = (await this.sqlite.isConnection(dbName, readOnly)).result;
 
       if (isConnConsistent && isConnection) {
-        logToConsole('sqlite connection exists, retrieving');
+        logToServer('sqlite connection exists, retrieving');
         this.db = await this.sqlite.retrieveConnection(dbName, readOnly);
       } else {
-        logToConsole('creating new sqlite connection');
+        logToServer('creating new sqlite connection');
         this.db = await this.sqlite.createConnection(dbName, encrypted, mode, version, readOnly);
       }
 
-      logToConsole('sqlite connection successful');
-      logToConsole('opening db:', dbName);
+      logToServer('sqlite connection successful');
+      logToServer(`opening db: ${dbName}`);
 
       await this.db.open();
     } catch (error) {
-      logToConsole('Connection error:', error);
+      logToServer(`Connection error: ${error}`);
       alert(error);
 
       throw error;
@@ -100,29 +100,29 @@ class SqliteDatabaseManager implements DatabaseManager {
 
   async closeConnection(): Promise<void> {
     try {
-      logToConsole('attempting to close db connection');
+      logToServer('attempting to close db connection');
 
       await this.db?.close();
 
       this.db = null;
       this.dbContext = null;
 
-      logToConsole('db connection closed');
+      logToServer('db connection closed');
     } catch (error) {
-      logToConsole('Error closing db connection', error);
+      logToServer(`Error closing db connection: ${error}`);
     }
   }
 
   async initializeDb(): Promise<void> {
     // todo - look into versioning/migrations
     try {
-      logToConsole('inializing db');
+      logToServer('inializing db');
       await this.printDbPath();
 
       const dbVersion = await this.getVersion();
 
       if (dbVersion > 0) {
-        logToConsole('db already initalized, current version:', dbVersion);
+        logToServer(`db already initalized, current version: ${dbVersion}`);
         return;
       }
 
@@ -134,14 +134,14 @@ class SqliteDatabaseManager implements DatabaseManager {
         { statement: ViewSql.VehicleChargeSummary, values: [] }
       ]);
 
-      logToConsole('table created:', tableResults.changes);
+      logToServer(`table created: ${tableResults.changes}`);
 
       const seedResults = await this.db.execute(SeedSql.RateTypes);
 
-      logToConsole('seeding tables:', seedResults.changes);
-      logToConsole('db initalized');
+      logToServer(`seeding tables: ${seedResults.changes}`);
+      logToServer('db initalized');
     } catch (error) {
-      logToConsole('error initializing db', error);
+      logToServer('error initializing db', error);
       alert(error);
 
       throw error;
@@ -168,6 +168,6 @@ class SqliteDatabaseManager implements DatabaseManager {
       path: this.fullDatabaseName
     });
 
-    logToConsole('db located at:', dbPath.uri);
+    logToServer(`db located at: ${dbPath.uri}`);
   }
 }
