@@ -35,14 +35,14 @@ let instance: SqliteDatabaseManager;
 /** Gets a singleton instance of a DatabaseManager. */
 export function getInstance(): DatabaseManager {
   if (!instance) {
+    logToConsole('creating a new instance of the db context');
     instance = new SqliteDatabaseManager();
   }
 
   return instance;
 }
 
-export class SqliteDatabaseManager implements DatabaseManager {
-  // todo - replace db usage in this file with dbContext
+class SqliteDatabaseManager implements DatabaseManager {
   private db: SQLiteDBConnection;
   private dbContext: DbContext;
   private currentVersion: number;
@@ -103,7 +103,9 @@ export class SqliteDatabaseManager implements DatabaseManager {
       logToConsole('attempting to close db connection');
 
       await this.db?.close();
+
       this.db = null;
+      this.dbContext = null;
 
       logToConsole('db connection closed');
     } catch (error) {
