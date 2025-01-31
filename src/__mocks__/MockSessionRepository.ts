@@ -24,20 +24,24 @@ export class MockSessionRepository implements SessionRepository {
     return newSession;
   }
 
-  async update(session: SessionDbo): Promise<void> {
+  async update(session: SessionDbo): Promise<number> {
     const existingIdx = this.sessions.findIndex((s) => s.id === session.id);
 
     if (existingIdx === -1) {
-      return null;
+      return 0;
     }
 
     const existing = this.sessions[existingIdx];
     const udpated: SessionDbo = { ...existing, ...session };
 
     this.sessions[existingIdx] = udpated;
+
+    return 1;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<boolean> {
     this.sessions = this.sessions.filter((s) => s.id !== id);
+
+    return true;
   }
 }

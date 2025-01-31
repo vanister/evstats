@@ -1,8 +1,8 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { DboKeys } from './repositories-types';
+import { DbContext } from '../DbContext';
 
 export abstract class BaseRepository<T> {
-  constructor(protected readonly context: SQLiteDBConnection) {}
+  constructor(protected readonly context: DbContext) {}
 
   /**
    * Gets an alphabetized, sorted, array of value parameters based off of the given dbo.

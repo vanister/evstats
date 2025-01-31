@@ -1,7 +1,7 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { VehicleSql } from '../sql/VehicleSql';
 import { VehicleDbo } from '../../models/vehicle';
 import { BaseRepository } from './BaseRepository';
+import { DbContext } from '../DbContext';
 
 export interface VehicleRepository {
   list(): Promise<VehicleDbo[]>;
@@ -12,27 +12,27 @@ export interface VehicleRepository {
 }
 
 export class EvsVehicleRepository extends BaseRepository<VehicleDbo> implements VehicleRepository {
-  constructor(context: SQLiteDBConnection) {
+  constructor(context: DbContext) {
     super(context);
   }
 
   async list(): Promise<VehicleDbo[]> {
-    const { values } = await this.context.query(VehicleSql.List);
+    const values = await this.context.query<VehicleDbo>(VehicleSql.List);
 
-    return (values as VehicleDbo[]) ?? [];
+    return values ?? [];
   }
 
   async get(id: number): Promise<VehicleDbo> {
-    const { values } = await this.context.query(VehicleSql.GetById, [id]);
-    const vehicle = values?.[0] as VehicleDbo;
+    const values = await this.context.query<VehicleDbo>(VehicleSql.GetById, [id]);
+    const vehicle = values?.[0];
 
     return vehicle;
   }
 
   async add(vehicle: VehicleDbo): Promise<number> {
     const values = this.getValues(vehicle, ['id']);
-    const { changes } = await this.context.run(VehicleSql.Add, values);
-    const id = changes.lastId;
+    const { lastId } = await this.context.run(VehicleSql.Add, values);
+    const id = lastId;
 
     return id;
   }
@@ -43,12 +43,12 @@ export class EvsVehicleRepository extends BaseRepository<VehicleDbo> implements 
     const updatedValues = [...valuesWithoutId, vehicle.id];
     const { changes } = await this.context.run(VehicleSql.Update, updatedValues);
 
-    return changes.changes;
+    return changes;
   }
 
   async remove(id: number): Promise<boolean> {
     const { changes } = await this.context.run(VehicleSql.Delete, [id]);
 
-    return changes.changes > 0;
+    return changes > 0;
   }
 }

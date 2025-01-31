@@ -1,7 +1,7 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { SessionDbo } from '../../models/session';
 import { BaseRepository } from './BaseRepository';
 import { SessionSql } from '../sql/SessionSql';
+import { DbContext } from '../DbContext';
 
 export interface SessionRepository {
   list(limit?: number, page?: number): Promise<SessionDbo[]>;
@@ -12,7 +12,7 @@ export interface SessionRepository {
 }
 
 export class EvsSessionRepository extends BaseRepository<SessionDbo> implements SessionRepository {
-  constructor(context: SQLiteDBConnection) {
+  constructor(context: DbContext) {
     super(context);
   }
 
@@ -20,22 +20,22 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
     // page is 1-based but offset starts at 0
     const offsetPage = (page - 1) * limit;
     const params = [limit, offsetPage];
-    const { values } = await this.context.query(SessionSql.List, params);
+    const values = await this.context.query<SessionDbo>(SessionSql.List, params);
 
-    return (values as SessionDbo[]) ?? [];
+    return values ?? [];
   }
 
   async get(id: number): Promise<SessionDbo> {
-    const { values } = await this.context.query(SessionSql.Get, [id]);
-    const session = values?.[0] as SessionDbo;
+    const values = await this.context.query<SessionDbo>(SessionSql.Get, [id]);
+    const session = values?.[0];
 
     return session;
   }
 
   async add(session: SessionDbo): Promise<SessionDbo> {
     const params = this.getValues(session, ['id']);
-    const { changes } = await this.context.run(SessionSql.Add, params);
-    const newSession = { ...session, id: changes.lastId };
+    const { lastId } = await this.context.run(SessionSql.Add, params);
+    const newSession = { ...session, id: lastId };
 
     return newSession;
   }
@@ -44,12 +44,12 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
     const params = this.getValues(session, ['id']);
     const { changes } = await this.context.run(SessionSql.Update, [...params, session.id]);
 
-    return changes.changes;
+    return changes;
   }
 
   async remove(id: number): Promise<boolean> {
     const { changes } = await this.context.run(SessionSql.Delete, [id]);
 
-    return changes.changes > 0;
+    return changes > 0;
   }
 }

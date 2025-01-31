@@ -1,7 +1,7 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { RateSql } from '../sql/RateSql';
 import { BaseRepository } from './BaseRepository';
 import { RateTypeDbo } from '../../models/rateType';
+import { DbContext } from '../DbContext';
 
 export interface RateRepository {
   get(id: number): Promise<RateTypeDbo>;
@@ -9,20 +9,20 @@ export interface RateRepository {
 }
 
 export class EvsRateRepository extends BaseRepository<RateTypeDbo> implements RateRepository {
-  constructor(context: SQLiteDBConnection) {
+  constructor(context: DbContext) {
     super(context);
   }
 
   async get(id: number): Promise<RateTypeDbo> {
-    const { values } = await this.context.query(RateSql.GetById, [id]);
-    const rate = values?.[0] as RateTypeDbo;
+    const values = await this.context.query<RateTypeDbo>(RateSql.GetById, [id]);
+    const rate = values?.[0];
 
     return rate;
   }
 
   async list(): Promise<RateTypeDbo[]> {
-    const { values } = await this.context.query(RateSql.List);
+    const values = await this.context.query<RateTypeDbo>(RateSql.List);
 
-    return (values as RateTypeDbo[]) ?? [];
+    return values ?? [];
   }
 }

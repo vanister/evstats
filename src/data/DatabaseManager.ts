@@ -5,11 +5,12 @@ import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { SeedSql } from './sql/seedData';
 import { ViewSql } from './sql/ViewSql';
+import { createDbContextInstance, DbContext } from './DbContext';
 
 export interface DatabaseManager {
-  get context(): SQLiteDBConnection | null;
+  get context(): DbContext;
   get fullDatabaseName(): string;
-  openConnection(options?: ConnectionOptions): Promise<SQLiteDBConnection>;
+  openConnection(options?: ConnectionOptions): Promise<void>;
   closeConnection(): Promise<void>;
   initializeDb(): Promise<void>;
   getVersion(): Promise<number>;
@@ -41,17 +42,24 @@ export function getInstance(): DatabaseManager {
 }
 
 export class SqliteDatabaseManager implements DatabaseManager {
-  private db: SQLiteDBConnection | null;
-  private currentVersion: number | null;
+  // todo - replace db usage in this file with dbContext
+  private db: SQLiteDBConnection;
+  private dbContext: DbContext;
+  private currentVersion: number;
 
   constructor(
     private readonly dbName = 'evstats.db',
     private readonly sqlite = new SQLiteConnection(CapacitorSQLite),
-    private readonly fileSystem = Filesystem
+    private readonly fileSystem = Filesystem,
+    private readonly createDbContext = createDbContextInstance
   ) {}
 
-  get context(): SQLiteDBConnection | null {
-    return this.db;
+  get context(): DbContext {
+    if (!this.dbContext) {
+      this.dbContext = this.createDbContext(this.db);
+    }
+
+    return this.dbContext;
   }
 
   get fullDatabaseName() {
@@ -60,9 +68,7 @@ export class SqliteDatabaseManager implements DatabaseManager {
     return fullDbName;
   }
 
-  async openConnection(
-    options: ConnectionOptions = DEFAULT_CONNECTION_OPTIONS
-  ): Promise<SQLiteDBConnection> {
+  async openConnection(options: ConnectionOptions = DEFAULT_CONNECTION_OPTIONS): Promise<void> {
     const { dbName } = this;
     const { encrypted, mode, readOnly, version } = options;
 
@@ -84,8 +90,6 @@ export class SqliteDatabaseManager implements DatabaseManager {
       logToConsole('opening db:', dbName);
 
       await this.db.open();
-
-      return this.db;
     } catch (error) {
       logToConsole('Connection error:', error);
       alert(error);
