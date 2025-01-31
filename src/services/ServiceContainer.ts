@@ -4,7 +4,7 @@ import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { DatabaseManager } from '../data/DatabaseManager';
-import { logToServer } from '../logger';
+import { logToDevServer } from '../logger';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
 import { EvsSessionRepository, SessionRepository } from '../data/repositories/SessionRepository';
@@ -43,11 +43,11 @@ let isContainerBuilt = false;
  */
 export function initializeServiceContainer({ databaseManager }: ContainerContext) {
   if (isContainerBuilt) {
-    logToServer('service container already initialized');
+    logToDevServer('service container already initialized');
     return;
   }
 
-  logToServer('initializing service container');
+  logToDevServer('initializing service container');
 
   const { context } = databaseManager;
 
@@ -74,7 +74,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     .set('vehicleService', vehicleService);
 
   isContainerBuilt = true;
-  logToServer('service container initialized');
+  logToDevServer('service container initialized');
 }
 
 /**

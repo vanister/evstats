@@ -1,5 +1,5 @@
 import { App as IonicApp } from '@capacitor/app';
-import { logToServer } from './logger';
+import { logToDevServer } from './logger';
 import { DatabaseManager } from './data/DatabaseManager';
 
 /**
@@ -9,25 +9,25 @@ import { DatabaseManager } from './data/DatabaseManager';
  * @param databaseManager The database manager.
  */
 export function registerAppStateListeners(databaseManager: DatabaseManager) {
-  logToServer('registering app state change listeners');
+  logToDevServer('registering app state change listeners');
 
   IonicApp.addListener('pause', async () => {
-    logToServer('app paused, closing sqlite connection');
+    logToDevServer('app paused, closing sqlite connection');
 
     try {
       await databaseManager.closeConnection();
     } catch (error) {
-      logToServer(`failed to close the sqlite connection: ${error}`);
+      logToDevServer(`failed to close the sqlite connection: ${error}`);
     }
   });
 
   IonicApp.addListener('resume', async () => {
-    logToServer('app resume, opening sqlite connection');
+    logToDevServer('app resume, opening sqlite connection');
 
     try {
       await databaseManager.openConnection();
     } catch (error) {
-      logToServer('failed to reopen sqlite connection');
+      logToDevServer('failed to reopen sqlite connection');
     }
   });
 }

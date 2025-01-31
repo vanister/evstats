@@ -1,5 +1,5 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { logToServer } from '../logger';
+import { logToDevServer } from '../logger';
 import { InitTableSql } from './sql/InitTableSql';
 import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
@@ -35,7 +35,7 @@ let instance: SqliteDatabaseManager;
 /** Gets a singleton instance of a DatabaseManager. */
 export function getInstance(): DatabaseManager {
   if (!instance) {
-    logToServer('creating a new instance of the db context');
+    logToDevServer('creating a new instance of the db context');
     instance = new SqliteDatabaseManager();
   }
 
@@ -73,25 +73,25 @@ class SqliteDatabaseManager implements DatabaseManager {
     const { encrypted, mode, readOnly, version } = options;
 
     try {
-      logToServer('attempting to open a sqlite connection');
+      logToDevServer('attempting to open a sqlite connection');
 
       const isConnConsistent = (await this.sqlite.checkConnectionsConsistency()).result;
       const isConnection = (await this.sqlite.isConnection(dbName, readOnly)).result;
 
       if (isConnConsistent && isConnection) {
-        logToServer('sqlite connection exists, retrieving');
+        logToDevServer('sqlite connection exists, retrieving');
         this.db = await this.sqlite.retrieveConnection(dbName, readOnly);
       } else {
-        logToServer('creating new sqlite connection');
+        logToDevServer('creating new sqlite connection');
         this.db = await this.sqlite.createConnection(dbName, encrypted, mode, version, readOnly);
       }
 
-      logToServer('sqlite connection successful');
-      logToServer(`opening db: ${dbName}`);
+      logToDevServer('sqlite connection successful');
+      logToDevServer(`opening db: ${dbName}`);
 
       await this.db.open();
     } catch (error) {
-      logToServer(`Connection error: ${error}`);
+      logToDevServer(`Connection error: ${error}`);
       alert(error);
 
       throw error;
@@ -100,29 +100,29 @@ class SqliteDatabaseManager implements DatabaseManager {
 
   async closeConnection(): Promise<void> {
     try {
-      logToServer('attempting to close db connection');
+      logToDevServer('attempting to close db connection');
 
       await this.db?.close();
 
       this.db = null;
       this.dbContext = null;
 
-      logToServer('db connection closed');
+      logToDevServer('db connection closed');
     } catch (error) {
-      logToServer(`Error closing db connection: ${error}`);
+      logToDevServer(`Error closing db connection: ${error}`);
     }
   }
 
   async initializeDb(): Promise<void> {
     // todo - look into versioning/migrations
     try {
-      logToServer('inializing db');
+      logToDevServer('inializing db');
       await this.printDbPath();
 
       const dbVersion = await this.getVersion();
 
       if (dbVersion > 0) {
-        logToServer(`db already initalized, current version: ${dbVersion}`);
+        logToDevServer(`db already initalized, current version: ${dbVersion}`);
         return;
       }
 
@@ -134,14 +134,14 @@ class SqliteDatabaseManager implements DatabaseManager {
         { statement: ViewSql.VehicleChargeSummary, values: [] }
       ]);
 
-      logToServer(`table created: ${tableResults.changes}`);
+      logToDevServer(`table created: ${tableResults.changes}`);
 
       const seedResults = await this.db.execute(SeedSql.RateTypes);
 
-      logToServer(`seeding tables: ${seedResults.changes}`);
-      logToServer('db initalized');
+      logToDevServer(`seeding tables: ${seedResults.changes}`);
+      logToDevServer('db initalized');
     } catch (error) {
-      logToServer('error initializing db', error);
+      logToDevServer('error initializing db', error);
       alert(error);
 
       throw error;
@@ -168,6 +168,6 @@ class SqliteDatabaseManager implements DatabaseManager {
       path: this.fullDatabaseName
     });
 
-    logToServer(`db located at: ${dbPath.uri}`);
+    logToDevServer(`db located at: ${dbPath.uri}`);
   }
 }

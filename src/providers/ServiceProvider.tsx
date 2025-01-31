@@ -5,7 +5,7 @@ import {
   ServiceContainer
 } from '../services/ServiceContainer';
 import { useDatabaseManager } from './DatabaseManagerProvider';
-import { logToServer } from '../logger';
+import { logToDevServer } from '../logger';
 
 type ServiceContextType = {
   serviceLocator: ServiceLocator;
@@ -29,7 +29,7 @@ export function ServiceProvider({
   const databaseManager = useDatabaseManager();
 
   useEffect(() => {
-    logToServer('building the service container');
+    logToDevServer('building the service container');
     containerInitializer({ databaseManager });
     setReady(true);
   }, []);

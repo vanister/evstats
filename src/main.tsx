@@ -11,7 +11,7 @@ import {
   Tooltip
 } from 'chart.js';
 import DatabaseManagerProvider from './providers/DatabaseManagerProvider';
-import { logToServer } from './logger';
+import { logToDevServer } from './logger';
 import { getInstance } from './data/DatabaseManager';
 import { registerAppStateListeners } from './appStateListeners';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -28,14 +28,14 @@ const databaseManager = getInstance();
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
-logToServer('starting up...');
+logToDevServer('starting up...');
 registerAppStateListeners(databaseManager);
 
 databaseManager
   .openConnection()
   .then(() => databaseManager.initializeDb())
   .then(() => {
-    logToServer('rendering the root component');
+    logToDevServer('rendering the root component');
 
     root.render(
       <React.StrictMode>
@@ -55,6 +55,6 @@ databaseManager
     );
   })
   .catch((error) => {
-    logToServer('error starting up...', error);
+    logToDevServer('error starting up...', error);
     alert(`Error starting app: ${error?.message}`);
   });

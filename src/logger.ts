@@ -2,7 +2,7 @@ import { ExplicitAny } from '@evs-core';
 
 export type LogLevel = 'info' | 'warn' | 'error';
 
-export async function logToServer(message: string, level: LogLevel = 'info', stack?: string) {
+export async function logToDevServer(message: string, level: LogLevel = 'info', stack?: string) {
   if (process.env.NODE_ENV === 'production') {
     // logToConsole('production env, ignoring log to server request');
     return;
