@@ -28,6 +28,7 @@ const databaseManager = getInstance();
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
+logToDevServer(`app running in "${import.meta.env.MODE}" mode`);
 logToDevServer('starting up...');
 registerAppStateListeners(databaseManager);
 

@@ -13,7 +13,8 @@
     "test.debug": "vitest --watch=false",
     "test.once": "vitest --watch=false",
     "lint": "eslint",
-    "start": "npm run dev -- --port=8100"
+    "start": "npm run dev -- --port=8100",
+    "start.logserver": "node utilities/devLogServer.js"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "6.0.2",

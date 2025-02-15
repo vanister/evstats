@@ -3,28 +3,29 @@ import { ExplicitAny } from '@evs-core';
 export type LogLevel = 'info' | 'warn' | 'error';
 
 export async function logToDevServer(message: string, level: LogLevel = 'info', stack?: string) {
-  if (process.env.NODE_ENV === 'production') {
-    // logToConsole('production env, ignoring log to server request');
+  if (import.meta.env.PROD || import.meta.env.MODE === 'production') {
     return;
   }
 
   logToConsole(message);
 
+  if (import.meta.env.VITE_LOG_TO_CONSOLE_ONLY === 'true') {
+    return;
+  }
+
   try {
-    const entry = { message, level, stack };
+    const entry = { level, message, stack };
 
     const response = await fetch('http://localhost:4000/log', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(entry)
     });
 
     if (!response.ok) {
-      const { error } = await response.json();
+      const data = await response.json();
 
-      console.log('Log server responsed with status:', response.status, ', and message:', error);
+      logToConsole('log server responsed with status:', response.status, ', and message:', data);
     }
   } catch (error) {
     // console.error('Failed to send log to server.', error);
@@ -33,5 +34,5 @@ export async function logToDevServer(message: string, level: LogLevel = 'info', 
 
 function logToConsole(...msg: ExplicitAny[]) {
   // todo - turn off for production
-  console.log('evstats.info >>', ...msg);
+  console.debug('evstats.info >>', ...msg);
 }

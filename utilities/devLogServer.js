@@ -7,8 +7,7 @@ import { fileURLToPath } from 'url';
 
 const filepath = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filepath);
-const app = express();
-
+const today = new Date().toISOString().split('T')[0];
 const LOG_DIR = path.join(dirname, '..', 'logs');
 const PORT = 4000;
 
@@ -18,6 +17,7 @@ if (!existsSync(LOG_DIR)) {
   mkdirSync(LOG_DIR, { recursive: true });
 }
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
@@ -42,7 +42,7 @@ app.post('/log', async (req, res) => {
       stack: level === 'error' ? stack : undefined
     };
 
-    const logFilePath = path.join(LOG_DIR, `${level}.log`);
+    const logFilePath = path.join(LOG_DIR, `${today}-${level}.log`);
     await fs.appendFile(logFilePath, JSON.stringify(logEntry) + '\n');
 
     return res.sendStatus(200);
