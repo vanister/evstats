@@ -63,9 +63,12 @@ class SqliteDatabaseManager implements DatabaseManager {
     return fullDbName;
   }
 
-  async openConnection(options: ConnectionOptions = DEFAULT_CONNECTION_OPTIONS): Promise<void> {
+  async openConnection(options?: ConnectionOptions): Promise<void> {
     const { dbName } = this;
-    const { encrypted, mode, readOnly, version } = options;
+    const { encrypted, mode, readOnly, version } = {
+      ...DEFAULT_CONNECTION_OPTIONS,
+      ...(options ?? {})
+    };
 
     try {
       logToDevServer('attempting to open a sqlite connection');

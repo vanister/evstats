@@ -25,6 +25,7 @@ import { getService, initializeServiceContainer } from './services/ServiceContai
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
 
 const databaseManager = getInstance();
+const currentDbVersion = 1;
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
@@ -33,7 +34,7 @@ logToDevServer('starting up...');
 registerAppStateListeners(databaseManager);
 
 databaseManager
-  .openConnection()
+  .openConnection({ version: currentDbVersion })
   .then(() => {
     logToDevServer('rendering the root component');
 
@@ -55,6 +56,6 @@ databaseManager
     );
   })
   .catch((error) => {
-    logToDevServer('error starting up...', error);
+    logToDevServer(`error starting app: ${error?.message}`, 'error', error?.stack ?? error);
     alert(`Error starting app: ${error?.message}`);
   });
