@@ -1,18 +1,14 @@
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { logToDevServer } from '../logger';
-import { InitTableSql } from './sql/InitTableSql';
-import { PragmaSql } from './sql/PragmaSql';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { SeedSql } from './sql/seedData';
-import { ViewSql } from './sql/ViewSql';
 import { createDbContextInstance, DbContext } from './DbContext';
+import { migrations } from './migrations';
 
 export interface DatabaseManager {
   get context(): DbContext;
   get fullDatabaseName(): string;
   openConnection(options?: ConnectionOptions): Promise<void>;
   closeConnection(): Promise<void>;
-  initializeDb(): Promise<void>;
   getVersion(): Promise<number>;
 }
 
@@ -45,7 +41,6 @@ export function getInstance(): DatabaseManager {
 class SqliteDatabaseManager implements DatabaseManager {
   private db: SQLiteDBConnection;
   private dbContext: DbContext;
-  private currentVersion: number;
 
   constructor(
     private readonly dbName = 'evstats.db',
@@ -82,6 +77,9 @@ class SqliteDatabaseManager implements DatabaseManager {
         logToDevServer('sqlite connection exists, retrieving');
         this.db = await this.sqlite.retrieveConnection(dbName, readOnly);
       } else {
+        logToDevServer('adding migration scripts');
+        await this.sqlite.addUpgradeStatement(dbName, migrations);
+
         logToDevServer('creating new sqlite connection');
         this.db = await this.sqlite.createConnection(dbName, encrypted, mode, version, readOnly);
       }
@@ -90,6 +88,7 @@ class SqliteDatabaseManager implements DatabaseManager {
       logToDevServer(`opening db: ${dbName}`);
 
       await this.db.open();
+      await this.printDbPath();
     } catch (error) {
       logToDevServer(`Connection error: ${error}`);
       alert(error);
@@ -113,51 +112,8 @@ class SqliteDatabaseManager implements DatabaseManager {
     }
   }
 
-  async initializeDb(): Promise<void> {
-    // todo - look into versioning/migrations
-    try {
-      logToDevServer('inializing db');
-      await this.printDbPath();
-
-      const dbVersion = await this.getVersion();
-
-      if (dbVersion > 0) {
-        logToDevServer(`db already initalized, current version: ${dbVersion}`);
-        return;
-      }
-
-      const tableResults = await this.db.executeSet([
-        { statement: InitTableSql.CreateRateTypeTable, values: [] },
-        { statement: InitTableSql.CreateVehiclesTable, values: [] },
-        { statement: InitTableSql.CreateSessionsTable, values: [] },
-        { statement: InitTableSql.SetInitialVersion, values: [] },
-        { statement: ViewSql.VehicleChargeSummary, values: [] }
-      ]);
-
-      logToDevServer(`table created: ${tableResults.changes}`);
-
-      const seedResults = await this.db.execute(SeedSql.RateTypes);
-
-      logToDevServer(`seeding tables: ${seedResults.changes}`);
-      logToDevServer('db initalized');
-    } catch (error) {
-      logToDevServer('error initializing db', error);
-      alert(error);
-
-      throw error;
-    }
-  }
-
   async getVersion(): Promise<number> {
-    if (this.currentVersion != null) {
-      return this.currentVersion;
-    }
-
-    const { values } = await this.db.query(PragmaSql.GetDbVersion);
-    const result = values?.[0];
-    const version = result?.user_version ?? 0;
-
-    this.currentVersion = version;
+    const { version } = await this.db.getVersion();
 
     return version;
   }
