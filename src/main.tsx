@@ -20,6 +20,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { ServiceProvider } from './providers/ServiceProvider';
 import { getService, initializeServiceContainer } from './services/ServiceContainer';
+import { migrations } from './data/migrations';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
@@ -34,7 +35,7 @@ logToDevServer('starting up...');
 registerAppStateListeners(databaseManager);
 
 databaseManager
-  .openConnection({ version: currentDbVersion })
+  .openConnection({ version: currentDbVersion, migrations })
   .then(() => {
     logToDevServer('rendering the root component');
 

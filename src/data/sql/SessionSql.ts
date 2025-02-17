@@ -1,26 +1,22 @@
-export class SessionSql2 {
-  public static readonly Last31Days = ``;
-}
+export class SessionSql {
+  public static readonly List = `SELECT * FROM sessions ORDER BY date DESC LIMIT ? OFFSET ?;`;
 
-export const SessionSql = Object.freeze({
-  List: `SELECT * FROM sessions ORDER BY date DESC LIMIT ? OFFSET ?;`,
-
-  Add: `
+  public static readonlyAdd = `
     INSERT INTO sessions(date, kwh, rate_override, rate_type_id, vehicle_id)
     VALUES(?, ?, ?, ?, ?);
-  `,
+  `;
 
-  Get: `
+  public static readonlyGet = `
     SELECT * FROM sessions WHERE id = ?;
-  `,
+  `;
 
-  Update: `
+  public static readonlyUpdate = `
     UPDATE sessions
     SET date = ?, kwh = ?, rate_override = ?, rate_type_id = ?, vehicle_id = ?
     WHERE id = ?;
-  `,
+  `;
 
-  Delete: `
+  public static readonlyDelete = `
     DELETE FROM sessions WHERE id = ?;
-  `
-});
+  `;
+}

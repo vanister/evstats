@@ -2,7 +2,7 @@ import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacito
 import { logToDevServer } from '../logger';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { createDbContextInstance, DbContext } from './DbContext';
-import { migrations } from './migrations';
+import { ConnectionOptions } from './data-types';
 
 export interface DatabaseManager {
   get context(): DbContext;
@@ -12,15 +12,9 @@ export interface DatabaseManager {
   getVersion(): Promise<number>;
 }
 
-export type ConnectionOptions = {
-  encrypted?: boolean;
-  mode?: 'no-encryption';
-  readOnly?: boolean;
-  version?: number;
-};
-
 const DEFAULT_CONNECTION_OPTIONS: ConnectionOptions = {
   encrypted: false,
+  migrations: [],
   mode: 'no-encryption',
   readOnly: false,
   version: 1
@@ -65,7 +59,7 @@ class SqliteDatabaseManager implements DatabaseManager {
 
   async openConnection(options?: ConnectionOptions): Promise<void> {
     const { dbName } = this;
-    const { encrypted, mode, readOnly, version } = {
+    const { encrypted, mode, migrations, readOnly, version } = {
       ...DEFAULT_CONNECTION_OPTIONS,
       ...(options ?? {})
     };
