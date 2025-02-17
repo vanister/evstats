@@ -42,7 +42,7 @@ app.post('/log', async (req, res) => {
       stack: level === 'error' ? stack : undefined
     };
 
-    const logFilePath = path.join(LOG_DIR, `${today}-${level}.log`);
+    const logFilePath = path.join(LOG_DIR, `${today}.log`);
     await fs.appendFile(logFilePath, JSON.stringify(logEntry) + '\n');
 
     return res.sendStatus(200);

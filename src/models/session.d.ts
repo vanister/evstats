@@ -13,10 +13,10 @@ export type Session = {
 
 /** The session database object. */
 export type SessionDbo = {
-  date: string;
   id?: number;
-  // remember that dbos are lowered_snake_case
+  date: string;
   kwh: number;
+  // remember that dbos are lowered_snake_case
   rate_override?: number;
   rate_type_id: number;
   vehicle_id: number;

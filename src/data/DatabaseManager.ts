@@ -83,7 +83,6 @@ class SqliteDatabaseManager implements DatabaseManager {
 
       logToDevServer('sqlite connection successful');
       logToDevServer(`opening db: ${dbName}`);
-
       await this.db.open();
 
       const dbPath = await this.getDbPath();

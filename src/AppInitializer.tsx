@@ -54,7 +54,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
         logToDevServer('taking down splash screen');
         await SplashScreen.hide();
       } catch (error) {
-        logToDevServer(`error initializing app: ${error}`);
+        logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error);
         showAlert('Initialization error');
       }
     };

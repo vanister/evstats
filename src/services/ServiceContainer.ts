@@ -11,6 +11,10 @@ import { EvsSessionRepository, SessionRepository } from '../data/repositories/Se
 import { EvsVehicleRepository, VehicleRepository } from '../data/repositories/VehicleRepository';
 import { EvsPreferenceService, PreferenceService } from './PreferenceService';
 import { Preferences } from '@capacitor/preferences';
+import {
+  ChargeStatsRepository,
+  EvsChargeStatsRepository
+} from '../data/repositories/ChargeStatsRepository';
 
 // start here by listing the services that can get injected
 // then add it to the `initializeServiceContainer` function below
@@ -51,13 +55,15 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
 
   const { context } = databaseManager;
 
+  // todo - if this list gets too large, introduce a RepositoryContainer for injection
   // repositories
   const rateRepository: RateRepository = new EvsRateRepository(context);
   const sessionRepository: SessionRepository = new EvsSessionRepository(context);
   const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
+  const chargeStatsRepository: ChargeStatsRepository = new EvsChargeStatsRepository(context);
 
   // services
-  const chargeStatsService: ChargeStatsService = new EvsChargeStatsService(sessionRepository);
+  const chargeStatsService: ChargeStatsService = new EvsChargeStatsService(chargeStatsRepository);
   const databaseBackupService: DatabaseBackupService = new SqliteDbBackupService(databaseManager);
   const preferenceService: PreferenceService = new EvsPreferenceService(Preferences);
   const sessionService: SessionService = new EvsSessionService(sessionRepository);

@@ -1,39 +1,15 @@
-import { SessionRepository } from '../data/repositories/SessionRepository';
+import { ChargeColors } from '../constants';
+import { ChargeStatsRepository } from '../data/repositories/ChargeStatsRepository';
+import { ChargeStatData, ChargeStatDataset, ChargeAverage } from '../models/chargeStats';
 import { BaseService } from './BaseService';
-
-export type ChargeAverage = {
-  name: string;
-  percent: number;
-  color: string;
-};
-
-export type ChargeStatDataset = {
-  label: string;
-  data: number[];
-  backgroundColor: string;
-};
-
-export type ChargeStatData = {
-  vehicleId: number;
-  labels: (string | number)[];
-  datasets: ChargeStatDataset[];
-  averages: ChargeAverage[];
-};
 
 export interface ChargeStatsService {
   getLast31Days(vehicleId: number): Promise<ChargeStatData>;
 }
 
-const ChargeColors = {
-  Home: '#004D80',
-  Work: '#F27200',
-  Other: '#929292',
-  DC: '#B51700'
-};
-
 /** Charge stats chart data service. */
 export class EvsChargeStatsService extends BaseService implements ChargeStatsService {
-  constructor(private readonly sessionRepository: SessionRepository) {
+  constructor(private readonly chargeStatsRepository: ChargeStatsRepository) {
     super();
   }
 
