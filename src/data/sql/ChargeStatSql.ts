@@ -3,6 +3,7 @@ export class ChargeStatSql {
     SELECT *
     FROM vw_vehicle_charge_summary cs
     WHERE date(cs.date) >= date('now', '-31 days')
-      AND cs.vehicle_id = ?;
+      AND cs.vehicle_id = ?
+    ORDER BY date ASC;
   `;
 }

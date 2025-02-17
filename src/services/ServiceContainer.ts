@@ -63,7 +63,10 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const chargeStatsRepository: ChargeStatsRepository = new EvsChargeStatsRepository(context);
 
   // services
-  const chargeStatsService: ChargeStatsService = new EvsChargeStatsService(chargeStatsRepository);
+  const chargeStatsService: ChargeStatsService = new EvsChargeStatsService(
+    chargeStatsRepository,
+    rateRepository
+  );
   const databaseBackupService: DatabaseBackupService = new SqliteDbBackupService(databaseManager);
   const preferenceService: PreferenceService = new EvsPreferenceService(Preferences);
   const sessionService: SessionService = new EvsSessionService(sessionRepository);

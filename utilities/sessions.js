@@ -4,7 +4,7 @@ const {
   count = 31,
   vid = 1,
   rate = 1,
-  start = '2024-01-01',
+  start,
   maxkwh = 100
   // eslint-disable-next-line no-undef
 } = parseArgs(process.argv.slice(2));
@@ -14,11 +14,15 @@ const writeln = (...msg) => {
 };
 
 try {
+  const startDate = new Date(start ?? Date.now());
+
+  if (!start) {
+    startDate.setDate(startDate.getDate() - count);
+  }
+
   writeln(
     `Args: count: ${count}, start-date: ${start}, vid: ${vid}, rate: ${rate}, maxKwh: ${maxkwh}\n\n`
   );
-
-  const startDate = new Date(start);
 
   writeln(`INSERT INTO sessions (vehicle_id, rate_type_id, date, kwh) VALUES`);
 

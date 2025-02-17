@@ -1,10 +1,10 @@
 import './ChargeSummary.scss';
 
+import type { ChargeAverage as ChargeAvergeType } from '../../../../models/chargeStats';
 import { ChargeAverage } from '../ChargeAverage/ChargeAverage';
-import { ChargeAverage as ChargeAverageType } from '../../../../services/ChargeStatsService';
 
 export type ChargeSummaryProps = {
-  averages: ChargeAverageType[];
+  averages: ChargeAvergeType[];
 };
 
 export default function ChargeSummary({ averages }: ChargeSummaryProps) {

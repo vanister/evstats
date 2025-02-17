@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Chart, ChartConfiguration } from 'chart.js';
-import { ChargeStatData } from '../../../../services/ChargeStatsService';
 import ChargeSummary from '../ChargeSummary/ChargeSummary';
+import { ChargeStatData } from '../../../../models/chargeStats';
 
 export type VehicleChargeBarChartProps = {
   data: ChargeStatData;

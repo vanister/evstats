@@ -1,6 +1,13 @@
 import { ChargeColors } from '../constants';
 import { ChargeStatsRepository } from '../data/repositories/ChargeStatsRepository';
-import { ChargeStatData, ChargeStatDataset, ChargeAverage } from '../models/chargeStats';
+import { RateRepository } from '../data/repositories/RateRepository';
+import {
+  ChargeStatData,
+  ChargeStatDataset,
+  ChargeAverage,
+  ChargeStatsDbo
+} from '../models/chargeStats';
+import { RateTypeDbo } from '../models/rateType';
 import { BaseService } from './BaseService';
 
 export interface ChargeStatsService {
@@ -9,38 +16,17 @@ export interface ChargeStatsService {
 
 /** Charge stats chart data service. */
 export class EvsChargeStatsService extends BaseService implements ChargeStatsService {
-  constructor(private readonly chargeStatsRepository: ChargeStatsRepository) {
+  constructor(
+    private readonly chargeStatsRepository: ChargeStatsRepository,
+    private readonly rateRepository: RateRepository
+  ) {
     super();
   }
 
   async getLast31Days(vehicleId: number): Promise<ChargeStatData> {
-    const randomKwh = (seed = 51) => Math.floor(Math.random() * seed);
-    const randomDataset = () => Array.from({ length: 31 }, () => randomKwh()).reverse();
-
-    const datasets: ChargeStatDataset[] = [
-      {
-        label: 'Home',
-        // must match the labels length
-        data: randomDataset(),
-        backgroundColor: this.getColor('Home')
-      },
-      {
-        label: 'Work',
-        data: randomDataset(),
-        backgroundColor: this.getColor('Work')
-      },
-      {
-        label: 'Other',
-        data: randomDataset(),
-        backgroundColor: this.getColor('Other')
-      },
-      {
-        label: 'DC',
-        data: randomDataset(),
-        backgroundColor: this.getColor('DC')
-      }
-    ];
-
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getLast31Days(vehicleId);
+    const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes);
     const averages: ChargeAverage[] = this.getAverages(datasets);
 
     const data: ChargeStatData = {
@@ -50,14 +36,39 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       averages
     };
 
-    // todo - remove
-    const promise = new Promise<ChargeStatData>((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 500);
-    });
+    return data;
+  }
 
-    return promise;
+  private createDataset(
+    chargeStats: ChargeStatsDbo[],
+    rateTypes: RateTypeDbo[]
+  ): ChargeStatDataset[] {
+    // create a map of rate types to empty placeholders
+    const defaultRateTypes = rateTypes
+      .map((r) => r.name)
+      .reduce((prev, curr) => ({ ...prev, [curr]: [] }), {});
+
+    // group all kwh entries by rate name
+    const kwhByRateType = chargeStats.reduce<{ [name: string]: number[] }>(
+      (runningSum, { rate_name: rateName, kwh }) => {
+        if (!runningSum[rateName]) {
+          runningSum[rateName] = [];
+        }
+
+        runningSum[rateName].push(kwh);
+
+        return runningSum;
+      },
+      defaultRateTypes
+    );
+
+    const datasets = Object.entries(kwhByRateType).map<ChargeStatDataset>(([rateName, kwh]) => ({
+      label: rateName,
+      data: kwh,
+      backgroundColor: this.getColor(rateName)
+    }));
+
+    return datasets;
   }
 
   private getAverages(datasets: ChargeStatDataset[]): ChargeAverage[] {
