@@ -85,7 +85,9 @@ class SqliteDatabaseManager implements DatabaseManager {
       logToDevServer(`opening db: ${dbName}`);
 
       await this.db.open();
-      await this.printDbPath();
+
+      const dbPath = await this.getDbPath();
+      logToDevServer(`db located at: ${dbPath}`);
     } catch (error) {
       logToDevServer(`Connection error: ${error}`);
       alert(error);
@@ -115,12 +117,12 @@ class SqliteDatabaseManager implements DatabaseManager {
     return version;
   }
 
-  private async printDbPath() {
+  private async getDbPath(): Promise<string> {
     const dbPath = await this.fileSystem.getUri({
       directory: Directory.Documents,
       path: this.fullDatabaseName
     });
 
-    logToDevServer(`db located at: ${dbPath.uri}`);
+    return dbPath.uri;
   }
 }
