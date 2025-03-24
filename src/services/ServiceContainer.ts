@@ -93,7 +93,10 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
  */
 export function getService<Service extends keyof ServiceContainer>(name: Service) {
   if (!isContainerBuilt) {
-    throw new Error('Service container is not built');
+    const error = new Error('Service container is not built');
+    
+    logToDevServer(`something is trying to get "${name}" from a container that is not built`, 'error', error.stack);
+    throw error;
   }
 
   return container.get(name) as ServiceContainer[Service];

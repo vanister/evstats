@@ -29,10 +29,14 @@ export function ServiceProvider({
   const databaseManager = useDatabaseManager();
 
   useEffect(() => {
-    logToDevServer('building the service container');
     containerInitializer({ databaseManager });
     setReady(true);
   }, []);
+
+  // wait until the services are ready before starting the app init phase
+  if (!ready) {
+    return null;
+  }
 
   return (
     <ServiceContext.Provider value={{ serviceLocator, ready }}>{children}</ServiceContext.Provider>

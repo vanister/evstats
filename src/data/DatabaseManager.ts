@@ -17,7 +17,7 @@ const DEFAULT_CONNECTION_OPTIONS: ConnectionOptions = {
   migrations: [],
   mode: 'no-encryption',
   readOnly: false,
-  version: 1
+  version: 0
 };
 
 let instance: SqliteDatabaseManager;
