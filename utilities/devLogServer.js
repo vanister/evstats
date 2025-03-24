@@ -31,15 +31,11 @@ app.post('/log', async (req, res) => {
       return res.status(400).json({ error: 'Level and message are required' });
     }
 
-    if (level === 'error' && !stack) {
-      return res.status(400).json({ error: 'Stack trace required for error level' });
-    }
-
     const logEntry = {
       timestamp: new Date().toISOString(),
       level,
       message,
-      stack: level === 'error' ? stack : undefined
+      stack
     };
 
     const logFilePath = path.join(LOG_DIR, `${today}.log`);
