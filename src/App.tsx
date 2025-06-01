@@ -33,6 +33,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import { AppInitializer } from './AppInitializer';
 import { Route } from 'react-router';
 import MainLayout from './MainLayout';
+import { ErrorBoundary } from 'react-error-boundary';
+import AlertableError from './components/AlertableError';
 
 setupIonicReact();
 
@@ -41,9 +43,11 @@ export default function App() {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <AppInitializer>
-            <Route path="/" component={MainLayout} />
-          </AppInitializer>
+          <ErrorBoundary fallbackRender={({ error }) => <AlertableError message={error.message} />}>
+            <AppInitializer>
+              <Route path="/" component={MainLayout} />
+            </AppInitializer>
+          </ErrorBoundary>
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

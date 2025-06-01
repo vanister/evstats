@@ -63,6 +63,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
   }, [serviceReady]);
 
   if (!initialized) {
+    // todo consider showing a loading spinner
     return null;
   }
 

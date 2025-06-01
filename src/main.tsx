@@ -15,12 +15,12 @@ import { logToDevServer } from './logger';
 import { getInstance } from './data/DatabaseManager';
 import { registerAppStateListeners } from './appStateListeners';
 import { ErrorBoundary } from 'react-error-boundary';
-import RootError from './components/RootError';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { ServiceProvider } from './providers/ServiceProvider';
 import { getService, initializeServiceContainer } from './services/ServiceContainer';
 import { migrations } from './data/migrations';
+import AlertableError from './components/AlertableError';
 
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
@@ -41,7 +41,7 @@ databaseManager
 
     root.render(
       <React.StrictMode>
-        <ErrorBoundary fallbackRender={({ error }) => <RootError message={error.message} />}>
+        <ErrorBoundary fallbackRender={({ error }) => <AlertableError message={error.message} />}>
           <Provider store={store}>
             <DatabaseManagerProvider manager={databaseManager}>
               <ServiceProvider

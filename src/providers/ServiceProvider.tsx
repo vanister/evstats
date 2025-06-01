@@ -5,7 +5,6 @@ import {
   ServiceContainer
 } from '../services/ServiceContainer';
 import { useDatabaseManager } from './DatabaseManagerProvider';
-import { logToDevServer } from '../logger';
 
 type ServiceContextType = {
   serviceLocator: ServiceLocator;
