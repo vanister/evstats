@@ -1,15 +1,7 @@
 import { ChartConfiguration } from 'chart.js';
-import { ChargeStatData } from '../../models/chargeStats';
 import { getDateFromDaysAgo } from './helpers';
-
-const DEFAULT_RADIUS = 10;
-const CHART_TYPE = 'bar' as const;
-
-type CreateChartConfigOptions = {
-  data: ChargeStatData;
-  title?: string;
-  today: Date;
-};
+import { CHART_RADIUS, CHART_TYPE } from './constants';
+import { CreateChartConfigOptions } from './charge-stats-types';
 
 export function createChartConfig({
   data,
@@ -18,7 +10,7 @@ export function createChartConfig({
 }: CreateChartConfigOptions): ChartConfiguration {
   const { labels } = data;
   const datasets = data.datasets.map((ds) => ({
-    borderRadius: DEFAULT_RADIUS,
+    borderRadius: CHART_RADIUS,
     ...ds
   }));
 
