@@ -10,7 +10,7 @@ import { ChargeStatData } from '../../models/chargeStats';
 export default function ChargeStatsScreen() {
   const chargeStatsService = useServices('chargeStatsService');
   const [chartData, setChartData] = useState<ChargeStatData>(null);
-  const [selectedVehicleId, _setSelectedVehicleId] = useState(1);
+  const [selectedVehicleId,] = useState(1);
   const showEmptyState = !chartData;
 
   // todo - useReducer

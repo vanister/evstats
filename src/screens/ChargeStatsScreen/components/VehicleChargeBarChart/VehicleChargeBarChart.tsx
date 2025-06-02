@@ -2,18 +2,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Chart, ChartConfiguration } from 'chart.js';
 import ChargeSummary from '../ChargeSummary/ChargeSummary';
 import { ChargeStatData } from '../../../../models/chargeStats';
+import { createChartConfig } from '../../chart-config';
 
-export type VehicleChargeBarChartProps = {
+type VehicleChargeBarChartProps = {
   data: ChargeStatData;
   title?: string;
 };
 
-const DEFAULT_RADIUS = 10;
-const CHART_TYPE = 'bar';
-
 export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
+  const today = useRef(new Date());
   const [chartConfig, setChartConfig] = useState<ChartConfiguration>(null);
 
   useEffect(() => {
@@ -21,40 +20,14 @@ export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarC
       return;
     }
 
-    const { labels } = data;
-    const datasets = data.datasets.map((ds) => ({ borderRadius: DEFAULT_RADIUS, ...ds }));
-    // todo - move to helper
-    const config: ChartConfiguration = {
-      type: CHART_TYPE,
-      options: {
-        animation: false,
-        responsive: true,
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true,
-            position: 'right',
-            title: {
-              display: true,
-              text: 'kWh'
-            }
-          }
-        },
-        plugins: {
-          title: { display: true, text: title }
-        }
-      },
-      data: {
-        // the x-axis labels
-        labels,
-        datasets
-      }
-    };
+    const config = createChartConfig({
+      data,
+      title,
+      today: today.current
+    });
 
     setChartConfig(config);
-  }, [data]);
+  }, [data, title]);
 
   useLayoutEffect(() => {
     if (!chartConfig) {

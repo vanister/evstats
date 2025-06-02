@@ -21,3 +21,9 @@ export function getColor(name: string): string {
       return ChargeColors.Home;
   }
 }
+
+export function getDateFromDaysAgo(baseDate: Date, daysAgo: number) {
+  const date = new Date(baseDate);
+  date.setDate(baseDate.getDate() - daysAgo);
+  return date;
+}
