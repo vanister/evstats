@@ -31,7 +31,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
     const data: ChargeStatData = {
       vehicleId,
-      labels: Array.from({ length: 31 }, (_, i) => i).reverse(),
+      labels: Array.from({ length: 31 }, (_, i) => i),
       datasets,
       averages
     };
@@ -43,24 +43,28 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     chargeStats: ChargeStatsDbo[],
     rateTypes: RateTypeDbo[]
   ): ChargeStatDataset[] {
-    // create a map of rate types to empty placeholders
-    const defaultRateTypes = rateTypes
-      .map((r) => r.name)
-      .reduce((prev, curr) => ({ ...prev, [curr]: [] }), {});
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    // group all kwh entries by rate name
-    const kwhByRateType = chargeStats.reduce<{ [name: string]: number[] }>(
-      (runningSum, { rate_name: rateName, kwh }) => {
-        if (!runningSum[rateName]) {
-          runningSum[rateName] = [];
-        }
-
-        runningSum[rateName].push(kwh);
-
-        return runningSum;
-      },
-      defaultRateTypes
+    // Create initial map with zero-filled arrays for each rate type
+    const kwhByRateType: Record<string, number[]> = rateTypes.reduce(
+      (acc, { name }) => ({
+        ...acc,
+        [name]: new Array(31).fill(0)
+      }),
+      {}
     );
+
+    // Place each charge stat in its correct day position
+    chargeStats.forEach(({ rate_name: rateName, kwh, date }) => {
+      const daysAgo = Math.floor(
+        (today.getTime() - new Date(date).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysAgo >= 0 && daysAgo < 31) {
+        kwhByRateType[rateName][30 - daysAgo] = kwh;
+      }
+    });
 
     const datasets = Object.entries(kwhByRateType).map<ChargeStatDataset>(([rateName, kwh]) => ({
       label: rateName,
