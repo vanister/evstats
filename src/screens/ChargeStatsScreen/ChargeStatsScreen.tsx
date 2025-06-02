@@ -6,11 +6,12 @@ import { useServices } from '../../providers/ServiceProvider';
 import VehicleChargeBarChart from './components/VehicleChargeBarChart/VehicleChargeBarChart';
 import EmptyState from '../../components/EmptyState';
 import { ChargeStatData } from '../../models/chargeStats';
+import { IonRefresher, IonRefresherContent } from '@ionic/react';
 
 export default function ChargeStatsScreen() {
   const chargeStatsService = useServices('chargeStatsService');
   const [chartData, setChartData] = useState<ChargeStatData>(null);
-  const [selectedVehicleId,] = useState(1);
+  const [selectedVehicleId] = useState(1);
   const showEmptyState = !chartData;
 
   // todo - useReducer
@@ -24,12 +25,23 @@ export default function ChargeStatsScreen() {
     loadLast31Days();
   }, []);
 
+  const handleRefresh = async (event: CustomEvent) => {
+    console.log('ChargeStatsScreen handleRefresh');
+    setTimeout(() => {
+      console.log('ChargeStatsScreen handleRefresh complete');
+      event.detail.complete();
+    }, 2000);
+  };
+
+  console.log('ChargeStatsScreen render');
+
   return (
-    <EvsPage className="charge-stats-screen" title="Charge Stats">
-      <div className="content-container ion-padding">
-        {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
-        <VehicleChargeBarChart data={chartData} title="Last 31 Days" />
-      </div>
+    <EvsPage className="charge-stats-screen" title="Charge Stats" padding>
+      <IonRefresher onIonRefresh={handleRefresh}>
+        <IonRefresherContent refreshingSpinner="circles" />
+      </IonRefresher>
+      {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
+      <VehicleChargeBarChart data={chartData} title="Last 31 Days" />
     </EvsPage>
   );
 }
