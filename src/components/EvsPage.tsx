@@ -6,12 +6,14 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherCustomEvent
 } from '@ionic/react';
 import classNames from 'classnames';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 
-// todo - turn into config
 type HeaderButton = {
   button: ReactNode;
   slot?: string;
@@ -26,12 +28,24 @@ type EvsPageProps = PropsWithChildrenAndClass<{
   staticHeader?: boolean;
   hideBack?: boolean;
   headerButtons?: HeaderButton[];
+  enableRefresher?: boolean; 
+  onRefresh?: () => Promise<void>; 
 }>;
 
 function EvsPage(
-  { children, color = 'light', title, ...props }: EvsPageProps,
+  { children, color = 'light', title, enableRefresher, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
+
+  const handleRefresh = useCallback(async (event: RefresherCustomEvent) => {
+    await Promise.all([
+      props.onRefresh?.(),
+      new Promise((resolve) => setTimeout(resolve, 500)) // Ensure a minimum wait of 500ms
+    ]);
+
+    event.detail.complete();
+  }, []);
+
   return (
     <IonPage ref={ref} className={classNames('evs-page', props.className)}>
       <IonHeader className="evs-page-header">
@@ -55,6 +69,11 @@ function EvsPage(
         fullscreen
         fixedSlotPlacement={props.fixedSlotPlacement}
       >
+        {enableRefresher && (
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent refreshingSpinner="circles" />
+          </IonRefresher>
+        )}
         {!props.staticHeader && (
           <IonHeader className="evs-page-content-header" collapse="condense">
             <IonToolbar color={color}>
