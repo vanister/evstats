@@ -28,15 +28,14 @@ type EvsPageProps = PropsWithChildrenAndClass<{
   staticHeader?: boolean;
   hideBack?: boolean;
   headerButtons?: HeaderButton[];
-  enableRefresher?: boolean; 
-  onRefresh?: () => Promise<void>; 
+  enableRefresher?: boolean;
+  onRefresh?: () => Promise<void>;
 }>;
 
 function EvsPage(
   { children, color = 'light', title, enableRefresher, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
-
   const handleRefresh = useCallback(async (event: RefresherCustomEvent) => {
     await Promise.all([
       props.onRefresh?.(),
