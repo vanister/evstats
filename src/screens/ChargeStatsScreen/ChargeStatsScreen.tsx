@@ -27,18 +27,23 @@ export default function ChargeStatsScreen() {
 
   const handleRefresh = async (event: CustomEvent) => {
     console.log('ChargeStatsScreen handleRefresh');
-    setTimeout(() => {
-      console.log('ChargeStatsScreen handleRefresh complete');
-      event.detail.complete();
-    }, 2000);
+
+    await new Promise<void>((resolve) =>
+      setTimeout(() => {
+        console.log('ChargeStatsScreen handleRefresh complete');
+        resolve();
+      }, 1000)
+    );
+
+    event.detail.complete();
   };
 
   console.log('ChargeStatsScreen render');
 
   return (
     <EvsPage className="charge-stats-screen" title="Charge Stats" padding>
-      <IonRefresher onIonRefresh={handleRefresh}>
-        <IonRefresherContent refreshingSpinner="circles" />
+      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+        <IonRefresherContent refreshingSpinner='circles'/>
       </IonRefresher>
       {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
       <VehicleChargeBarChart data={chartData} title="Last 31 Days" />
