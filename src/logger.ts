@@ -32,7 +32,10 @@ export async function logToDevServer(message: string, level: LogLevel = 'info', 
   }
 }
 
-function logToConsole(...msg: ExplicitAny[]) {
-  // todo - turn off for production
+export function logToConsole(...msg: ExplicitAny[]) {
+  if (import.meta.env.PROD || import.meta.env.MODE === 'production') {
+    return;
+  }
+
   console.debug('evstats.info >>', ...msg);
 }
