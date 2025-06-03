@@ -39,14 +39,11 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     return data;
   }
 
+  // todo - clean up
   private createDataset(
     chargeStats: ChargeStatsDbo[],
     rateTypes: RateTypeDbo[]
   ): ChargeStatDataset[] {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Create initial map with zero-filled arrays for each rate type
     const kwhByRateType: Record<string, number[]> = rateTypes.reduce(
       (acc, { name }) => ({
         ...acc,
@@ -55,14 +52,20 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       {}
     );
 
-    // Place each charge stat in its correct day position
-    chargeStats.forEach(({ rate_name: rateName, kwh, date }) => {
-      const daysAgo = Math.floor(
-        (today.getTime() - new Date(date).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    chargeStats.forEach(({ date, kwh, rate_name: rateName }) => {
+      // Parse date parts explicitly to ensure exact date representation
+      const [year, month, day] = date.split('-').map(Number);
+      const sessionDate = new Date(year, month - 1, day); // month is 0-based in Date constructor
+      
+      const daysDiff = Math.floor(
+        (today.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24)
       );
 
-      if (daysAgo >= 0 && daysAgo < 31) {
-        kwhByRateType[rateName][30 - daysAgo] = kwh;
+      if (daysDiff >= 0 && daysDiff < 31) {
+        kwhByRateType[rateName][daysDiff] = kwh;
       }
     });
 
@@ -91,7 +94,8 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
     return averages;
   }
-
+  
+  // todo - move to component/ui layer
   private getColor(name: string): string {
     switch (name) {
       case 'Work':

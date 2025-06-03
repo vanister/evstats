@@ -14,26 +14,24 @@ export default function ChargeStatsScreen() {
   const [selectedVehicleId] = useState(1);
   const showEmptyState = !chartData;
 
-  // todo - useReducer
-  useEffect(() => {
-    const loadLast31Days = async () => {
+  const loadLast31Days = async () => {
+    try {
       const data = await chargeStatsService.getLast31Days(selectedVehicleId);
-
       setChartData(data);
-    };
+    } catch (error) {
+      logToConsole('Error loading last 31 days:', error);
+    }
+  };
 
+  // Load data on component mount
+  useEffect(() => {
     loadLast31Days();
   }, []);
 
   const handleRefresh = async () => {
     logToConsole('ChargeStatsScreen handleRefresh called');
-
-    await new Promise<void>((resolve) =>
-      setTimeout(() => {
-        logToConsole('ChargeStatsScreen handleRefresh complete');
-        resolve();
-      }, 1000)
-    );
+    await loadLast31Days();
+    logToConsole('ChargeStatsScreen handleRefresh complete');
   };
 
   return (
