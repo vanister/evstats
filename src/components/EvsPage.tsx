@@ -12,6 +12,7 @@ import {
   RefresherCustomEvent
 } from '@ionic/react';
 import classNames from 'classnames';
+import { chevronDownCircleOutline } from 'ionicons/icons';
 import React, { ReactNode, useCallback } from 'react';
 
 type HeaderButton = {
@@ -70,7 +71,10 @@ function EvsPage(
       >
         {enableRefresher && (
           <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-            <IonRefresherContent refreshingSpinner="circles" />
+            <IonRefresherContent
+              refreshingSpinner="circles"
+              pullingIcon={chevronDownCircleOutline}
+            />
           </IonRefresher>
         )}
         {!props.staticHeader && (

@@ -9,6 +9,7 @@ type VehicleChargeBarChartProps = {
   title?: string;
 };
 
+// todo - take in a date value for 'today' to allow testing
 export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();

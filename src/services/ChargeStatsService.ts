@@ -21,8 +21,9 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     private readonly rateRepository: RateRepository
   ) {
     super();
-  }
+  } 
 
+  // todo - take in a 'from' arg to allow testing
   async getLast31Days(vehicleId: number): Promise<ChargeStatData> {
     const rateTypes = await this.rateRepository.list();
     const chargeStats = await this.chargeStatsRepository.getLast31Days(vehicleId);
