@@ -8,22 +8,22 @@ export const migrations: capSQLiteVersionUpgrade[] = [
       `
       CREATE TABLE IF NOT EXISTS rate_types (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        amount REAL NOT NULL,
-        unit TEXT LENGTH(5) NOT NULL
+        name TEXT NOT NULL CHECK (name != ''),
+        amount REAL NOT NULL CHECK (amount > 0),
+        unit TEXT LENGTH(5) NOT NULL CHECK (unit != '')
       );
       `,
       `
       CREATE TABLE IF NOT EXISTS vehicles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        year INTEGER NOT NULL,
-        make TEXT NOT NULL,
-        model TEXT NOT NULL,
+        year INTEGER NOT NULL CHECK (year BETWEEN 1900 AND 2050),
+        make TEXT NOT NULL CHECK (make != ''),
+        model TEXT NOT NULL CHECK (model != ''),
         trim TEXT NULL,
         vin TEXT LENGTH(17) NULL,
         nickname TEXT NULL,
-        battery_size REAL NULL,
-        range INTEGER NULL
+        battery_size REAL NULL CHECK (battery_size IS NULL OR battery_size > 0),
+        range INTEGER NULL CHECK (range IS NULL OR range > 0)
       );
       `,
       `

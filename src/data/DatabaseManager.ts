@@ -85,13 +85,14 @@ class SqliteDatabaseManager implements DatabaseManager {
       logToDevServer(`opening db: ${dbName}`);
       await this.db.open();
 
+      await this.db.execute('PRAGMA foreign_keys = ON;');
+      logToDevServer('foreign key enforcement enabled');
+
       const dbPath = await this.getDbPath();
       logToDevServer(`db located at: ${dbPath}`);
     } catch (error) {
       logToDevServer(`Connection error: ${error}`);
-      alert(error);
-
-      throw error;
+      throw new Error(`Failed to open database connection: ${error}`);
     }
   }
 
