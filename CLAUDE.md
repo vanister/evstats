@@ -158,6 +158,21 @@ Tests use Vitest with jsdom environment. Mock implementations available in `src/
 
 Custom type definitions in `.d.ts` files throughout the codebase. Global types available via `@evs-core` alias pointing to `evs-core.d.ts`.
 
+**Nullable Types**: Use optional properties (`?`) instead of union types with null for nullable fields:
+```typescript
+// Preferred
+type Vehicle = {
+  year?: number;
+  batterySize?: number;
+}
+
+// Not preferred
+type Vehicle = {
+  year: number | null;
+  batterySize: number | null;
+}
+```
+
 ## Development Guidelines
 
 **API Documentation**: Always consult official documentation when uncertain about package APIs. Key resources:

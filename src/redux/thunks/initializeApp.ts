@@ -15,7 +15,7 @@ export const initializeApp = createAsyncThunk(
     const vehicles = await vehicleService.list();
 
     const lastUsedRate: number = await preferenceService.get(
-      PreferenceKeys.lastUsedRateTypeId,
+      PreferenceKeys.LastUsedRateTypeId,
       'number'
     );
 

@@ -50,8 +50,16 @@ export default function VehicleScreen() {
   };
 
   const handleDeleteClick = (vehicle: Vehicle) => {
-    // todo - warn about deleting session entries
-    showAlert(`Are you sure you want to delete ${vehicle.nickname ?? vehicle.model}`, [
+    const stats = vehicleStats.find(s => s.vehicleId === vehicle.id);
+    const sessionCount = stats?.totalSessions ?? 0;
+    const vehicleName = vehicle.nickname ?? vehicle.model;
+    
+    let message = `Are you sure you want to delete ${vehicleName}?`;
+    if (sessionCount > 0) {
+      message += ` This will also delete ${sessionCount} charging session${sessionCount === 1 ? '' : 's'} associated with this vehicle.`;
+    }
+    
+    showAlert(message, [
       { text: 'Cancel', role: 'cancel' },
       {
         text: 'Delete',

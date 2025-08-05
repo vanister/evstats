@@ -6,15 +6,15 @@ export type Vehicle = {
   nickname?: string;
   trim?: string;
   vin?: string;
-  year: number;
+  year?: number;
   /**
    * The useable battery size.
    *
    * `db column - battery_size`
    */
-  batterySize: number;
+  batterySize?: number;
   /** The initial range of vehicle. */
-  range: number;
+  range?: number;
 };
 
 /** The vehicle database object. */

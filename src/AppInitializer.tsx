@@ -35,7 +35,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
         const rates = await rateService.list();
         const vehicles = await vehicleService.list();
         const lastUsedRate = await preferenceService.get<number>(
-          PreferenceKeys.lastUsedRateTypeId,
+          PreferenceKeys.LastUsedRateTypeId,
           'number'
         );
         const lastUsedVehicle = await preferenceService.get<number>(

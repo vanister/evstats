@@ -8,7 +8,7 @@ export const updateLastUsed = createAsyncThunk(
   async (lastUsed: LastUsedState, { dispatch }) => {
     const preferenceService = getService('preferenceService');
     // update the preferences
-    await preferenceService.set(PreferenceKeys.lastUsedRateTypeId, lastUsed.rateTypeId?.toString());
+    await preferenceService.set(PreferenceKeys.LastUsedRateTypeId, lastUsed.rateTypeId?.toString());
     await preferenceService.set(PreferenceKeys.LastUsedVehicleId, lastUsed.vehicleId?.toString());
 
     dispatch(setLastUsed(lastUsed));

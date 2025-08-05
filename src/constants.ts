@@ -11,13 +11,14 @@ export enum IonSlots {
 }
 
 export enum PreferenceKeys {
-  lastUsedRateTypeId = 'EVS_LAST_USED_RATE_TYPE_ID',
-  LastUsedVehicleId = 'EVS_LAST_USED_VEHICLE_ID'
+  LastUsedRateTypeId = 'EVS_LAST_USED_RATE_TYPE_ID',
+  LastUsedVehicleId = 'EVS_LAST_USED_VEHICLE_ID',
+  DefaultVehicleId = 'EVS_DEFAULT_VEHICLE_ID'
 }
 
-export const ChargeColors = {
-  Home: '#004D80',
-  Work: '#F27200',
-  Other: '#929292',
-  DC: '#B51700'
-};
+export enum ChargeColors {
+  Home = '#004D80',
+  Work = '#F27200',
+  Other = '#929292',
+  DC = '#B51700'
+}

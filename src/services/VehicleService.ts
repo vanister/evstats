@@ -4,6 +4,7 @@ import { Vehicle, VehicleDbo } from '../models/vehicle';
 import { BaseService } from './BaseService';
 import { PartialPropertyRecord } from './service-types';
 import { PreferenceService } from './PreferenceService';
+import { PreferenceKeys } from '../constants';
 
 export interface VehicleService {
   list(): Promise<Vehicle[]>;
@@ -16,7 +17,6 @@ export interface VehicleService {
 }
 
 export class EvsVehicleService extends BaseService implements VehicleService {
-  private static readonly DEFAULT_VEHICLE_KEY = 'defaultVehicleId';
   
   private vehicleToDboPropMap: PartialPropertyRecord<Vehicle, VehicleDbo> = {
     batterySize: 'battery_size'
@@ -74,18 +74,18 @@ export class EvsVehicleService extends BaseService implements VehicleService {
     // If we're removing the default vehicle, clear the default preference
     const defaultVehicleId = await this.getDefaultVehicleId();
     if (defaultVehicleId === id) {
-      await this.preferenceService.remove(EvsVehicleService.DEFAULT_VEHICLE_KEY);
+      await this.preferenceService.remove(PreferenceKeys.DefaultVehicleId);
     }
 
     return removed;
   }
 
   async getDefaultVehicleId(): Promise<number | null> {
-    return await this.preferenceService.get<number>(EvsVehicleService.DEFAULT_VEHICLE_KEY, 'number');
+    return await this.preferenceService.get<number>(PreferenceKeys.DefaultVehicleId, 'number');
   }
 
   async setDefaultVehicleId(vehicleId: number): Promise<void> {
-    await this.preferenceService.set(EvsVehicleService.DEFAULT_VEHICLE_KEY, vehicleId.toString());
+    await this.preferenceService.set(PreferenceKeys.DefaultVehicleId, vehicleId.toString());
   }
 
   private toVehicle(dbo: VehicleDbo): Vehicle {
