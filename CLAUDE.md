@@ -68,7 +68,9 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 **Date Handling**:
 - Use `formatDateForDisplay()` from `dateUtility.ts` for displaying date strings to avoid timezone issues
 - Use `parseLocalDate()` when you need a Date object from a date string (YYYY-MM-DD format)
+- Use `today()` from `dateUtility.ts` for getting current date in YYYY-MM-DD format
 - Never parse date strings directly with `new Date(dateString)` as it treats them as UTC
+- Never import date-fns directly - use centralized utilities in `dateUtility.ts` instead
 
 ## Code Organization Standards
 

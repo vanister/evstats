@@ -1,11 +1,13 @@
+import { format, parse } from 'date-fns';
+
 /**
  * Gets today's date in ISO8601 format (YYYY-MM-DD).
  */
 export function today(trimDashes = false): string {
-  const today = new Date().toISOString().split('T')[0];
+  const today = format(new Date(), 'yyyy-MM-dd');
 
   if (trimDashes) {
-    return today.replace('-', '');
+    return today.replace(/-/g, '');
   }
 
   return today;
@@ -16,7 +18,7 @@ export function today(trimDashes = false): string {
  * This prevents date strings from being interpreted as UTC and shifting to the previous day.
  */
 export function parseLocalDate(dateString: string): Date {
-  return new Date(dateString + 'T00:00:00');
+  return parse(dateString, 'yyyy-MM-dd', new Date());
 }
 
 /**
