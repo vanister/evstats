@@ -12,6 +12,7 @@ import {
 } from '@ionic/react';
 import { Vehicle } from '../../../../models/vehicle';
 import { VehicleStats } from '../../../../models/vehicleStats';
+import { formatDateForDisplay } from '../../../../utilities/dateUtility';
 
 type VehicleCardProps = {
   vehicle: Vehicle;
@@ -67,7 +68,7 @@ export default function VehicleCard({ vehicle, stats, loading, isDefault, ...pro
               {stats.lastChargeDate && (
                 <div className="stat-item">
                   <span className="stat-label">Last Charge:</span>
-                  <span className="stat-value">{new Date(stats.lastChargeDate).toLocaleDateString()}</span>
+                  <span className="stat-value">{formatDateForDisplay(stats.lastChargeDate)}</span>
                 </div>
               )}
             </div>

@@ -65,6 +65,11 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 **Logging**:
 - Don't write `console.log/error/warn`, instead use `logToDevServer`
 
+**Date Handling**:
+- Use `formatDateForDisplay()` from `dateUtility.ts` for displaying date strings to avoid timezone issues
+- Use `parseLocalDate()` when you need a Date object from a date string (YYYY-MM-DD format)
+- Never parse date strings directly with `new Date(dateString)` as it treats them as UTC
+
 ## Code Organization Standards
 
 ### Component and Hook Structure

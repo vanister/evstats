@@ -1,4 +1,5 @@
 import { SessionDbo } from '../../models/session';
+import { VehicleStats } from '../../models/vehicleStats';
 import { BaseRepository } from './BaseRepository';
 import { SessionSql } from '../sql/SessionSql';
 import { DbContext } from '../DbContext';
@@ -7,6 +8,8 @@ export interface SessionRepository {
   list(limit?: number, page?: number): Promise<SessionDbo[]>;
   get(id: number): Promise<SessionDbo>;
   getByVehicleId(vehicleId: number): Promise<SessionDbo[]>;
+  getVehicleStats(vehicleId: number): Promise<VehicleStats | null>;
+  getAllVehicleStats(): Promise<VehicleStats[]>;
   add(session: SessionDbo): Promise<SessionDbo>;
   update(session: SessionDbo): Promise<number>;
   remove(id: number): Promise<boolean>;
@@ -58,5 +61,34 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
     const { changes } = await this.context.run(SessionSql.Delete, [id]);
 
     return changes > 0;
+  }
+
+  async getVehicleStats(vehicleId: number): Promise<VehicleStats | null> {
+    const values = await this.context.query<any>(SessionSql.GetVehicleStats, [vehicleId]);
+    const result = values?.[0];
+
+    if (!result) {
+      return null;
+    }
+
+    return {
+      vehicleId: result.vehicle_id,
+      totalSessions: result.totalSessions,
+      totalKwh: result.totalKwh,
+      lastChargeDate: result.lastChargeDate,
+      averageKwhPerSession: result.averageKwhPerSession
+    };
+  }
+
+  async getAllVehicleStats(): Promise<VehicleStats[]> {
+    const values = await this.context.query<any>(SessionSql.GetAllVehicleStats, []);
+
+    return values?.map((result: any) => ({
+      vehicleId: result.vehicle_id,
+      totalSessions: result.totalSessions,
+      totalKwh: result.totalKwh,
+      lastChargeDate: result.lastChargeDate,
+      averageKwhPerSession: result.averageKwhPerSession
+    })) ?? [];
   }
 }
