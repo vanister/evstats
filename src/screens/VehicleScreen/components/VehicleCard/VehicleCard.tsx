@@ -20,6 +20,7 @@ type VehicleCardProps = {
   isDefault?: boolean;
   onEditClick?: (vehicle: Vehicle) => void;
   onDeleteClick?: (vehicle: Vehicle) => void;
+  onSetDefaultClick?: (vehicle: Vehicle) => void;
 };
 
 export default function VehicleCard({ vehicle, stats, loading, isDefault, ...props }: VehicleCardProps) {
@@ -81,6 +82,11 @@ export default function VehicleCard({ vehicle, stats, loading, isDefault, ...pro
       <IonButton fill="clear" color="danger" onClick={() => props.onDeleteClick?.(vehicle)}>
         Delete
       </IonButton>
+      {!isDefault && (
+        <IonButton fill="clear" onClick={() => props.onSetDefaultClick?.(vehicle)}>
+          Default
+        </IonButton>
+      )}
     </IonCard>
   );
 }

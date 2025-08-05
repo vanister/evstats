@@ -73,7 +73,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const preferenceService: PreferenceService = new EvsPreferenceService(Preferences);
   const sessionService: SessionService = new EvsSessionService(sessionRepository);
   const rateService: RateService = new EvsRateService(rateRepository);
-  const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository);
+  const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository, preferenceService);
   const vehicleStatsService: VehicleStatsService = new EvsVehicleStatsService(sessionRepository);
 
   // register the services here

@@ -1,20 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Vehicle } from '../../models/vehicle';
 import { VehicleStats } from '../../models/vehicleStats';
 import { useServices } from '../../providers/ServiceProvider';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addVehicle, deleteVehicle, updateVehicle } from '../../redux/vehicleSlice';
+import { useImmerState } from '../../hooks/useImmerState';
+import { logToDevServer } from '../../logger';
 
 type VehicleUpdater = (vehicle: Vehicle) => Promise<string | null>;
+
+type VehicleLocalState = {
+  vehicleStats: VehicleStats[];
+  loadingStats: boolean;
+  refreshTrigger: number;
+  defaultVehicleId: number | null;
+};
 
 export type UseVehicleHook = {
   vehicles: Vehicle[];
   vehicleStats: VehicleStats[];
   loadingStats: boolean;
+  defaultVehicleId: number | null;
   refreshStats: () => void;
   addNewVehicle: VehicleUpdater;
   editVehicle: VehicleUpdater;
   removeVehicle: VehicleUpdater;
+  setDefaultVehicle: (vehicle: Vehicle) => Promise<void>;
+};
+
+const INITIAL_STATE: VehicleLocalState = {
+  vehicleStats: [],
+  loadingStats: true,
+  refreshTrigger: 0,
+  defaultVehicleId: null
 };
 
 export function useVehicles() {
@@ -22,33 +40,68 @@ export function useVehicles() {
   const vehicleService = useServices('vehicleService');
   const vehicleStatsService = useServices('vehicleStatsService');
   const vehicles = useAppSelector((s) => s.vehicles);
-  const [vehicleStats, setVehicleStats] = useState<VehicleStats[]>([]);
-  const [loadingStats, setLoadingStats] = useState(true);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [state, setState] = useImmerState<VehicleLocalState>(INITIAL_STATE);
+
+  useEffect(() => {
+    const loadDefaultVehicleId = async () => {
+      try {
+        const defaultId = await vehicleService.getDefaultVehicleId();
+        setState((draft) => {
+          draft.defaultVehicleId = defaultId;
+        });
+      } catch (error) {
+        logToDevServer('Failed to load default vehicle ID:', 'error', error);
+      }
+    };
+
+    loadDefaultVehicleId();
+  }, [vehicleService]);
 
   useEffect(() => {
     const loadVehicleStats = async () => {
       if (vehicles.length === 0) {
-        setLoadingStats(false);
+        setState((draft) => {
+          draft.loadingStats = false;
+        });
         return;
       }
 
       try {
-        setLoadingStats(true);
+        setState((draft) => {
+          draft.loadingStats = true;
+        });
         const stats = await vehicleStatsService.getStatsForAllVehicles();
-        setVehicleStats(stats);
+        setState((draft) => {
+          draft.vehicleStats = stats;
+        });
       } catch (error) {
-        console.error('Failed to load vehicle stats:', error);
+        logToDevServer('Failed to load vehicle stats:', 'error', error);
       } finally {
-        setLoadingStats(false);
+        setState((draft) => {
+          draft.loadingStats = false;
+        });
       }
     };
 
     loadVehicleStats();
-  }, [vehicles, refreshTrigger]);
+  }, [vehicles, state.refreshTrigger]);
 
   const refreshStats = () => {
-    setRefreshTrigger((prev) => prev + 1);
+    setState((draft) => {
+      draft.refreshTrigger += 1;
+    });
+  };
+
+  const setDefaultVehicle = async (vehicle: Vehicle): Promise<void> => {
+    try {
+      await vehicleService.setDefaultVehicleId(vehicle.id);
+      setState((draft) => {
+        draft.defaultVehicleId = vehicle.id;
+      });
+    } catch (error) {
+      logToDevServer('Failed to set default vehicle:', 'error', error);
+      throw error;
+    }
   };
 
   const addNewVehicle = async (vehicle: Vehicle): Promise<string | null> => {
@@ -86,11 +139,13 @@ export function useVehicles() {
 
   return {
     vehicles,
-    vehicleStats,
-    loadingStats,
+    vehicleStats: state.vehicleStats,
+    loadingStats: state.loadingStats,
+    defaultVehicleId: state.defaultVehicleId,
     refreshStats,
     addNewVehicle,
     editVehicle,
-    removeVehicle
+    removeVehicle,
+    setDefaultVehicle
   };
 }

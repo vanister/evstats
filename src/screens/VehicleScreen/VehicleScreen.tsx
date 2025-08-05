@@ -14,7 +14,7 @@ export default function VehicleScreen() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const { vehicles, vehicleStats, loadingStats, refreshStats, addNewVehicle, editVehicle, removeVehicle } = useVehicles();
+  const { vehicles, vehicleStats, loadingStats, defaultVehicleId, refreshStats, addNewVehicle, editVehicle, removeVehicle, setDefaultVehicle } = useVehicles();
 
   useIonViewWillEnter(() => {
     refreshStats();
@@ -63,6 +63,14 @@ export default function VehicleScreen() {
     ]);
   };
 
+  const handleSetDefaultClick = async (vehicle: Vehicle) => {
+    try {
+      await setDefaultVehicle(vehicle);
+    } catch (error) {
+      await showAlert('Failed to set default vehicle. Please try again.');
+    }
+  };
+
   return (
     <EvsPage
       ref={pageRef}
@@ -75,8 +83,10 @@ export default function VehicleScreen() {
         vehicles={vehicles}
         vehicleStats={vehicleStats}
         loading={loadingStats}
+        defaultVehicleId={defaultVehicleId}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEditClick}
+        onSetDefaultClick={handleSetDefaultClick}
       />
 
       <EvsFloatingActionButton

@@ -3,6 +3,7 @@ import { NotFoundError } from '../errors/NotFoundError';
 import { Vehicle, VehicleDbo } from '../models/vehicle';
 import { BaseService } from './BaseService';
 import { PartialPropertyRecord } from './service-types';
+import { PreferenceService } from './PreferenceService';
 
 export interface VehicleService {
   list(): Promise<Vehicle[]>;
@@ -10,9 +11,13 @@ export interface VehicleService {
   add(vehicle: Vehicle): Promise<Vehicle>;
   update(vehicle: Vehicle): Promise<void>;
   remove(id: number): Promise<boolean>;
+  getDefaultVehicleId(): Promise<number | null>;
+  setDefaultVehicleId(vehicleId: number): Promise<void>;
 }
 
 export class EvsVehicleService extends BaseService implements VehicleService {
+  private static readonly DEFAULT_VEHICLE_KEY = 'defaultVehicleId';
+  
   private vehicleToDboPropMap: PartialPropertyRecord<Vehicle, VehicleDbo> = {
     batterySize: 'battery_size'
   };
@@ -21,7 +26,10 @@ export class EvsVehicleService extends BaseService implements VehicleService {
     battery_size: 'batterySize'
   };
 
-  constructor(private vehicleRepository: VehicleRepository) {
+  constructor(
+    private vehicleRepository: VehicleRepository,
+    private preferenceService: PreferenceService
+  ) {
     super();
   }
 
@@ -63,7 +71,21 @@ export class EvsVehicleService extends BaseService implements VehicleService {
   async remove(id: number): Promise<boolean> {
     const removed = await this.vehicleRepository.remove(id);
 
+    // If we're removing the default vehicle, clear the default preference
+    const defaultVehicleId = await this.getDefaultVehicleId();
+    if (defaultVehicleId === id) {
+      await this.preferenceService.remove(EvsVehicleService.DEFAULT_VEHICLE_KEY);
+    }
+
     return removed;
+  }
+
+  async getDefaultVehicleId(): Promise<number | null> {
+    return await this.preferenceService.get<number>(EvsVehicleService.DEFAULT_VEHICLE_KEY, 'number');
+  }
+
+  async setDefaultVehicleId(vehicleId: number): Promise<void> {
+    await this.preferenceService.set(EvsVehicleService.DEFAULT_VEHICLE_KEY, vehicleId.toString());
   }
 
   private toVehicle(dbo: VehicleDbo): Vehicle {

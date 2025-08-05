@@ -8,12 +8,14 @@ type VehicleListProps = {
   vehicles: Vehicle[];
   vehicleStats?: VehicleStats[];
   loading?: boolean;
+  defaultVehicleId?: number | null;
   emptyMessage?: string;
   onEditClick: (vehicle: Vehicle) => void;
   onDeleteClick: (vehicle: Vehicle) => void;
+  onSetDefaultClick: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleList({ vehicles, vehicleStats, loading, ...props }: VehicleListProps) {
+export default function VehicleList({ vehicles, vehicleStats, loading, defaultVehicleId, ...props }: VehicleListProps) {
   if (vehicles.length === 0) {
     return (
       <div className="vehicle-list">
@@ -26,9 +28,9 @@ export default function VehicleList({ vehicles, vehicleStats, loading, ...props 
 
   return (
     <div className="vehicle-list">
-      {vehicles.map((vehicle, index) => {
+      {vehicles.map((vehicle) => {
         const stats = vehicleStats?.find(s => s.vehicleId === vehicle.id);
-        const isDefault = index === 0; // First vehicle is default for now
+        const isDefault = vehicle.id === defaultVehicleId;
         return (
           <VehicleCard
             key={vehicle.id}
@@ -38,6 +40,7 @@ export default function VehicleList({ vehicles, vehicleStats, loading, ...props 
             isDefault={isDefault}
             onEditClick={props.onEditClick}
             onDeleteClick={props.onDeleteClick}
+            onSetDefaultClick={props.onSetDefaultClick}
           />
         );
       })}
