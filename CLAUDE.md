@@ -77,3 +77,13 @@ Tests use Vitest with jsdom environment. Mock implementations available in `src/
 ## Type Safety
 
 Custom type definitions in `.d.ts` files throughout the codebase. Global types available via `@evs-core` alias pointing to `evs-core.d.ts`.
+
+## Development Guidelines
+
+**API Documentation**: Always consult official documentation when uncertain about package APIs. Key resources:
+- @capacitor-community/sqlite: https://github.com/capacitor-community/sqlite/blob/master/docs/API.md
+- Ionic React: https://ionicframework.com/docs/react
+- Redux Toolkit: https://redux-toolkit.js.org/
+- Chart.js: https://www.chartjs.org/docs/
+
+Use WebSearch or WebFetch tools to verify API usage before implementing features.
