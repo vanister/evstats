@@ -1,12 +1,13 @@
 import './VehicleModal.scss';
 
-import { IonContent, IonModal } from '@ionic/react';
+import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { Vehicle } from '../../../../models/vehicle';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import VehicleForm from './VehicleForm';
 import ModalHeader from '../../../../components/ModalHeader';
+import { sanitizeVehicle, validateVehicle } from '../../../../utilities/vehicleValidation';
 
 type VehicleModalProps = {
   allowSwipeToClose?: boolean;
@@ -48,6 +49,7 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
   });
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
+  const [showAlert] = useIonAlert();
   const { vehicle } = formState;
 
   const modalCanDismiss = async (_: unknown, role: string | undefined) => {
@@ -59,17 +61,27 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
   };
 
   const handleSaveClick = async () => {
-    const isValid = form.current.reportValidity();
-
+    // Sanitize the vehicle data first
+    const sanitizedVehicle = sanitizeVehicle(vehicle);
+    
+    // Validate the sanitized data
+    const validationError = validateVehicle(sanitizedVehicle);
+    
     setFormState((f) => {
-      f.isValid = isValid;
+      f.isValid = validationError === null;
+      f.vehicle = sanitizedVehicle;
     });
 
-    if (!isValid) {
+    if (validationError) {      
+      await showAlert({
+        header: 'Validation Error',
+        message: validationError,
+        buttons: [{ text: 'OK', role: 'cancel' }]
+      });
       return;
     }
 
-    const successful = onSave ? await onSave(vehicle) : true;
+    const successful = onSave ? await onSave(sanitizedVehicle) : true;
 
     if (successful) {
       await modal.current.dismiss();

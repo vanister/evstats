@@ -3,6 +3,7 @@ import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
+import { logToDevServer } from '../../logger';
 import { Vehicle } from '../../models/vehicle';
 import VehicleList from './components/VehilceList/VehicleList';
 import VehicleModal from './components/VehicleModal/VehicleModal';
@@ -14,7 +15,7 @@ export default function VehicleScreen() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const { vehicles, vehicleStats, loadingStats, defaultVehicleId, refreshStats, addNewVehicle, editVehicle, removeVehicle, setDefaultVehicle } = useVehicles();
+  const { vehicles, vehicleStats, loadingStats, defaultVehicleId, loadingOperations, refreshStats, addNewVehicle, editVehicle, removeVehicle, setDefaultVehicle } = useVehicles();
 
   useIonViewWillEnter(() => {
     refreshStats();
@@ -75,7 +76,8 @@ export default function VehicleScreen() {
     try {
       await setDefaultVehicle(vehicle);
     } catch (error) {
-      await showAlert('Failed to set default vehicle. Please try again.');
+      logToDevServer('Failed to set default vehicle:', 'error', error);
+      await showAlert('Failed to set default vehicle. Please try again.', [{ text: 'OK', role: 'cancel' }]);
     }
   };
 
@@ -92,6 +94,7 @@ export default function VehicleScreen() {
         vehicleStats={vehicleStats}
         loading={loadingStats}
         defaultVehicleId={defaultVehicleId}
+        loadingOperations={loadingOperations}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEditClick}
         onSetDefaultClick={handleSetDefaultClick}
@@ -102,6 +105,7 @@ export default function VehicleScreen() {
         horizontal="end"
         vertical="bottom"
         slot="fixed"
+        disabled={loadingOperations.adding}
         onClick={handleAddClick}
       >
         <IonIcon icon={add} />

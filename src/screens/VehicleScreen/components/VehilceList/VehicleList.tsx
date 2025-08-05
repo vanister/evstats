@@ -9,13 +9,19 @@ type VehicleListProps = {
   vehicleStats?: VehicleStats[];
   loading?: boolean;
   defaultVehicleId?: number | null;
+  loadingOperations?: {
+    adding: boolean;
+    editing: boolean;
+    deleting: boolean;
+    settingDefault: boolean;
+  };
   emptyMessage?: string;
   onEditClick: (vehicle: Vehicle) => void;
   onDeleteClick: (vehicle: Vehicle) => void;
   onSetDefaultClick: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleList({ vehicles, vehicleStats, loading, defaultVehicleId, ...props }: VehicleListProps) {
+export default function VehicleList({ vehicles, vehicleStats, loading, defaultVehicleId, loadingOperations, ...props }: VehicleListProps) {
   if (vehicles.length === 0) {
     return (
       <div className="vehicle-list">
@@ -38,6 +44,7 @@ export default function VehicleList({ vehicles, vehicleStats, loading, defaultVe
             stats={stats}
             loading={loading}
             isDefault={isDefault}
+            loadingOperations={loadingOperations}
             onEditClick={props.onEditClick}
             onDeleteClick={props.onDeleteClick}
             onSetDefaultClick={props.onSetDefaultClick}

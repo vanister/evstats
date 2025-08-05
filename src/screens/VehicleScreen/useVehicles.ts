@@ -14,6 +14,12 @@ type VehicleLocalState = {
   loadingStats: boolean;
   refreshTrigger: number;
   defaultVehicleId: number | null;
+  loadingOperations: {
+    adding: boolean;
+    editing: boolean;
+    deleting: boolean;
+    settingDefault: boolean;
+  };
 };
 
 export type UseVehicleHook = {
@@ -21,6 +27,12 @@ export type UseVehicleHook = {
   vehicleStats: VehicleStats[];
   loadingStats: boolean;
   defaultVehicleId: number | null;
+  loadingOperations: {
+    adding: boolean;
+    editing: boolean;
+    deleting: boolean;
+    settingDefault: boolean;
+  };
   refreshStats: () => void;
   addNewVehicle: VehicleUpdater;
   editVehicle: VehicleUpdater;
@@ -32,7 +44,13 @@ const INITIAL_STATE: VehicleLocalState = {
   vehicleStats: [],
   loadingStats: true,
   refreshTrigger: 0,
-  defaultVehicleId: null
+  defaultVehicleId: null,
+  loadingOperations: {
+    adding: false,
+    editing: false,
+    deleting: false,
+    settingDefault: false
+  }
 };
 
 export function useVehicles() {
@@ -93,6 +111,10 @@ export function useVehicles() {
   };
 
   const setDefaultVehicle = async (vehicle: Vehicle): Promise<void> => {
+    setState((draft) => {
+      draft.loadingOperations.settingDefault = true;
+    });
+
     try {
       await vehicleService.setDefaultVehicleId(vehicle.id);
       setState((draft) => {
@@ -101,39 +123,70 @@ export function useVehicles() {
     } catch (error) {
       logToDevServer('Failed to set default vehicle:', 'error', error);
       throw error;
+    } finally {
+      setState((draft) => {
+        draft.loadingOperations.settingDefault = false;
+      });
     }
   };
 
   const addNewVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+    setState((draft) => {
+      draft.loadingOperations.adding = true;
+    });
+
     try {
       const newVehicle = await vehicleService.add(vehicle);
       dispatch(addVehicle(newVehicle));
 
       return null;
     } catch (error) {
-      return error.message;
+      logToDevServer('Failed to add new vehicle:', 'error', error);
+      return error.message || 'Failed to add vehicle. Please check your information and try again.';
+    } finally {
+      setState((draft) => {
+        draft.loadingOperations.adding = false;
+      });
     }
   };
 
   const editVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+    setState((draft) => {
+      draft.loadingOperations.editing = true;
+    });
+
     try {
       await vehicleService.update(vehicle);
       dispatch(updateVehicle(vehicle));
 
       return null;
     } catch (error) {
-      return error.message;
+      logToDevServer('Failed to edit vehicle:', 'error', error);
+      return error.message || 'Failed to update vehicle. Please check your information and try again.';
+    } finally {
+      setState((draft) => {
+        draft.loadingOperations.editing = false;
+      });
     }
   };
 
   const removeVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+    setState((draft) => {
+      draft.loadingOperations.deleting = true;
+    });
+
     try {
       await vehicleService.remove(vehicle.id);
       dispatch(deleteVehicle(vehicle));
 
       return null;
     } catch (error) {
-      return error.message;
+      logToDevServer('Failed to remove vehicle:', 'error', error);
+      return error.message || 'Failed to delete vehicle. Please try again.';
+    } finally {
+      setState((draft) => {
+        draft.loadingOperations.deleting = false;
+      });
     }
   };
 
@@ -142,6 +195,7 @@ export function useVehicles() {
     vehicleStats: state.vehicleStats,
     loadingStats: state.loadingStats,
     defaultVehicleId: state.defaultVehicleId,
+    loadingOperations: state.loadingOperations,
     refreshStats,
     addNewVehicle,
     editVehicle,
