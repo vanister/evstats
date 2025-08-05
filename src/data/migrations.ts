@@ -31,11 +31,11 @@ export const migrations: capSQLiteVersionUpgrade[] = [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         vehicle_id INTEGER NOT NULL,
         rate_type_id INTEGER NOT NULL,
-        date TEXT NOT NULL,
-        kwh INTEGER NOT NULL,
-        rate_override REAL NULL,
+        date TEXT NOT NULL CHECK (date != ''),
+        kwh REAL NOT NULL CHECK (kwh > 0),
+        rate_override REAL NULL CHECK (rate_override IS NULL OR rate_override > 0),
         FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
-        FOREIGN KEY (rate_type_id) REFERENCES rate_types(Id)
+        FOREIGN KEY (rate_type_id) REFERENCES rate_types(id)
       );
       `,
       `
@@ -51,6 +51,15 @@ export const migrations: capSQLiteVersionUpgrade[] = [
       FROM sessions s
         JOIN rate_types r ON r.id = s.rate_type_id
         JOIN vehicles v ON v.id = s.vehicle_id;
+      `,
+      `
+      CREATE INDEX IF NOT EXISTS idx_sessions_date_desc ON sessions(date DESC);
+      `,
+      `
+      CREATE INDEX IF NOT EXISTS idx_sessions_vehicle_id ON sessions(vehicle_id);
+      `,
+      `
+      CREATE INDEX IF NOT EXISTS idx_sessions_vehicle_date ON sessions(vehicle_id, date);
       `,
       // seed the initial rate types
       `
