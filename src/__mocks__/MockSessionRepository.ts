@@ -16,6 +16,10 @@ export class MockSessionRepository implements SessionRepository {
     return session;
   }
 
+  async getByVehicleId(vehicleId: number): Promise<SessionDbo[]> {
+    return this.sessions.filter((s) => s.vehicle_id === vehicleId);
+  }
+
   async add(session: SessionDbo): Promise<SessionDbo> {
     const newSession: SessionDbo = { ...session, id: ++this.lastId };
 

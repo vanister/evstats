@@ -19,4 +19,8 @@ export class SessionSql {
   public static readonly Delete = `
     DELETE FROM sessions WHERE id = ?;
   `;
+
+  public static readonly GetByVehicleId = `
+    SELECT * FROM sessions WHERE vehicle_id = ? ORDER BY date DESC;
+  `;
 }

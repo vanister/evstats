@@ -1,4 +1,4 @@
-import { IonIcon, useIonAlert } from '@ionic/react';
+import { IonIcon, useIonAlert, useIonViewWillEnter } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
@@ -14,7 +14,11 @@ export default function VehicleScreen() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const { vehicles, addNewVehicle, editVehicle, removeVehicle } = useVehicles();
+  const { vehicles, vehicleStats, loadingStats, refreshStats, addNewVehicle, editVehicle, removeVehicle } = useVehicles();
+
+  useIonViewWillEnter(() => {
+    refreshStats();
+  });
 
   const handleAddClick = () => {
     setShowModal(true);
@@ -69,6 +73,8 @@ export default function VehicleScreen() {
     >
       <VehicleList
         vehicles={vehicles}
+        vehicleStats={vehicleStats}
+        loading={loadingStats}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEditClick}
       />

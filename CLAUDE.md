@@ -47,7 +47,7 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 
 **Dependency Injection**: The `ServiceContainer` initializes all services and repositories. Services are retrieved via `getService<ServiceName>()`.
 
-**Database Management**: 
+**Database Management**:
 - Singleton `DatabaseManager` handles SQLite connections
 - Migration scripts managed through `addUpgradeStatement`
 - Connection consistency checks on startup
@@ -57,10 +57,90 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 - Async thunks for initialization and data updates
 - Immutable state updates with Immer integration
 
-**Error Handling**: 
+**Error Handling**:
 - Global `ErrorBoundary` with `AlertableError` component
 - Custom error types (e.g., `NotFoundError`)
 - Development logging via `logToDevServer`
+
+**Logging**:
+- Don't write `console.log/error/warn`, instead use `logToDevServer`
+
+## Code Organization Standards
+
+### Component and Hook Structure
+
+All React components and custom hooks should follow this consistent organization pattern:
+
+#### 1. Variable and State Declarations (First)
+```typescript
+// Service and hook dependencies
+const dispatch = useAppDispatch();
+const vehicleService = useServices('vehicleService');
+const vehicles = useAppSelector((s) => s.vehicles);
+
+// Local state declarations
+const [showModal, setShowModal] = useState(false);
+const [isNew, setIsNew] = useState(true);
+const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
+```
+
+#### 2. Hook Usage (Second)
+```typescript
+// useEffect hooks
+useEffect(() => {
+  const loadData = async () => {
+    // implementation
+  };
+  loadData();
+}, [dependency]);
+
+// Custom hooks and lifecycle hooks
+useIonViewWillEnter(() => {
+  refreshStats();
+});
+
+const { data, loading } = useCustomHook();
+```
+
+#### 3. Handler Functions (Third)
+```typescript
+// Event handlers and utility functions
+const handleAddClick = () => {
+  setShowModal(true);
+  setIsNew(true);
+};
+
+const handleSaveClick = async (item: Item) => {
+  // implementation
+};
+
+const refreshData = () => {
+  setRefreshTrigger(prev => prev + 1);
+};
+```
+
+#### 4. Render/Return (Last)
+```typescript
+// Component render or hook return
+return (
+  <IonPage>
+    {/* JSX content */}
+  </IonPage>
+);
+
+// Or for hooks:
+return {
+  data,
+  loading,
+  handlers
+};
+```
+
+### Benefits of This Structure:
+- **Predictable**: Easy to find specific types of logic
+- **Maintainable**: Clear separation of concerns
+- **Readable**: Logical flow from setup → hooks → handlers → render
+- **Consistent**: Same pattern across all components and hooks
 
 ## Mobile Development
 

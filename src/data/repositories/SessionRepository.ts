@@ -6,6 +6,7 @@ import { DbContext } from '../DbContext';
 export interface SessionRepository {
   list(limit?: number, page?: number): Promise<SessionDbo[]>;
   get(id: number): Promise<SessionDbo>;
+  getByVehicleId(vehicleId: number): Promise<SessionDbo[]>;
   add(session: SessionDbo): Promise<SessionDbo>;
   update(session: SessionDbo): Promise<number>;
   remove(id: number): Promise<boolean>;
@@ -30,6 +31,12 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
     const session = values?.[0];
 
     return session;
+  }
+
+  async getByVehicleId(vehicleId: number): Promise<SessionDbo[]> {
+    const values = await this.context.query<SessionDbo>(SessionSql.GetByVehicleId, [vehicleId]);
+
+    return values ?? [];
   }
 
   async add(session: SessionDbo): Promise<SessionDbo> {

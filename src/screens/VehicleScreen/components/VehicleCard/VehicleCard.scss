@@ -3,5 +3,65 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
+
+    span {
+      flex: 1;
+    }
+  }
+
+  .vehicle-details {
+    margin-bottom: 16px;
+  }
+
+  .vehicle-stats {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ion-color-light);
+
+    h4 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ion-color-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .stat-label {
+        font-size: 12px;
+        color: var(--ion-color-medium);
+      }
+
+      .stat-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+    }
+
+    .no-stats {
+      font-size: 12px;
+      color: var(--ion-color-medium);
+      font-style: italic;
+      margin: 0;
+    }
+
+    .stats-loading {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 }
