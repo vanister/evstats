@@ -23,7 +23,9 @@ export function createChartConfig({
         x: {
           stacked: true,
           ticks: {
-            callback: createDateTickCallback(today)
+            callback: createDateTickCallback(today),
+            maxTicksLimit: 6,
+            autoSkip: true
           }
         },
         y: {
@@ -52,13 +54,27 @@ export function createChartConfig({
 }
 
 function createDateTickCallback(today: Date) {
-  return (value: number) => getDateFromDaysAgo(today, value).getDate();
+  return (value: number, index: number, ticks: any) => {
+    // Since data is reversed but labels are [0,1,2,...,30], 
+    // we need to reverse the label value to get the correct date
+    const daysAgo = 30 - value;
+    const date = getDateFromDaysAgo(today, daysAgo);
+    
+    // Show month/day format for better readability
+    return date.toLocaleDateString(undefined, { 
+      month: 'numeric', 
+      day: 'numeric' 
+    });
+  };
 }
 
 function createTooltipTitleCallback(today: Date) {
   return (tooltipItems: { label: string }[]) => {
     const value = +tooltipItems[0].label;
-    const date = getDateFromDaysAgo(today, value);
+    // Since data is reversed but labels are [0,1,2,...,30], 
+    // we need to reverse the label value to get the correct date
+    const daysAgo = 30 - value;
+    const date = getDateFromDaysAgo(today, daysAgo);
 
     return date.toLocaleDateString(undefined, {
       weekday: 'short',

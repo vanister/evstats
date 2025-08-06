@@ -31,8 +31,8 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
     const data: ChargeStatData = {
       vehicleId,
-      labels: Array.from({ length: 31 }, (_, i) => i),
-      datasets,
+      labels: Array.from({ length: 31 }, (_, i) => i), // 0, 1, 2, ..., 30
+      datasets, // Data is already reversed in createDataset
       averages
     };
 
@@ -65,13 +65,14 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       );
 
       if (daysDiff >= 0 && daysDiff < 31) {
+        // Use daysDiff directly so recent dates (smaller daysDiff) appear on the right
         kwhByRateType[rateName][daysDiff] = kwh;
       }
     });
 
     const datasets = Object.entries(kwhByRateType).map<ChargeStatDataset>(([rateName, kwh]) => ({
       label: rateName,
-      data: kwh,
+      data: kwh.slice().reverse(), // Reverse here so recent dates appear on right
       backgroundColor: getColor(rateName)
     }));
 
