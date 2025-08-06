@@ -8,6 +8,7 @@ import { updateLastUsed } from '../../redux/thunks/updateLastUsed';
 type UseSessionState = {
   loading: boolean;
   sessions: Session[];
+  operationLoading: boolean;
 };
 
 export type SessionHook = UseSessionState & {
@@ -20,7 +21,8 @@ export type SessionHook = UseSessionState & {
 
 const INITIAL_STATE: UseSessionState = {
   loading: true,
-  sessions: []
+  sessions: [],
+  operationLoading: false
 };
 
 export function useSessions(): SessionHook {
@@ -49,6 +51,10 @@ export function useSessions(): SessionHook {
   }, []);
 
   const addSession = async (session: Session) => {
+    setState((s) => {
+      s.operationLoading = true;
+    });
+
     try {
       const sessionWithId = await sessionService.add(session);
 
@@ -59,10 +65,14 @@ export function useSessions(): SessionHook {
       // add the new session with its id
       setState((s) => {
         s.sessions.push(sessionWithId);
+        s.operationLoading = false;
       });
 
       return null;
     } catch (error) {
+      setState((s) => {
+        s.operationLoading = false;
+      });
       return error.message;
     }
   };
@@ -70,15 +80,20 @@ export function useSessions(): SessionHook {
   const getSession = async (id: number): Promise<Session | null> => {
     try {
       const session = await sessionService.get(id);
-
       return session;
     } catch (error) {
-      // todo - check for not found error
-      return null;
+      if (error.name === 'NotFoundError') {
+        return null;
+      }
+      throw error;
     }
   };
 
   const updateSession = async (session: Session) => {
+    setState((s) => {
+      s.operationLoading = true;
+    });
+
     try {
       await sessionService.update(session);
 
@@ -89,10 +104,15 @@ export function useSessions(): SessionHook {
       // find the session log item and update it with the updated values
       setState((s) => {
         const existingSessionLogId = s.sessions.findIndex((sl) => sl.id === session.id);
-
         s.sessions[existingSessionLogId] = session;
+        s.operationLoading = false;
       });
+
+      return null;
     } catch (error) {
+      setState((s) => {
+        s.operationLoading = false;
+      });
       return error.message;
     }
   };

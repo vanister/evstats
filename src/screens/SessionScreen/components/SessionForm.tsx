@@ -5,11 +5,21 @@ import EvsSelect from '../../../components/EvsSelect';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
 
+// Form state type allows undefined values during editing
+type SessionFormState = {
+  id?: number;
+  date: string;
+  kWh?: number;
+  rateTypeId?: number;
+  rateOverride?: number;
+  vehicleId?: number;
+};
+
 type SessionFormProps = {
   rateTypes: RateType[];
-  session: Session;
+  session: SessionFormState;
   vehicles: Vehicle[];
-  onSessionFieldChange: (field: keyof Session, value: string | number) => void;
+  onSessionFieldChange: (field: keyof SessionFormState, value: string | number | undefined) => void;
 };
 
 function SessionForm(
@@ -41,8 +51,8 @@ function SessionForm(
             maxlength={3}
             required
             type="number"
-            value={session.kWh}
-            onIonInput={(e) => onSessionFieldChange('kWh', +e.detail.value)}
+            value={session.kWh ?? ''}
+            onIonInput={(e) => onSessionFieldChange('kWh', e.detail.value ? +e.detail.value : undefined)}
           />
         </IonItem>
         <IonItem>
@@ -63,9 +73,9 @@ function SessionForm(
             inset
             label="Vehicle"
             labelPlacement="fixed"
-            value={session.vehicleId}
+            value={session.vehicleId ?? ''}
             placeholder="required"
-            onSelect={(value) => onSessionFieldChange('vehicleId', +value)}
+            onSelect={(value) => onSessionFieldChange('vehicleId', value ? +value : undefined)}
           >
             {vehicles.map((v) => (
               <IonSelectOption key={v.id} value={v.id}>
@@ -83,9 +93,9 @@ function SessionForm(
           <EvsSelect
             label="Rate type"
             labelPlacement="fixed"
-            value={session.rateTypeId}
+            value={session.rateTypeId ?? ''}
             placeholder="required"
-            onSelect={(value) => onSessionFieldChange('rateTypeId', +value)}
+            onSelect={(value) => onSessionFieldChange('rateTypeId', value ? +value : undefined)}
           >
             {rateTypes.map((r) => (
               <IonSelectOption key={r.id} value={r.id}>
@@ -98,8 +108,11 @@ function SessionForm(
           <IonInput
             label="Rate override"
             labelPlacement="fixed"
-            value={session.rateOverride}
-            onIonInput={(e) => onSessionFieldChange('rateOverride', e.detail.value)}
+            type="number"
+            min={0}
+            step="0.01"
+            value={session.rateOverride ?? ''}
+            onIonInput={(e) => onSessionFieldChange('rateOverride', e.detail.value ? +e.detail.value : undefined)}
           />
         </IonItem>
       </IonList>

@@ -1,9 +1,19 @@
 import { Session } from '../../models/session';
+import { parseLocalDate } from '../../utilities/dateUtility';
 
 export function validateSession(session: Partial<Session>): string | null {
-  // todo - check parsable?
   if (!session.date) {
     return 'Date is required';
+  }
+
+  // Validate date format and parseability
+  try {
+    const parsedDate = parseLocalDate(session.date);
+    if (isNaN(parsedDate.getTime())) {
+      return 'Invalid date format';
+    }
+  } catch (error) {
+    return 'Invalid date format';
   }
 
   if (!session.kWh || session.kWh <= 0) {

@@ -9,9 +9,20 @@ import ModalHeader from '../../../../components/ModalHeader';
 import { Vehicle } from '../../../../models/vehicle';
 import { RateType } from '../../../../models/rateType';
 
+// Form state type allows undefined values during editing
+type SessionFormState = {
+  id?: number;
+  date: string;
+  kWh?: number;
+  rateTypeId?: number;
+  rateOverride?: number;
+  vehicleId?: number;
+};
+
 type SessionModalProps = {
   allowCloseGesture?: boolean;
   isNew?: boolean;
+  loading?: boolean;
   presentingElement?: HTMLElement;
   rates: RateType[];
   selectedVehicleId?: number;
@@ -23,19 +34,15 @@ type SessionModalProps = {
   onDidDismiss?: (canceled?: boolean) => void;
 };
 
-// make sure all non-id properties are defined
-const NEW_SESSION: Session = {
-  date: today(),
-  kWh: null,
-  rateTypeId: null,
-  vehicleId: null,
-  rateOverride: null
+// Form initial state - allows undefined for form editing before validation
+const NEW_SESSION: SessionFormState = {
+  date: today()
 };
 
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
-  const [session, setSession] = useImmerState<Session>({
+  const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
     rateTypeId: props.selectedRateTypeId,
     vehicleId: props.selectedVehicleId,
@@ -62,7 +69,7 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
       return;
     }
 
-    const successful = onSave ? await onSave(session) : true;
+    const successful = onSave ? await onSave(session as Session) : true;
 
     if (successful) {
       await modal.current.dismiss();
@@ -70,7 +77,7 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
     }
   };
 
-  const handleSessionFieldValueChange = (field: keyof Session, value: string | number) => {
+  const handleSessionFieldValueChange = (field: keyof SessionFormState, value: string | number | undefined) => {
     setSession((s) => {
       s[field as string] = value;
     });
@@ -86,6 +93,7 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
     >
       <ModalHeader
         title={isNew ? 'New Session' : 'Edit Session'}
+        actionOptions={{ disablePrimary: props.loading }}
         onSecondaryClick={handleCancelClick}
         onPrimaryClick={handleSaveClick}
       ></ModalHeader>
