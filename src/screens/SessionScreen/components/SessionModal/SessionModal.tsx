@@ -8,16 +8,7 @@ import SessionForm from '../SessionForm';
 import ModalHeader from '../../../../components/ModalHeader';
 import { Vehicle } from '../../../../models/vehicle';
 import { RateType } from '../../../../models/rateType';
-
-// Form state type - use null instead of optional for required fields
-type SessionFormState = {
-  id?: number;
-  date: string;
-  kWh: number | null;
-  rateTypeId: number | null;
-  rateOverride?: number;
-  vehicleId: number | null;
-};
+import { SessionFormState } from '../../session-types';
 
 type SessionModalProps = {
   allowCloseGesture?: boolean;

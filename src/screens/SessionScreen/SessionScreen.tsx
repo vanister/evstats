@@ -8,21 +8,10 @@ import SessionList from './components/SessionList/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
-import { SessionState } from './session-types';
+import { SessionState, SessionFormState } from './session-types';
 import { validateSession, isValidSession } from './validator';
-
-// Form state type - use null instead of optional for required fields
-type SessionFormState = {
-  id?: number;
-  date: string;
-  kWh: number | null;
-  rateTypeId: number | null;
-  rateOverride?: number;
-  vehicleId: number | null;
-};
 import { toSessionLogItem } from './helpers';
 import { useAppSelector } from '../../redux/hooks';
-import { logToDevServer } from '../../logger';
 
 const INITIAL_STATE: SessionState = {
   showModal: false,

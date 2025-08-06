@@ -1,19 +1,9 @@
 import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
-import { Session } from '../../../models/session';
 import { IonInput, IonItem, IonList, IonNote, IonSelectOption } from '@ionic/react';
 import EvsSelect from '../../../components/EvsSelect';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
-
-// Form state type - use null instead of optional for required fields
-type SessionFormState = {
-  id?: number;
-  date: string;
-  kWh: number | null;
-  rateTypeId: number | null;
-  rateOverride?: number;
-  vehicleId: number | null;
-};
+import { SessionFormState } from '../session-types';
 
 type SessionFormProps = {
   rateTypes: RateType[];

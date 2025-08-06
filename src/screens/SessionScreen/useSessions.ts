@@ -5,20 +5,7 @@ import { useImmerState } from '../../hooks/useImmerState';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { updateLastUsed } from '../../redux/thunks/updateLastUsed';
 import { logToDevServer } from '../../logger';
-
-type UseSessionState = {
-  loading: boolean;
-  sessions: Session[];
-  operationLoading: boolean;
-};
-
-export type SessionHook = UseSessionState & {
-  lastUsedRateTypeId?: number;
-  selectedVehicleId?: number;
-  addSession: (session: Session) => Promise<string | null>;
-  getSession: (id: number) => Promise<Session | null>;
-  updateSession: (session: Session) => Promise<string | null>;
-};
+import { UseSessionState, SessionHook } from './session-types';
 
 const INITIAL_STATE: UseSessionState = {
   loading: true,

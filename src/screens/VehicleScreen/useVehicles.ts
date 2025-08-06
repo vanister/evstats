@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Vehicle } from '../../models/vehicle';
-import { VehicleStats } from '../../models/vehicleStats';
 import { useServices } from '../../providers/ServiceProvider';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addVehicle, deleteVehicle, updateVehicle } from '../../redux/vehicleSlice';
@@ -8,26 +7,7 @@ import { clearVehicleId } from '../../redux/lastUsedSlice';
 import { setDefaultVehicleId, clearDefaultVehicleId } from '../../redux/defaultVehicleSlice';
 import { useImmerState } from '../../hooks/useImmerState';
 import { logToDevServer } from '../../logger';
-
-type VehicleUpdater = (vehicle: Vehicle) => Promise<string | null>;
-
-type VehicleLocalState = {
-  vehicleStats: VehicleStats[];
-  loadingStats: boolean;
-  refreshTrigger: number;
-};
-
-export type UseVehicleHook = {
-  vehicles: Vehicle[];
-  vehicleStats: VehicleStats[];
-  loadingStats: boolean;
-  defaultVehicleId: number | null;
-  refreshStats: () => void;
-  addNewVehicle: VehicleUpdater;
-  editVehicle: VehicleUpdater;
-  removeVehicle: VehicleUpdater;
-  setDefaultVehicle: (vehicle: Vehicle) => Promise<void>;
-};
+import { VehicleLocalState } from './vehicle-types';
 
 const INITIAL_STATE: VehicleLocalState = {
   vehicleStats: [],
@@ -43,7 +23,6 @@ export function useVehicles() {
   const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
   const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
   const [state, setState] = useImmerState<VehicleLocalState>(INITIAL_STATE);
-
 
   useEffect(() => {
     const loadVehicleStats = async () => {
@@ -110,7 +89,9 @@ export function useVehicles() {
       return null;
     } catch (error) {
       logToDevServer(`Failed to edit vehicle: ${error.message}`, 'error', error.stack);
-      return error.message || 'Failed to update vehicle. Please check your information and try again.';
+      return (
+        error.message || 'Failed to update vehicle. Please check your information and try again.'
+      );
     }
   };
 

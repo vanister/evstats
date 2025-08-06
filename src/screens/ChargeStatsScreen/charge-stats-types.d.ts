@@ -1,4 +1,4 @@
-import { ChargeStatData } from '../../../models/chargeStats';
+import { ChargeStatData } from '../../models/chargeStats';
 
 export type CreateChartConfigOptions = {
   data: ChargeStatData;

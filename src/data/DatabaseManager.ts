@@ -2,7 +2,15 @@ import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacito
 import { logToDevServer } from '../logger';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { createDbContextInstance, DbContext } from './DbContext';
-import { ConnectionOptions, DatabaseManager } from './data-types';
+import { ConnectionOptions } from './data-types';
+
+export interface DatabaseManager {
+  get context(): DbContext;
+  get fullDatabaseName(): string;
+  openConnection(options?: ConnectionOptions): Promise<void>;
+  closeConnection(): Promise<void>;
+  getVersion(): Promise<number>;
+}
 
 const DEFAULT_CONNECTION_OPTIONS: ConnectionOptions = {
   encrypted: false,
