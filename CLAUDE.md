@@ -197,6 +197,13 @@ type Vehicle = {
 };
 ```
 
+## Temporary Files
+
+The following temporary files are generated during development:
+
+- **Logs**: Stored in the `logs/` directory as `yyyy-mm-dd.log`
+- **Database Copies**: Stored in the `temp_dbs/` directory as `yyyy-mm-dd-evstats.db`
+
 ## Development Guidelines
 
 **API Documentation**: Always consult official documentation when uncertain about package APIs. Key resources:
