@@ -15,7 +15,17 @@ export default function VehicleScreen() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const { vehicles, vehicleStats, loadingStats, defaultVehicleId, loadingOperations, refreshStats, addNewVehicle, editVehicle, removeVehicle, setDefaultVehicle } = useVehicles();
+  const {
+    vehicles,
+    vehicleStats,
+    loadingStats,
+    defaultVehicleId,
+    refreshStats,
+    addNewVehicle,
+    editVehicle,
+    removeVehicle,
+    setDefaultVehicle
+  } = useVehicles();
 
   useIonViewWillEnter(() => {
     refreshStats();
@@ -51,15 +61,17 @@ export default function VehicleScreen() {
   };
 
   const handleDeleteClick = (vehicle: Vehicle) => {
-    const stats = vehicleStats.find(s => s.vehicleId === vehicle.id);
+    const stats = vehicleStats.find((s) => s.vehicleId === vehicle.id);
     const sessionCount = stats?.totalSessions ?? 0;
     const vehicleName = vehicle.nickname ?? vehicle.model;
-    
+
     let message = `Are you sure you want to delete ${vehicleName}?`;
     if (sessionCount > 0) {
-      message += ` This will also delete ${sessionCount} charging session${sessionCount === 1 ? '' : 's'} associated with this vehicle.`;
+      message += ` This will also delete ${sessionCount} charging session${
+        sessionCount === 1 ? '' : 's'
+      } associated with this vehicle.`;
     }
-    
+
     showAlert(message, [
       { text: 'Cancel', role: 'cancel' },
       {
@@ -77,7 +89,9 @@ export default function VehicleScreen() {
       await setDefaultVehicle(vehicle);
     } catch (error) {
       logToDevServer('Failed to set default vehicle:', 'error', error);
-      await showAlert('Failed to set default vehicle. Please try again.', [{ text: 'OK', role: 'cancel' }]);
+      await showAlert('Failed to set default vehicle. Please try again.', [
+        { text: 'OK', role: 'cancel' }
+      ]);
     }
   };
 
@@ -94,7 +108,6 @@ export default function VehicleScreen() {
         vehicleStats={vehicleStats}
         loading={loadingStats}
         defaultVehicleId={defaultVehicleId}
-        loadingOperations={loadingOperations}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEditClick}
         onSetDefaultClick={handleSetDefaultClick}
@@ -105,7 +118,6 @@ export default function VehicleScreen() {
         horizontal="end"
         vertical="bottom"
         slot="fixed"
-        disabled={loadingOperations.adding}
         onClick={handleAddClick}
       >
         <IonIcon icon={add} />

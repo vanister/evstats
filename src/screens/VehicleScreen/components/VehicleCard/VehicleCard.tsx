@@ -19,25 +19,27 @@ type VehicleCardProps = {
   stats?: VehicleStats;
   loading?: boolean;
   isDefault?: boolean;
-  loadingOperations?: {
-    adding: boolean;
-    editing: boolean;
-    deleting: boolean;
-    settingDefault: boolean;
-  };
   onEditClick?: (vehicle: Vehicle) => void;
   onDeleteClick?: (vehicle: Vehicle) => void;
   onSetDefaultClick?: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleCard({ vehicle, stats, loading, isDefault, loadingOperations, ...props }: VehicleCardProps) {
+export default function VehicleCard({
+  vehicle,
+  stats,
+  loading,
+  isDefault,
+  ...props
+}: VehicleCardProps) {
   const { make, model, year, range, batterySize, trim, nickname } = vehicle;
 
   return (
     <IonCard className="vehicle-card">
       <IonCardHeader>
         <IonCardTitle className="vehicle-model">
-          <span>{model} {trim}</span>
+          <span>
+            {model} {trim}
+          </span>
           {isDefault && <IonBadge color="primary">Default</IonBadge>}
         </IonCardTitle>
         <IonCardSubtitle>{`${year} ${make}`}</IonCardSubtitle>
@@ -48,7 +50,7 @@ export default function VehicleCard({ vehicle, stats, loading, isDefault, loadin
           {batterySize && <p>{`Battery Size: ${vehicle.batterySize} kWh`}</p>}
           {nickname && <p>{`Nickname: ${nickname}`}</p>}
         </div>
-        
+
         <div className="vehicle-stats">
           <h4>Usage Statistics</h4>
           {loading ? (
@@ -83,25 +85,22 @@ export default function VehicleCard({ vehicle, stats, loading, isDefault, loadin
           )}
         </div>
       </IonCardContent>
-      <IonButton 
-        fill="clear" 
-        disabled={loadingOperations?.editing || loadingOperations?.deleting}
+      <IonButton
+        fill="clear"
         onClick={() => props.onEditClick?.(vehicle)}
       >
         Edit
       </IonButton>
-      <IonButton 
-        fill="clear" 
-        color="danger" 
-        disabled={loadingOperations?.deleting || loadingOperations?.editing}
+      <IonButton
+        fill="clear"
+        color="danger"
         onClick={() => props.onDeleteClick?.(vehicle)}
       >
         Delete
       </IonButton>
       {!isDefault && (
-        <IonButton 
-          fill="clear" 
-          disabled={loadingOperations?.settingDefault}
+        <IonButton
+          fill="clear"
           onClick={() => props.onSetDefaultClick?.(vehicle)}
         >
           Default
