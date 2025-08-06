@@ -214,3 +214,7 @@ The following temporary files are generated during development:
 - Chart.js: https://www.chartjs.org/docs/
 
 Use WebSearch or WebFetch tools to verify API usage before implementing features.
+
+## Type Safety Guidelines
+
+- Do not use `any` for types, always be explicit when typing
