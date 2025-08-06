@@ -4,6 +4,8 @@ import { VehicleStats } from '../../models/vehicleStats';
 import { useServices } from '../../providers/ServiceProvider';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addVehicle, deleteVehicle, updateVehicle } from '../../redux/vehicleSlice';
+import { clearVehicleId } from '../../redux/lastUsedSlice';
+import { setDefaultVehicleId, clearDefaultVehicleId } from '../../redux/defaultVehicleSlice';
 import { useImmerState } from '../../hooks/useImmerState';
 import { logToDevServer } from '../../logger';
 
@@ -13,7 +15,6 @@ type VehicleLocalState = {
   vehicleStats: VehicleStats[];
   loadingStats: boolean;
   refreshTrigger: number;
-  defaultVehicleId: number | null;
   loadingOperations: {
     adding: boolean;
     editing: boolean;
@@ -44,7 +45,6 @@ const INITIAL_STATE: VehicleLocalState = {
   vehicleStats: [],
   loadingStats: true,
   refreshTrigger: 0,
-  defaultVehicleId: null,
   loadingOperations: {
     adding: false,
     editing: false,
@@ -58,22 +58,10 @@ export function useVehicles() {
   const vehicleService = useServices('vehicleService');
   const vehicleStatsService = useServices('vehicleStatsService');
   const vehicles = useAppSelector((s) => s.vehicles);
+  const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
+  const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
   const [state, setState] = useImmerState<VehicleLocalState>(INITIAL_STATE);
 
-  useEffect(() => {
-    const loadDefaultVehicleId = async () => {
-      try {
-        const defaultId = await vehicleService.getDefaultVehicleId();
-        setState((draft) => {
-          draft.defaultVehicleId = defaultId;
-        });
-      } catch (error) {
-        logToDevServer('Failed to load default vehicle ID:', 'error', error);
-      }
-    };
-
-    loadDefaultVehicleId();
-  }, [vehicleService]);
 
   useEffect(() => {
     const loadVehicleStats = async () => {
@@ -117,9 +105,7 @@ export function useVehicles() {
 
     try {
       await vehicleService.setDefaultVehicleId(vehicle.id);
-      setState((draft) => {
-        draft.defaultVehicleId = vehicle.id;
-      });
+      dispatch(setDefaultVehicleId(vehicle.id));
     } catch (error) {
       logToDevServer('Failed to set default vehicle:', 'error', error);
       throw error;
@@ -179,6 +165,16 @@ export function useVehicles() {
       await vehicleService.remove(vehicle.id);
       dispatch(deleteVehicle(vehicle));
 
+      // Clear last used vehicle ID from Redux if it matches the deleted vehicle
+      if (lastUsedVehicleId === vehicle.id) {
+        dispatch(clearVehicleId());
+      }
+
+      // Clear default vehicle ID from Redux if it matches the deleted vehicle
+      if (defaultVehicleId === vehicle.id) {
+        dispatch(clearDefaultVehicleId());
+      }
+
       return null;
     } catch (error) {
       logToDevServer('Failed to remove vehicle:', 'error', error);
@@ -194,7 +190,7 @@ export function useVehicles() {
     vehicles,
     vehicleStats: state.vehicleStats,
     loadingStats: state.loadingStats,
-    defaultVehicleId: state.defaultVehicleId,
+    defaultVehicleId,
     loadingOperations: state.loadingOperations,
     refreshStats,
     addNewVehicle,

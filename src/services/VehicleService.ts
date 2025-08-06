@@ -77,6 +77,12 @@ export class EvsVehicleService extends BaseService implements VehicleService {
       await this.preferenceService.remove(PreferenceKeys.DefaultVehicleId);
     }
 
+    // If we're removing the last used vehicle, clear the last used preference
+    const lastUsedVehicleId = await this.preferenceService.get<number>(PreferenceKeys.LastUsedVehicleId, 'number');
+    if (lastUsedVehicleId === id) {
+      await this.preferenceService.remove(PreferenceKeys.LastUsedVehicleId);
+    }
+
     return removed;
   }
 

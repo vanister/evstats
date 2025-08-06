@@ -8,6 +8,7 @@ import { useAppDispatch } from './redux/hooks';
 import { useIonAlert } from '@ionic/react';
 import { PreferenceKeys } from './constants';
 import { setRateTypeId, setVehicleId } from './redux/lastUsedSlice';
+import { setDefaultVehicleId } from './redux/defaultVehicleSlice';
 
 type AppInitializerProps = PropsWithChildren;
 
@@ -42,11 +43,16 @@ export function AppInitializer({ children }: AppInitializerProps) {
           PreferenceKeys.LastUsedVehicleId,
           'number'
         );
+        const defaultVehicle = await preferenceService.get<number>(
+          PreferenceKeys.DefaultVehicleId,
+          'number'
+        );
 
         dispatch(setRateTypes(rates));
         dispatch(setVehicles(vehicles));
         dispatch(setRateTypeId(lastUsedRate));
         dispatch(setVehicleId(lastUsedVehicle));
+        dispatch(setDefaultVehicleId(defaultVehicle));
 
         setInitialized(true);
 

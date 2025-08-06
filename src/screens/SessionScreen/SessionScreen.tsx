@@ -22,7 +22,7 @@ const INITIAL_STATE: SessionState = {
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const [showAlert] = useIonAlert();
-  const { lastUsedRateTypeId, lastUsedVehicleId, sessions, addSession, updateSession } =
+  const { lastUsedRateTypeId, selectedVehicleId, sessions, addSession, updateSession } =
     useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
@@ -100,7 +100,7 @@ export default function SessionScreen() {
           isNew={localState.isNew}
           rates={rateTypes}
           selectedRateTypeId={lastUsedRateTypeId}
-          selectedVehicleId={lastUsedVehicleId}
+          selectedVehicleId={selectedVehicleId}
           session={localState.editingSession}
           vehicles={vehicles}
           presentingElement={presentingElement.current}

@@ -14,6 +14,9 @@ const lastUsedSlice = createSlice({
     setVehicleId: (state: LastUsedState, action: { payload: number }) => {
       state.vehicleId = action.payload;
     },
+    clearVehicleId: (state: LastUsedState) => {
+      state.vehicleId = undefined;
+    },
     setRateTypeId: (state: LastUsedState, action: { payload: number }) => {
       state.rateTypeId = action.payload;
     },
@@ -23,6 +26,6 @@ const lastUsedSlice = createSlice({
   }
 });
 
-export const { setLastUsed, setRateTypeId, setVehicleId } = lastUsedSlice.actions;
+export const { setLastUsed, setRateTypeId, setVehicleId, clearVehicleId } = lastUsedSlice.actions;
 
 export default lastUsedSlice.reducer;

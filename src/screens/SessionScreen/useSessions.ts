@@ -12,7 +12,7 @@ type UseSessionState = {
 
 export type SessionHook = UseSessionState & {
   lastUsedRateTypeId?: number;
-  lastUsedVehicleId?: number;
+  selectedVehicleId?: number;
   addSession: (session: Session) => Promise<string | null>;
   getSession: (id: number) => Promise<Session | null>;
   updateSession: (session: Session) => Promise<string | null>;
@@ -29,7 +29,12 @@ export function useSessions(): SessionHook {
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
   const lastUsedRateTypeId = useAppSelector((s) => s.lastUsed.rateTypeId);
   const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
+  const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
 
+  // Compute selected vehicle ID: lastUsed takes precedence, then default
+  const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
+
+  // Load sessions on mount
   useEffect(() => {
     const loadSessions = async () => {
       const sessions = await sessionService.list();
@@ -95,7 +100,7 @@ export function useSessions(): SessionHook {
   return {
     ...state,
     lastUsedRateTypeId,
-    lastUsedVehicleId,
+    selectedVehicleId,
     addSession,
     getSession,
     updateSession

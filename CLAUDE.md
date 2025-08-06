@@ -18,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is an Ionic React mobile application for tracking electric vehicle charging statistics. The app uses a layered architecture with dependency injection and follows Redux Toolkit patterns for state management.
 
 ### Core Technologies
+
 - **Frontend**: Ionic React with TypeScript
 - **Database**: SQLite via @capacitor-community/sqlite
 - **State Management**: Redux Toolkit
@@ -28,17 +29,20 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 ### Application Structure
 
 **Data Layer**:
+
 - `DatabaseManager` (singleton) - SQLite connection management with migration support
 - `DbContext` - Database abstraction layer
 - Repository pattern with interfaces: `RateRepository`, `SessionRepository`, `VehicleRepository`, `ChargeStatsRepository`
 - SQL query builders in `src/data/sql/`
 
 **Business Logic**:
+
 - Service layer with dependency injection via `ServiceContainer`
 - Services: `RateService`, `SessionService`, `VehicleService`, `ChargeStatsService`, `DatabaseBackupService`, `PreferenceService`
 - All services implement interfaces for testability
 
 **Presentation**:
+
 - Screen-based components in `src/screens/` (ChargeStatsScreen, SessionScreen, VehicleScreen, SettingsScreen)
 - Reusable UI components in `src/components/`
 - Redux slices for state management: `rateTypeSlice`, `vehicleSlice`, `lastUsedSlice`
@@ -48,29 +52,39 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 **Dependency Injection**: The `ServiceContainer` initializes all services and repositories. Services are retrieved via `getService<ServiceName>()`.
 
 **Database Management**:
+
 - Singleton `DatabaseManager` handles SQLite connections
 - Migration scripts managed through `addUpgradeStatement`
 - Connection consistency checks on startup
 
 **State Management**:
+
 - Redux Toolkit with typed hooks (`useAppDispatch`, `useAppSelector`)
 - Async thunks for initialization and data updates
 - Immutable state updates with Immer integration
 
 **Error Handling**:
+
 - Global `ErrorBoundary` with `AlertableError` component
 - Custom error types (e.g., `NotFoundError`)
 - Development logging via `logToDevServer`
 
 **Logging**:
+
 - Don't write `console.log/error/warn`, instead use `logToDevServer`
 
 **Date Handling**:
+
 - Use `formatDateForDisplay()` from `dateUtility.ts` for displaying date strings to avoid timezone issues
 - Use `parseLocalDate()` when you need a Date object from a date string (YYYY-MM-DD format)
 - Use `today()` from `dateUtility.ts` for getting current date in YYYY-MM-DD format
 - Never parse date strings directly with `new Date(dateString)` as it treats them as UTC
 - Never import date-fns directly - use centralized utilities in `dateUtility.ts` instead
+
+**Custom Hooks**:
+
+- If there is a custom hook already defined for a screen, use that instead of adding logic to the component directly
+- Prefer adding business logic in helpers/utilities or custom hooks
 
 ## Code Organization Standards
 
@@ -79,6 +93,7 @@ This is an Ionic React mobile application for tracking electric vehicle charging
 All React components and custom hooks should follow this consistent organization pattern:
 
 #### 1. Variable and State Declarations (First)
+
 ```typescript
 // Service and hook dependencies
 const dispatch = useAppDispatch();
@@ -92,6 +107,7 @@ const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
 ```
 
 #### 2. Hook Usage (Second)
+
 ```typescript
 // useEffect hooks
 useEffect(() => {
@@ -110,6 +126,7 @@ const { data, loading } = useCustomHook();
 ```
 
 #### 3. Handler Functions (Third)
+
 ```typescript
 // Event handlers and utility functions
 const handleAddClick = () => {
@@ -122,18 +139,15 @@ const handleSaveClick = async (item: Item) => {
 };
 
 const refreshData = () => {
-  setRefreshTrigger(prev => prev + 1);
+  setRefreshTrigger((prev) => prev + 1);
 };
 ```
 
 #### 4. Render/Return (Last)
+
 ```typescript
 // Component render or hook return
-return (
-  <IonPage>
-    {/* JSX content */}
-  </IonPage>
-);
+return <IonPage>{/* JSX content */}</IonPage>;
 
 // Or for hooks:
 return {
@@ -144,6 +158,7 @@ return {
 ```
 
 ### Benefits of This Structure:
+
 - **Predictable**: Easy to find specific types of logic
 - **Maintainable**: Clear separation of concerns
 - **Readable**: Logical flow from setup → hooks → handlers → render
@@ -152,6 +167,7 @@ return {
 ## Mobile Development
 
 The app is configured for iOS deployment with Capacitor. Key mobile-specific features:
+
 - SQLite database encryption support for iOS/Android
 - Haptic feedback integration
 - Status bar and splash screen configuration
@@ -166,23 +182,25 @@ Tests use Vitest with jsdom environment. Mock implementations available in `src/
 Custom type definitions in `.d.ts` files throughout the codebase. Global types available via `@evs-core` alias pointing to `evs-core.d.ts`.
 
 **Nullable Types**: Use optional properties (`?`) instead of union types with null for nullable fields:
+
 ```typescript
 // Preferred
 type Vehicle = {
   year?: number;
   batterySize?: number;
-}
+};
 
 // Not preferred
 type Vehicle = {
   year: number | null;
   batterySize: number | null;
-}
+};
 ```
 
 ## Development Guidelines
 
 **API Documentation**: Always consult official documentation when uncertain about package APIs. Key resources:
+
 - @capacitor-community/sqlite: https://github.com/capacitor-community/sqlite/blob/master/docs/API.md
 - Ionic React: https://ionicframework.com/docs/react
 - Redux Toolkit: https://redux-toolkit.js.org/
