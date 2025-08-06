@@ -51,14 +51,20 @@ export class EvsSessionService extends BaseService implements SessionService {
   }
 
   async add(session: Session): Promise<Session> {
-    const dbo: SessionDbo = this.mapFrom(session, this.sessionToDboPropMap);
+    const dbo: SessionDbo = {
+      ...this.mapFrom(session, this.sessionToDboPropMap),
+      rate_override: session.rateOverride ?? null
+    };
     const newSession = await this.sessionRepository.add(dbo);
 
     return { ...session, id: newSession.id };
   }
 
   async update(session: Session): Promise<void> {
-    const dbo: SessionDbo = this.mapFrom(session, this.sessionToDboPropMap);
+    const dbo: SessionDbo = {
+      ...this.mapFrom(session, this.sessionToDboPropMap),
+      rate_override: session.rateOverride ?? null
+    };
 
     await this.sessionRepository.update(dbo);
   }

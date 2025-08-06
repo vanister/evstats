@@ -4,6 +4,7 @@ import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { updateLastUsed } from '../../redux/thunks/updateLastUsed';
+import { logToDevServer } from '../../logger';
 
 type UseSessionState = {
   loading: boolean;
@@ -70,6 +71,7 @@ export function useSessions(): SessionHook {
 
       return null;
     } catch (error) {
+      logToDevServer(`Failed to add session: ${error.message}`, 'error', error.stack);
       setState((s) => {
         s.operationLoading = false;
       });
@@ -85,6 +87,7 @@ export function useSessions(): SessionHook {
       if (error.name === 'NotFoundError') {
         return null;
       }
+      logToDevServer(`Failed to get session: ${error.message}`, 'error', error.stack);
       throw error;
     }
   };
@@ -110,6 +113,7 @@ export function useSessions(): SessionHook {
 
       return null;
     } catch (error) {
+      logToDevServer(`Failed to update session: ${error.message}`, 'error', error.stack);
       setState((s) => {
         s.operationLoading = false;
       });

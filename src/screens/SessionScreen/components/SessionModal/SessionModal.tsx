@@ -9,14 +9,14 @@ import ModalHeader from '../../../../components/ModalHeader';
 import { Vehicle } from '../../../../models/vehicle';
 import { RateType } from '../../../../models/rateType';
 
-// Form state type allows undefined values during editing
+// Form state type - use null instead of optional for required fields
 type SessionFormState = {
   id?: number;
   date: string;
-  kWh?: number;
-  rateTypeId?: number;
+  kWh: number | null;
+  rateTypeId: number | null;
   rateOverride?: number;
-  vehicleId?: number;
+  vehicleId: number | null;
 };
 
 type SessionModalProps = {
@@ -30,13 +30,16 @@ type SessionModalProps = {
   session?: Session;
   triggerId?: string;
   vehicles: Vehicle[];
-  onSave: (session: Session) => Promise<boolean>;
+  onSave: (session: SessionFormState) => Promise<boolean>;
   onDidDismiss?: (canceled?: boolean) => void;
 };
 
-// Form initial state - allows undefined for form editing before validation
+// Form initial state - use null for unset values
 const NEW_SESSION: SessionFormState = {
-  date: today()
+  date: today(),
+  kWh: null,
+  rateTypeId: null,
+  vehicleId: null
 };
 
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
@@ -44,8 +47,8 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
   const form = useRef<HTMLFormElement>(null);
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
-    rateTypeId: props.selectedRateTypeId,
-    vehicleId: props.selectedVehicleId,
+    rateTypeId: props.selectedRateTypeId ?? null,
+    vehicleId: props.selectedVehicleId ?? (props.vehicles.length > 0 ? props.vehicles[0].id : null),
     ...(props.session ?? {})
   });
 
@@ -69,7 +72,7 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
       return;
     }
 
-    const successful = onSave ? await onSave(session as Session) : true;
+    const successful = onSave ? await onSave(session) : true;
 
     if (successful) {
       await modal.current.dismiss();

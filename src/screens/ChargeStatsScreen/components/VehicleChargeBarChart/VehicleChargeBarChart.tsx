@@ -5,19 +5,20 @@ import { ChargeStatData } from '../../../../models/chargeStats';
 import { createChartConfig } from '../../chart-config';
 
 type VehicleChargeBarChartProps = {
-  data: ChargeStatData;
+  data: ChargeStatData | null;
   title?: string;
+  today?: Date;
 };
 
-// todo - take in a date value for 'today' to allow testing
-export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarChartProps) {
+export default function VehicleChargeBarChart({ data, title, today: todayProp }: VehicleChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
-  const today = useRef(new Date());
-  const [chartConfig, setChartConfig] = useState<ChartConfiguration>(null);
+  const today = useRef(todayProp || new Date());
+  const [chartConfig, setChartConfig] = useState<ChartConfiguration | null>(null);
 
   useEffect(() => {
     if (!data) {
+      setChartConfig(null);
       return;
     }
 
@@ -28,7 +29,7 @@ export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarC
     });
 
     setChartConfig(config);
-  }, [data, title]);
+  }, [data, title, todayProp]);
 
   useLayoutEffect(() => {
     if (!chartConfig) {
@@ -42,10 +43,14 @@ export default function VehicleChargeBarChart({ data, title }: VehicleChargeBarC
     };
   }, [chartConfig]);
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <div className="vehicle-charge-bar-chart">
       <canvas ref={chartCanvasRef} id="vehicle-charge-bar-chart-canvas" height={250}></canvas>
-      <ChargeSummary averages={data?.averages ?? []} />
+      <ChargeSummary averages={data.averages} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export type SessionDbo = {
   date: string;
   kwh: number;
   // remember that dbos are lowered_snake_case
-  rate_override?: number;
+  rate_override: number | null;
   rate_type_id: number;
   vehicle_id: number;
 };

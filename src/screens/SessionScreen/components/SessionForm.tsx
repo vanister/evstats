@@ -5,14 +5,14 @@ import EvsSelect from '../../../components/EvsSelect';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
 
-// Form state type allows undefined values during editing
+// Form state type - use null instead of optional for required fields
 type SessionFormState = {
   id?: number;
   date: string;
-  kWh?: number;
-  rateTypeId?: number;
+  kWh: number | null;
+  rateTypeId: number | null;
   rateOverride?: number;
-  vehicleId?: number;
+  vehicleId: number | null;
 };
 
 type SessionFormProps = {
@@ -52,7 +52,7 @@ function SessionForm(
             required
             type="number"
             value={session.kWh ?? ''}
-            onIonInput={(e) => onSessionFieldChange('kWh', e.detail.value ? +e.detail.value : undefined)}
+            onIonInput={(e) => onSessionFieldChange('kWh', e.detail.value ? +e.detail.value : null)}
           />
         </IonItem>
         <IonItem>
@@ -75,7 +75,7 @@ function SessionForm(
             labelPlacement="fixed"
             value={session.vehicleId ?? ''}
             placeholder="required"
-            onSelect={(value) => onSessionFieldChange('vehicleId', value ? +value : undefined)}
+            onSelect={(value) => onSessionFieldChange('vehicleId', value ? +value : null)}
           >
             {vehicles.map((v) => (
               <IonSelectOption key={v.id} value={v.id}>
@@ -95,7 +95,7 @@ function SessionForm(
             labelPlacement="fixed"
             value={session.rateTypeId ?? ''}
             placeholder="required"
-            onSelect={(value) => onSessionFieldChange('rateTypeId', value ? +value : undefined)}
+            onSelect={(value) => onSessionFieldChange('rateTypeId', value ? +value : null)}
           >
             {rateTypes.map((r) => (
               <IonSelectOption key={r.id} value={r.id}>

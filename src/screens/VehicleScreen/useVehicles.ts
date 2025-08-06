@@ -63,7 +63,7 @@ export function useVehicles() {
           draft.vehicleStats = stats;
         });
       } catch (error) {
-        logToDevServer('Failed to load vehicle stats:', 'error', error);
+        logToDevServer(`Failed to load vehicle stats: ${error.message}`, 'error', error.stack);
       } finally {
         setState((draft) => {
           draft.loadingStats = false;
@@ -85,7 +85,7 @@ export function useVehicles() {
       await vehicleService.setDefaultVehicleId(vehicle.id);
       dispatch(setDefaultVehicleId(vehicle.id));
     } catch (error) {
-      logToDevServer('Failed to set default vehicle:', 'error', error);
+      logToDevServer(`Failed to set default vehicle: ${error.message}`, 'error', error.stack);
       throw error;
     }
   };
@@ -97,7 +97,7 @@ export function useVehicles() {
 
       return null;
     } catch (error) {
-      logToDevServer('Failed to add new vehicle:', 'error', error);
+      logToDevServer(`Failed to add new vehicle: ${error.message}`, 'error', error.stack);
       return error.message || 'Failed to add vehicle. Please check your information and try again.';
     }
   };
@@ -109,7 +109,7 @@ export function useVehicles() {
 
       return null;
     } catch (error) {
-      logToDevServer('Failed to edit vehicle:', 'error', error);
+      logToDevServer(`Failed to edit vehicle: ${error.message}`, 'error', error.stack);
       return error.message || 'Failed to update vehicle. Please check your information and try again.';
     }
   };
@@ -131,7 +131,7 @@ export function useVehicles() {
 
       return null;
     } catch (error) {
-      logToDevServer('Failed to remove vehicle:', 'error', error);
+      logToDevServer(`Failed to remove vehicle: ${error.message}`, 'error', error.stack);
       return error.message || 'Failed to delete vehicle. Please try again.';
     }
   };

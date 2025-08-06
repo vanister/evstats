@@ -3,15 +3,26 @@ import { add } from 'ionicons/icons';
 import { useMemo, useRef } from 'react';
 import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
-import { Session, SessionLog } from '../../models/session';
+import { SessionLog } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { useImmerState } from '../../hooks/useImmerState';
 import { SessionState } from './session-types';
-import { validateSession } from './validator';
+import { validateSession, isValidSession } from './validator';
+
+// Form state type - use null instead of optional for required fields
+type SessionFormState = {
+  id?: number;
+  date: string;
+  kWh: number | null;
+  rateTypeId: number | null;
+  rateOverride?: number;
+  vehicleId: number | null;
+};
 import { toSessionLogItem } from './helpers';
 import { useAppSelector } from '../../redux/hooks';
+import { logToDevServer } from '../../logger';
 
 const INITIAL_STATE: SessionState = {
   showModal: false,
@@ -22,8 +33,14 @@ const INITIAL_STATE: SessionState = {
 export default function SessionScreen() {
   const presentingElement = useRef<HTMLElement>();
   const [showAlert] = useIonAlert();
-  const { lastUsedRateTypeId, selectedVehicleId, sessions, addSession, updateSession, operationLoading } =
-    useSessions();
+  const {
+    lastUsedRateTypeId,
+    selectedVehicleId,
+    sessions,
+    addSession,
+    updateSession,
+    operationLoading
+  } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
 
@@ -40,17 +57,23 @@ export default function SessionScreen() {
     });
   };
 
-  const handleSaveSession = async (session: Session) => {
-    const validationError = validateSession(session);
+  const handleSaveSession = async (sessionFormState: SessionFormState) => {
+    const validationError = validateSession(sessionFormState);
 
     if (validationError) {
       await showAlert(validationError);
       return false;
     }
 
+    // Type guard to ensure we have a valid session before proceeding
+    if (!isValidSession(sessionFormState)) {
+      await showAlert('Invalid session data');
+      return false;
+    }
+
     const errorMessage = localState.isNew
-      ? await addSession(session)
-      : await updateSession(session);
+      ? await addSession(sessionFormState)
+      : await updateSession(sessionFormState);
 
     if (errorMessage) {
       await showAlert(errorMessage);

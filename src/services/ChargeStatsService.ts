@@ -1,4 +1,3 @@
-import { ChargeColors } from '../constants';
 import { ChargeStatsRepository } from '../data/repositories/ChargeStatsRepository';
 import { RateRepository } from '../data/repositories/RateRepository';
 import {
@@ -9,9 +8,10 @@ import {
 } from '../models/chargeStats';
 import { RateTypeDbo } from '../models/rateType';
 import { BaseService } from './BaseService';
+import { getColor } from '../screens/ChargeStatsScreen/helpers';
 
 export interface ChargeStatsService {
-  getLast31Days(vehicleId: number): Promise<ChargeStatData>;
+  getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData>;
 }
 
 /** Charge stats chart data service. */
@@ -23,11 +23,10 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     super();
   } 
 
-  // todo - take in a 'from' arg to allow testing
-  async getLast31Days(vehicleId: number): Promise<ChargeStatData> {
+  async getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData> {
     const rateTypes = await this.rateRepository.list();
     const chargeStats = await this.chargeStatsRepository.getLast31Days(vehicleId);
-    const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes);
+    const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes, fromDate);
     const averages: ChargeAverage[] = this.getAverages(datasets);
 
     const data: ChargeStatData = {
@@ -40,10 +39,10 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     return data;
   }
 
-  // todo - clean up
   private createDataset(
     chargeStats: ChargeStatsDbo[],
-    rateTypes: RateTypeDbo[]
+    rateTypes: RateTypeDbo[],
+    fromDate?: Date
   ): ChargeStatDataset[] {
     const kwhByRateType: Record<string, number[]> = rateTypes.reduce(
       (acc, { name }) => ({
@@ -53,7 +52,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       {}
     );
 
-    const today = new Date();
+    const today = fromDate ? new Date(fromDate) : new Date();
     today.setHours(0, 0, 0, 0);
 
     chargeStats.forEach(({ date, kwh, rate_name: rateName }) => {
@@ -73,7 +72,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     const datasets = Object.entries(kwhByRateType).map<ChargeStatDataset>(([rateName, kwh]) => ({
       label: rateName,
       data: kwh,
-      backgroundColor: this.getColor(rateName)
+      backgroundColor: getColor(rateName)
     }));
 
     return datasets;
@@ -89,25 +88,10 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       return {
         name: label,
         percent: Math.round(percent),
-        color: this.getColor(label)
+        color: getColor(label)
       };
     });
 
     return averages;
-  }
-  
-  // todo - move to component/ui layer
-  private getColor(name: string): string {
-    switch (name) {
-      case 'Work':
-        return ChargeColors.Work;
-      case 'Other':
-        return ChargeColors.Other;
-      case 'DC':
-        return ChargeColors.DC;
-      case 'Home':
-      default:
-        return ChargeColors.Home;
-    }
   }
 }

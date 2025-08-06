@@ -1,5 +1,5 @@
 import { SessionDbo } from '../../models/session';
-import { VehicleStats } from '../../models/vehicleStats';
+import { VehicleStats, VehicleStatsDbo } from '../../models/vehicleStats';
 import { BaseRepository } from './BaseRepository';
 import { SessionSql } from '../sql/SessionSql';
 import { DbContext } from '../DbContext';
@@ -64,7 +64,7 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
   }
 
   async getVehicleStats(vehicleId: number): Promise<VehicleStats | null> {
-    const values = await this.context.query<any>(SessionSql.GetVehicleStats, [vehicleId]);
+    const values = await this.context.query<VehicleStatsDbo>(SessionSql.GetVehicleStats, [vehicleId]);
     const result = values?.[0];
 
     if (!result) {
@@ -81,9 +81,9 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
   }
 
   async getAllVehicleStats(): Promise<VehicleStats[]> {
-    const values = await this.context.query<any>(SessionSql.GetAllVehicleStats, []);
+    const values = await this.context.query<VehicleStatsDbo>(SessionSql.GetAllVehicleStats, []);
 
-    return values?.map((result: any) => ({
+    return values?.map((result: VehicleStatsDbo) => ({
       vehicleId: result.vehicle_id,
       totalSessions: result.totalSessions,
       totalKwh: result.totalKwh,

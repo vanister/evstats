@@ -1,9 +1,4 @@
-const ChargeColors = {
-  Home: '#004D80',
-  Work: '#F27200',
-  Other: '#929292',
-  DC: '#B51700'
-};
+import { ChargeColors } from '../../constants';
 
 export function getColor(name: string): string {
   switch (name) {

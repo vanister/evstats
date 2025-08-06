@@ -88,7 +88,7 @@ export default function VehicleScreen() {
     try {
       await setDefaultVehicle(vehicle);
     } catch (error) {
-      logToDevServer('Failed to set default vehicle:', 'error', error);
+      logToDevServer(`Failed to set default vehicle: ${error.message}`, 'error', error.stack);
       await showAlert('Failed to set default vehicle. Please try again.', [
         { text: 'OK', role: 'cancel' }
       ]);

@@ -99,7 +99,7 @@ export function getService<Service extends keyof ServiceContainer>(name: Service
   if (!isContainerBuilt) {
     const error = new Error('Service container is not built');
     
-    logToDevServer(`something is trying to get "${name}" from a container that is not built`, 'error', error.stack);
+    logToDevServer(`something is trying to get "${name}" from a container that is not built: ${error.message}`, 'error', error.stack);
     throw error;
   }
 
