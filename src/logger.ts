@@ -32,7 +32,7 @@ export async function logToDevServer(message: string, level: LogLevel = 'info', 
   }
 }
 
-export function logToConsole(...msg: ExplicitAny[]) {
+function logToConsole(...msg: ExplicitAny[]) {
   if (import.meta.env.PROD || import.meta.env.MODE === 'production') {
     return;
   }

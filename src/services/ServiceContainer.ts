@@ -19,9 +19,7 @@ import {
   VehicleStatsRepository,
   EvsVehicleStatsRepository
 } from '../data/repositories/VehicleStatsRepository';
-import { ContainerContext, ServiceContainer, ServiceLocator, ServiceContainerIntializer } from './service-types';
-
-export { type ServiceLocator, type ServiceContainerIntializer };
+import { ContainerContext, ServiceContainer } from './service-types';
 
 const container = new Map<keyof ServiceContainer, ExplicitAny>();
 let isContainerBuilt = false;
