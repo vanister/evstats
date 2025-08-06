@@ -3,7 +3,7 @@ import { PreferenceKeys } from '../../constants';
 import { setRateTypes } from '../rateTypeSlice';
 import { setVehicles } from '../vehicleSlice';
 import { setRateTypeId, setVehicleId } from '../lastUsedSlice';
-import { ServiceLocator } from '../../services/ServiceContainer';
+import { type ServiceLocator } from '../../services/ServiceContainer';
 
 export const initializeApp = createAsyncThunk(
   'app/initialize',

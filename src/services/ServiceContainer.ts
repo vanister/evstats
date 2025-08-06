@@ -4,7 +4,6 @@ import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { VehicleStatsService, EvsVehicleStatsService } from './VehicleStatsService';
-import { DatabaseManager } from '../data/DatabaseManager';
 import { logToDevServer } from '../logger';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
@@ -16,22 +15,11 @@ import {
   ChargeStatsRepository,
   EvsChargeStatsRepository
 } from '../data/repositories/ChargeStatsRepository';
-
-// start here by listing the services that can get injected
-// then add it to the `initializeServiceContainer` function below
-export type ServiceContainer = {
-  chargeStatsService: ChargeStatsService;
-  databaseBackupService: DatabaseBackupService;
-  preferenceService: PreferenceService;
-  sessionService: SessionService;
-  rateService: RateService;
-  vehicleService: VehicleService;
-  vehicleStatsService: VehicleStatsService;
-};
-
-export type ContainerContext = {
-  databaseManager: DatabaseManager;
-};
+import {
+  VehicleStatsRepository,
+  EvsVehicleStatsRepository
+} from '../data/repositories/VehicleStatsRepository';
+import { ContainerContext, ServiceContainer } from './service-types';
 
 export type ServiceLocator = typeof getService;
 export type ServiceContainerIntializer = typeof initializeServiceContainer;
@@ -63,6 +51,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const sessionRepository: SessionRepository = new EvsSessionRepository(context);
   const vehicleRepository: VehicleRepository = new EvsVehicleRepository(context);
   const chargeStatsRepository: ChargeStatsRepository = new EvsChargeStatsRepository(context);
+  const vehicleStatsRepository: VehicleStatsRepository = new EvsVehicleStatsRepository(context);
 
   // services
   const chargeStatsService: ChargeStatsService = new EvsChargeStatsService(
@@ -73,8 +62,13 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const preferenceService: PreferenceService = new EvsPreferenceService(Preferences);
   const sessionService: SessionService = new EvsSessionService(sessionRepository);
   const rateService: RateService = new EvsRateService(rateRepository);
-  const vehicleService: VehicleService = new EvsVehicleService(vehicleRepository, preferenceService);
-  const vehicleStatsService: VehicleStatsService = new EvsVehicleStatsService(sessionRepository);
+  const vehicleService: VehicleService = new EvsVehicleService(
+    vehicleRepository,
+    preferenceService
+  );
+  const vehicleStatsService: VehicleStatsService = new EvsVehicleStatsService(
+    vehicleStatsRepository
+  );
 
   // register the services here
   container
@@ -98,8 +92,12 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
 export function getService<Service extends keyof ServiceContainer>(name: Service) {
   if (!isContainerBuilt) {
     const error = new Error('Service container is not built');
-    
-    logToDevServer(`something is trying to get "${name}" from a container that is not built: ${error.message}`, 'error', error.stack);
+
+    logToDevServer(
+      `something is trying to get "${name}" from a container that is not built: ${error.message}`,
+      'error',
+      error.stack
+    );
     throw error;
   }
 

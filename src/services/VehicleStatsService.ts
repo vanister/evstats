@@ -1,4 +1,4 @@
-import { SessionRepository } from '../data/repositories/SessionRepository';
+import { VehicleStatsRepository } from '../data/repositories/VehicleStatsRepository';
 import { VehicleStats } from '../models/vehicleStats';
 import { BaseService } from './BaseService';
 
@@ -8,12 +8,12 @@ export interface VehicleStatsService {
 }
 
 export class EvsVehicleStatsService extends BaseService implements VehicleStatsService {
-  constructor(private sessionRepository: SessionRepository) {
+  constructor(private vehicleStatsRepository: VehicleStatsRepository) {
     super();
   }
 
   async getStatsForVehicle(vehicleId: number): Promise<VehicleStats> {
-    const stats = await this.sessionRepository.getVehicleStats(vehicleId);
+    const stats = await this.vehicleStatsRepository.getVehicleStats(vehicleId);
     
     if (!stats) {
       return {
@@ -29,6 +29,6 @@ export class EvsVehicleStatsService extends BaseService implements VehicleStatsS
   }
 
   async getStatsForAllVehicles(): Promise<VehicleStats[]> {
-    return await this.sessionRepository.getAllVehicleStats();
+    return await this.vehicleStatsRepository.getAllVehicleStats();
   }
 }
