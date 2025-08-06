@@ -1,74 +1,42 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { logToDevServer } from './logger';
-import { SplashScreen } from '@capacitor/splash-screen';
 import { useServices, useServiceState } from './providers/ServiceProvider';
-import { setRateTypes } from './redux/rateTypeSlice';
-import { setVehicles } from './redux/vehicleSlice';
-import { useAppDispatch } from './redux/hooks';
+import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { useIonAlert } from '@ionic/react';
-import { PreferenceKeys } from './constants';
-import { setRateTypeId, setVehicleId } from './redux/lastUsedSlice';
-import { setDefaultVehicleId } from './redux/defaultVehicleSlice';
+import { initializeApp } from './redux/thunks/initializeApp';
 
 type AppInitializerProps = PropsWithChildren;
 
 export function AppInitializer({ children }: AppInitializerProps) {
   const [showAlert] = useIonAlert();
-  const [initialized, setInitialized] = useState(false);
   const dispatch = useAppDispatch();
   const serviceReady = useServiceState();
-  const preferenceService = useServices('preferenceService');
   const rateService = useServices('rateService');
   const vehicleService = useServices('vehicleService');
+  const preferenceService = useServices('preferenceService');
+  const appState = useAppSelector((state) => state.app);
 
   useEffect(() => {
-    if (!serviceReady) {
-      logToDevServer('app already initialized');
+    if (!serviceReady || appState.initialized) {
+      if (!serviceReady) {
+        logToDevServer('waiting for services to be ready');
+      }
       return;
     }
 
-    // todo - create thunk
-    const initializeApp = async () => {
+    const initialize = async () => {
       try {
-        logToDevServer('initializing app');
-        logToDevServer('loading rates');
-
-        const rates = await rateService.list();
-        const vehicles = await vehicleService.list();
-        const lastUsedRate = await preferenceService.get<number>(
-          PreferenceKeys.LastUsedRateTypeId,
-          'number'
-        );
-        const lastUsedVehicle = await preferenceService.get<number>(
-          PreferenceKeys.LastUsedVehicleId,
-          'number'
-        );
-        const defaultVehicle = await preferenceService.get<number>(
-          PreferenceKeys.DefaultVehicleId,
-          'number'
-        );
-
-        dispatch(setRateTypes(rates));
-        dispatch(setVehicles(vehicles));
-        dispatch(setRateTypeId(lastUsedRate));
-        dispatch(setVehicleId(lastUsedVehicle));
-        dispatch(setDefaultVehicleId(defaultVehicle));
-
-        setInitialized(true);
-
-        logToDevServer('app initialized');
-        logToDevServer('taking down splash screen');
-        await SplashScreen.hide();
+        await dispatch(initializeApp({ rateService, vehicleService, preferenceService })).unwrap();
       } catch (error) {
         logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error);
         showAlert('Initialization error');
       }
     };
 
-    initializeApp();
-  }, [serviceReady]);
+    initialize();
+  }, [serviceReady, dispatch, rateService, vehicleService, preferenceService, showAlert, appState.initialized]);
 
-  if (!initialized) {
+  if (!appState.initialized) {
     // todo consider showing a loading spinner
     return null;
   }

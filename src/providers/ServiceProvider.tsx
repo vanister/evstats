@@ -1,7 +1,10 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { useDatabaseManager } from './DatabaseManagerProvider';
-import { ServiceContainer } from '../services/service-types';
-import { type ServiceContainerIntializer, type ServiceLocator } from '../services/ServiceContainer';
+import {
+  ServiceContainer,
+  ServiceContainerIntializer,
+  ServiceLocator
+} from '../services/service-types';
 
 type ServiceContextType = {
   serviceLocator: ServiceLocator;
