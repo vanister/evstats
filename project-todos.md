@@ -5,6 +5,7 @@ This document tracks all identified improvements and features for the EVStats Io
 ## VehicleScreen
 
 ### 🔥 High Priority - Core Functionality
+
 - [x] Implement session deletion warning in vehicle delete confirmation
 - [x] Fix type safety by making Vehicle fields optional (year, batterySize, range)
 - [x] Fix Last Charge date to show most recent date instead of latest entry
@@ -15,11 +16,13 @@ This document tracks all identified improvements and features for the EVStats Io
 - [x] Improve error messages to be more specific
 
 ### 🎯 Medium Priority - Essential UX
+
 - [ ] Add pull-to-refresh for vehicle stats
 - [ ] Add confirmation dialogs for destructive actions
 - [ ] Add haptic feedback for vehicle interactions
 
 ### 📈 Lower Priority - Enhanced Features
+
 - [ ] Add search/filter functionality for multiple vehicles
 - [ ] Add sort options (name, year, last used, etc.)
 - [ ] Add swipe actions for edit/delete
@@ -36,6 +39,7 @@ This document tracks all identified improvements and features for the EVStats Io
 ## SessionScreen
 
 ### 🔥 High Priority - Core Functionality
+
 - [x] Review SessionScreen for missing functionality or bugs
 - [x] Check date parsing issues in session forms
 - [x] Ensure session CRUD operations work correctly
@@ -43,11 +47,13 @@ This document tracks all identified improvements and features for the EVStats Io
 - [x] Add loading states for session operations
 
 ### 🎯 Medium Priority - Essential UX
+
 - [ ] Add pull-to-refresh for session list
 - [ ] Improve session form validation feedback
 - [ ] Add haptic feedback for session interactions
 
 ### 📈 Lower Priority - Enhanced Features
+
 - [ ] Add search/filter functionality for sessions
 - [ ] Add sort options for session list
 - [ ] Add swipe actions for session items
@@ -60,6 +66,7 @@ This document tracks all identified improvements and features for the EVStats Io
 ## ChargeStatsScreen
 
 ### 🔥 High Priority - Core Functionality
+
 - [x] Review ChargeStatsScreen for missing functionality or bugs
 - [x] Check chart data accuracy and performance
 - [x] Ensure stats calculations are correct
@@ -67,11 +74,13 @@ This document tracks all identified improvements and features for the EVStats Io
 - [x] Add loading states for chart data
 
 ### 🎯 Medium Priority - Essential UX
+
 - [ ] Add pull-to-refresh for chart data
 - [ ] Improve chart loading and error states
 - [ ] Add haptic feedback for chart interactions
 
 ### 📈 Lower Priority - Enhanced Features
+
 - [ ] Add more detailed statistics and metrics
 - [ ] Add date range selection for charts
 - [ ] Add different chart types (pie, line, bar)
@@ -84,17 +93,20 @@ This document tracks all identified improvements and features for the EVStats Io
 ## SettingsScreen
 
 ### 🔥 High Priority - Core Functionality
+
 - [ ] Review SettingsScreen for missing functionality or bugs
 - [ ] Test settings persistence
 - [ ] Ensure proper validation of settings
 - [ ] Check backup/restore functionality
 
 ### 🎯 Medium Priority - Essential UX
+
 - [ ] Add confirmation dialogs for destructive settings
 - [ ] Improve settings form validation
 - [ ] Add haptic feedback for settings changes
 
 ### 📈 Lower Priority - Enhanced Features
+
 - [ ] Add data export/backup functionality
 - [ ] Add data import functionality
 - [ ] Add theme customization options
@@ -106,6 +118,7 @@ This document tracks all identified improvements and features for the EVStats Io
 ## Global/Infrastructure
 
 ### 🔥 High Priority - Core Functionality
+
 - [x] Standardize preference keys with consistent naming convention
 - [x] Convert ChargeColors to enum for better type safety
 - [x] Integrate date-fns for robust date handling with centralized API
@@ -117,19 +130,27 @@ This document tracks all identified improvements and features for the EVStats Io
 - [ ] Add data migration scripts if needed
 
 ### 🎯 Medium Priority - Essential UX
+
 - [ ] Ensure keyboard handling works properly on all forms
 - [ ] Test touch interactions and gesture support
 - [ ] Add proper loading states for all async operations
 
+## Tech Debt
+
+- [ ] Architecture review
+- [ ] Clean up code
+
 ## 🚀 Future Features
 
 ### New Screens/Features
+
 - [ ] Add Reports/Analytics screen
 - [ ] Add Charging Locations screen
 - [ ] Add Rate Management screen (if not in Settings)
 - [ ] Add Help/Tutorial screens
 
 ### Advanced Features
+
 - [ ] Multi-user support
 - [ ] Cloud sync across devices
 - [ ] Advanced analytics and reporting
@@ -147,6 +168,7 @@ This document tracks all identified improvements and features for the EVStats Io
 **Next Priority**: SettingsScreen - High Priority Core Functionality items
 
 **Screen Progress**:
+
 1. **VehicleScreen** ✅ - Core functionality complete
 2. **SessionScreen** ✅ - Core functionality complete
 3. **ChargeStatsScreen** ✅ - Core functionality complete
