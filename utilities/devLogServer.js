@@ -4,6 +4,7 @@ import { mkdirSync, existsSync } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { format } from 'date-fns';
 
 const filepath = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filepath);
@@ -23,7 +24,8 @@ app.use(cors());
 
 app.post('/log', async (req, res) => {
   try {
-    console.log('Log request', req.body);
+    const timestamp = format(new Date(), 'HH:mm:ss');
+    console.log('Log', timestamp, req.body);
 
     const { level, message, stack } = req.body;
 
