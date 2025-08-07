@@ -1,5 +1,15 @@
-import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
-import { IonInput, IonItem, IonList, IonNote, IonSelectOption, IonDatetimeButton, IonModal, IonDatetime, IonLabel } from '@ionic/react';
+import { forwardRef, MutableRefObject } from 'react';
+import {
+  IonInput,
+  IonItem,
+  IonList,
+  IonNote,
+  IonSelectOption,
+  IonDatetimeButton,
+  IonModal,
+  IonDatetime,
+  IonLabel
+} from '@ionic/react';
 import EvsSelect from '../../../components/EvsSelect';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
@@ -16,23 +26,11 @@ function SessionForm(
   { rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps,
   ref: MutableRefObject<HTMLFormElement>
 ) {
-  const inputRef = useRef<HTMLIonInputElement>(null);
-
-  useEffect(() => {
-    // wait long enough for the modal to appear
-    const id = setTimeout(() => {
-      inputRef.current?.setFocus();
-    }, 500);
-
-    return () => clearTimeout(id);
-  }, []);
-
   return (
     <form ref={ref}>
       <IonList inset>
         <IonItem>
           <IonInput
-            ref={inputRef}
             label="kWh"
             labelPlacement="fixed"
             placeholder="required"
@@ -46,8 +44,8 @@ function SessionForm(
           />
         </IonItem>
         <IonItem button={false}>
-          <IonLabel position="fixed">Date</IonLabel>
-          <IonDatetimeButton datetime="session-date" />
+          <IonLabel>Date</IonLabel>
+          <IonDatetimeButton datetime="session-date" slot="end" />
           <IonModal keepContentsMounted={true}>
             <IonDatetime
               id="session-date"

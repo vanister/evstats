@@ -24,7 +24,10 @@ export default function SessionScreen() {
   );
 
   const handleAddSessionClick = () => {
-    router.push('/sessions/new');
+    // Explicitly pass state to indicate this is a new session
+    router.push('/sessions/-1', 'forward', 'push');
+    // Alternative approach using history directly if state is needed
+    // history.push('/sessions/-1', { isNew: true });
   };
 
   const handleSessionSelection = (sessionLog: SessionLog) => {

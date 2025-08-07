@@ -1,6 +1,5 @@
-import { IonButton, IonIcon, useIonAlert, useIonViewWillEnter } from '@ionic/react';
-import { checkmark } from 'ionicons/icons';
-import { useParams } from 'react-router';
+import { IonButton, useIonAlert, useIonViewWillEnter } from '@ionic/react';
+import { useParams, useLocation } from 'react-router';
 import { useIonRouter } from '@ionic/react';
 import EvsPage from '../../components/EvsPage';
 import { useImmerState } from '../../hooks/useImmerState';
@@ -20,15 +19,19 @@ const NEW_SESSION: SessionFormState = {
 };
 
 type SessionDetailsParams = {
-  id?: string;
+  id: string;
 };
 
-type SessionDetailsScreenProps = {
-  new?: boolean;
+type SessionLocationState = {
+  isNew?: boolean;
 };
 
-export default function SessionDetailsScreen({ new: isNew }: SessionDetailsScreenProps) {
+export default function SessionDetailsScreen() {
   const { id } = useParams<SessionDetailsParams>();
+  const location = useLocation<SessionLocationState>();
+
+  // Determine if this is a new session from location state with fallback to URL check
+  const isNew = location.state?.isNew === true || id === '-1';
   const router = useIonRouter();
   const [showAlert] = useIonAlert();
   const {
@@ -57,7 +60,6 @@ export default function SessionDetailsScreen({ new: isNew }: SessionDetailsScree
 
     // todo - handle not found case by redirecting to a not found page
 
-    // For existing sessions, load the session data
     const loadSession = async () => {
       try {
         const existingSession = await getSession(parseInt(id));
@@ -101,7 +103,7 @@ export default function SessionDetailsScreen({ new: isNew }: SessionDetailsScree
   // Create header save button
   const saveButton = (
     <IonButton fill="clear" onClick={handleSave} disabled={operationLoading}>
-      <IonIcon icon={checkmark} />
+      Save
     </IonButton>
   );
 
