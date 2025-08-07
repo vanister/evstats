@@ -1,7 +1,6 @@
-import { IonIcon, useIonAlert, useIonViewWillEnter } from '@ionic/react';
+import { IonIcon, IonButton, useIonAlert, useIonViewWillEnter } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef, useState } from 'react';
-import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { logToDevServer } from '../../logger';
 import { Vehicle } from '../../models/vehicle';
@@ -95,6 +94,21 @@ export default function VehicleScreen() {
     }
   };
 
+  // Create header add button
+  const addButton = (
+    <IonButton fill="clear" onClick={handleAddClick}>
+      <IonIcon icon={add} />
+    </IonButton>
+  );
+
+  const headerButtons = [
+    {
+      key: 'add',
+      button: addButton,
+      slot: 'end'
+    }
+  ];
+
   return (
     <EvsPage
       ref={pageRef}
@@ -102,6 +116,7 @@ export default function VehicleScreen() {
       title="Vehicles"
       fixedSlotPlacement="before"
       hideBack
+      headerButtons={headerButtons}
     >
       <VehicleList
         vehicles={vehicles}
@@ -112,16 +127,6 @@ export default function VehicleScreen() {
         onEditClick={handleEditClick}
         onSetDefaultClick={handleSetDefaultClick}
       />
-
-      <EvsFloatingActionButton
-        className="add-vehicle-fab"
-        horizontal="end"
-        vertical="bottom"
-        slot="fixed"
-        onClick={handleAddClick}
-      >
-        <IonIcon icon={add} />
-      </EvsFloatingActionButton>
 
       {showModal && (
         <VehicleModal

@@ -1,7 +1,6 @@
-import { IonIcon, useIonAlert } from '@ionic/react';
+import { IonIcon, IonButton, useIonAlert } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useMemo, useRef } from 'react';
-import EvsFloatingActionButton from '../../components/EvsFloatingActionButton';
 import EvsPage from '../../components/EvsPage';
 import { SessionLog } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
@@ -39,7 +38,7 @@ export default function SessionScreen() {
     [sessions, vehicles, rateTypes]
   );
 
-  const handleAddSessionFabClick = () => {
+  const handleAddSessionClick = () => {
     setLocalState((s) => {
       s.showModal = true;
       s.isNew = true;
@@ -91,21 +90,29 @@ export default function SessionScreen() {
     });
   };
 
+  // Create header add button
+  const addButton = (
+    <IonButton fill="clear" onClick={handleAddSessionClick}>
+      <IonIcon icon={add} />
+    </IonButton>
+  );
+
+  const headerButtons = [
+    {
+      key: 'add',
+      button: addButton,
+      slot: 'end'
+    }
+  ];
+
   return (
     <EvsPage
       ref={presentingElement}
       className="sessions"
       title="Sessions"
       fixedSlotPlacement="before"
+      headerButtons={headerButtons}
     >
-      <EvsFloatingActionButton
-        horizontal="end"
-        vertical="bottom"
-        slot="fixed"
-        onClick={handleAddSessionFabClick}
-      >
-        <IonIcon icon={add} />
-      </EvsFloatingActionButton>
       <SessionList sessions={sessionLogs} onSelection={handleSessionSelection} />
       {localState.showModal && (
         <SessionModal
