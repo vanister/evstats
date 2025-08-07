@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Session } from '../../models/session';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
@@ -23,7 +24,7 @@ export function useSessions(): SessionHook {
   // Compute selected vehicle ID: lastUsed takes precedence, then default
   const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
 
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async (): Promise<void> => {
     setState((d) => {
       d.loading = true;
     });
@@ -34,9 +35,9 @@ export function useSessions(): SessionHook {
       d.sessions = sessions;
       d.loading = false;
     });
-  };
+  }, [sessionService, setState]);
 
-  const addSession = async (session: Session) => {
+  const addSession = useCallback(async (session: Session): Promise<string | null> => {
     setState((s) => {
       s.operationLoading = true;
     });
@@ -62,22 +63,19 @@ export function useSessions(): SessionHook {
       });
       return error.message;
     }
-  };
+  }, [sessionService, dispatch, setState]);
 
-  const getSession = async (id: number): Promise<Session | null> => {
+  const getSession = useCallback(async (id: number): Promise<Session | null> => {
     try {
       const session = await sessionService.get(id);
       return session;
     } catch (error) {
-      if (error.name === 'NotFoundError') {
-        return null;
-      }
       logToDevServer(`Failed to get session: ${error.message}`, 'error', error.stack);
-      throw error;
+      return null;
     }
-  };
+  }, [sessionService]);
 
-  const updateSession = async (session: Session) => {
+  const updateSession = useCallback(async (session: Session): Promise<string | null> => {
     setState((s) => {
       s.operationLoading = true;
     });
@@ -104,7 +102,7 @@ export function useSessions(): SessionHook {
       });
       return error.message;
     }
-  };
+  }, [sessionService, dispatch, setState]);
 
   return {
     ...state,

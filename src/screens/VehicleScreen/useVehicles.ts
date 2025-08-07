@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Vehicle } from '../../models/vehicle';
 import { useServices } from '../../providers/ServiceProvider';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -53,13 +53,13 @@ export function useVehicles() {
     loadVehicleStats();
   }, [vehicles, state.refreshTrigger]);
 
-  const refreshStats = () => {
+  const refreshStats = useCallback((): void => {
     setState((draft) => {
       draft.refreshTrigger += 1;
     });
-  };
+  }, [setState]);
 
-  const setDefaultVehicle = async (vehicle: Vehicle): Promise<void> => {
+  const setDefaultVehicle = useCallback(async (vehicle: Vehicle): Promise<void> => {
     try {
       await vehicleService.setDefaultVehicleId(vehicle.id);
       dispatch(setDefaultVehicleId(vehicle.id));
@@ -67,9 +67,9 @@ export function useVehicles() {
       logToDevServer(`Failed to set default vehicle: ${error.message}`, 'error', error.stack);
       throw error;
     }
-  };
+  }, [vehicleService, dispatch]);
 
-  const addNewVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+  const addNewVehicle = useCallback(async (vehicle: Vehicle): Promise<string | null> => {
     try {
       const newVehicle = await vehicleService.add(vehicle);
       dispatch(addVehicle(newVehicle));
@@ -79,9 +79,9 @@ export function useVehicles() {
       logToDevServer(`Failed to add new vehicle: ${error.message}`, 'error', error.stack);
       return error.message || 'Failed to add vehicle. Please check your information and try again.';
     }
-  };
+  }, [vehicleService, dispatch]);
 
-  const editVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+  const editVehicle = useCallback(async (vehicle: Vehicle): Promise<string | null> => {
     try {
       await vehicleService.update(vehicle);
       dispatch(updateVehicle(vehicle));
@@ -93,9 +93,9 @@ export function useVehicles() {
         error.message || 'Failed to update vehicle. Please check your information and try again.'
       );
     }
-  };
+  }, [vehicleService, dispatch]);
 
-  const removeVehicle = async (vehicle: Vehicle): Promise<string | null> => {
+  const removeVehicle = useCallback(async (vehicle: Vehicle): Promise<string | null> => {
     try {
       await vehicleService.remove(vehicle.id);
       dispatch(deleteVehicle(vehicle));
@@ -115,7 +115,7 @@ export function useVehicles() {
       logToDevServer(`Failed to remove vehicle: ${error.message}`, 'error', error.stack);
       return error.message || 'Failed to delete vehicle. Please try again.';
     }
-  };
+  }, [vehicleService, dispatch, lastUsedVehicleId, defaultVehicleId]);
 
   return {
     vehicles,
