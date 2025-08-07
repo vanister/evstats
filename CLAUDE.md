@@ -13,6 +13,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm start` - Alias for dev server on port 8100
 - `npm run start.logserver` - Start development log server
 
+## Development Guidelines
+
+- Always run lint and build when confirming
+
 ## Architecture Overview
 
 This is an Ionic React mobile application for tracking electric vehicle charging statistics. The app uses a layered architecture with dependency injection and follows Redux Toolkit patterns for state management.

@@ -11,6 +11,7 @@ import { ChargeStatData } from '../../models/chargeStats';
 import { Vehicle } from '../../models/vehicle';
 import { logToDevServer } from '../../logger';
 import { useAppSelector } from '../../redux/hooks';
+import { ALL_VEHICLES_ID } from '../../constants';
 
 export default function ChargeStatsScreen() {
   const chargeStatsService = useServices('chargeStatsService');
@@ -18,7 +19,7 @@ export default function ChargeStatsScreen() {
   const [chartData, setChartData] = useState<ChargeStatData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedVehicleFilter, setSelectedVehicleFilter] = useState<string>('all'); // 'all' or vehicleId
+  const [selectedVehicleFilter, setSelectedVehicleFilter] = useState<number>(ALL_VEHICLES_ID);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   
   const showEmptyState = !chartData && !loading && !error;
@@ -36,11 +37,10 @@ export default function ChargeStatsScreen() {
     try {
       let data: ChargeStatData;
       
-      if (selectedVehicleFilter === 'all') {
+      if (selectedVehicleFilter === ALL_VEHICLES_ID) {
         data = await chargeStatsService.getAllVehiclesLast31Days();
       } else {
-        const vehicleId = parseInt(selectedVehicleFilter);
-        data = await chargeStatsService.getLast31Days(vehicleId);
+        data = await chargeStatsService.getLast31Days(selectedVehicleFilter);
       }
       
       setChartData(data);
@@ -57,13 +57,8 @@ export default function ChargeStatsScreen() {
     loadChartData();
   }, [selectedVehicleFilter, vehicles]);
 
-  const handleRefresh = async () => {
-    logToDevServer('ChargeStatsScreen handleRefresh called');
-    await loadChartData();
-    logToDevServer('ChargeStatsScreen handleRefresh complete');
-  };
 
-  const handleVehicleFilterChange = (value: string) => {
+  const handleVehicleFilterChange = (value: number) => {
     setSelectedVehicleFilter(value);
     setIsActionSheetOpen(false);
   };
@@ -77,11 +72,11 @@ export default function ChargeStatsScreen() {
   };
 
   const getChartTitle = () => {
-    if (selectedVehicleFilter === 'all') {
+    if (selectedVehicleFilter === ALL_VEHICLES_ID) {
       return 'Last 31 Days - All Vehicles';
     }
     
-    const vehicle = vehicles.find(v => v.id === parseInt(selectedVehicleFilter));
+    const vehicle = vehicles.find(v => v.id === selectedVehicleFilter);
     return vehicle ? `Last 31 Days - ${getVehicleDisplayName(vehicle)}` : 'Last 31 Days';
   };
 
@@ -89,11 +84,11 @@ export default function ChargeStatsScreen() {
   const actionSheetButtons = [
     {
       text: 'All Vehicles',
-      handler: () => handleVehicleFilterChange('all')
+      handler: () => handleVehicleFilterChange(ALL_VEHICLES_ID)
     },
     ...vehicles.map(vehicle => ({
       text: getVehicleDisplayName(vehicle),
-      handler: () => handleVehicleFilterChange(vehicle.id.toString())
+      handler: () => handleVehicleFilterChange(vehicle.id!)
     })),
     {
       text: 'Cancel',
@@ -121,8 +116,6 @@ export default function ChargeStatsScreen() {
       className="charge-stats-screen"
       title="Charge Stats"
       padding
-      enableRefresher
-      onRefresh={handleRefresh}
       headerButtons={headerButtons}
     >
       {loading && <EmptyState>Loading charge statistics...</EmptyState>}

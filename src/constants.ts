@@ -22,3 +22,6 @@ export enum ChargeColors {
   Other = '#929292',
   DC = '#B51700'
 }
+
+/** Vehicle ID constant representing all vehicles in filtering contexts */
+export const ALL_VEHICLES_ID = -1;

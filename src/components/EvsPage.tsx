@@ -6,14 +6,10 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
-  IonRefresher,
-  IonRefresherContent,
-  RefresherCustomEvent
+  IonToolbar
 } from '@ionic/react';
 import classNames from 'classnames';
-import { chevronDownCircleOutline } from 'ionicons/icons';
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode } from 'react';
 
 type HeaderButton = {
   button: ReactNode;
@@ -26,25 +22,15 @@ type EvsPageProps = PropsWithChildrenAndClass<{
   fixedSlotPlacement?: 'before' | 'after';
   padding?: boolean;
   title?: string;
-  staticHeader?: boolean;
+  condensedHeader?: boolean;
   hideBack?: boolean;
   headerButtons?: HeaderButton[];
-  enableRefresher?: boolean;
-  onRefresh?: () => Promise<void>;
 }>;
 
 function EvsPage(
-  { children, color = 'light', title, enableRefresher, ...props }: EvsPageProps,
+  { children, color = 'light', title, ...props }: EvsPageProps,
   ref: React.MutableRefObject<HTMLElement>
 ) {
-  const handleRefresh = useCallback(async (event: RefresherCustomEvent) => {
-    await Promise.all([
-      props.onRefresh?.(),
-      new Promise((resolve) => setTimeout(resolve, 500)) // Ensure a minimum wait of 500ms
-    ]);
-
-    event.detail.complete();
-  }, []);
 
   return (
     <IonPage ref={ref} className={classNames('evs-page', props.className)}>
@@ -69,15 +55,7 @@ function EvsPage(
         fullscreen
         fixedSlotPlacement={props.fixedSlotPlacement}
       >
-        {enableRefresher && (
-          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-            <IonRefresherContent
-              refreshingSpinner="circles"
-              pullingIcon={chevronDownCircleOutline}
-            />
-          </IonRefresher>
-        )}
-        {!props.staticHeader && (
+        {props.condensedHeader && (
           <IonHeader className="evs-page-content-header" collapse="condense">
             <IonToolbar color={color}>
               <IonTitle size="large">{title}</IonTitle>
