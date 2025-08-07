@@ -5,6 +5,7 @@ import { BaseRepository } from './BaseRepository';
 
 export interface ChargeStatsRepository {
   getLast31Days(vehicleId: number): Promise<ChargeStatsDbo[]>;
+  getLast31DaysAllVehicles(): Promise<ChargeStatsDbo[]>;
 }
 
 export class EvsChargeStatsRepository
@@ -19,6 +20,12 @@ export class EvsChargeStatsRepository
     const results = await this.context.query<ChargeStatsDbo>(ChargeStatSql.Last31DaysByVehicle, [
       vehicleId
     ]);
+
+    return results;
+  }
+
+  async getLast31DaysAllVehicles(): Promise<ChargeStatsDbo[]> {
+    const results = await this.context.query<ChargeStatsDbo>(ChargeStatSql.Last31DaysAllVehicles);
 
     return results;
   }

@@ -12,7 +12,7 @@
     "test.lcov.all": "vitest run --coverage --coverage.all",
     "test.debug": "vitest --watch=false",
     "test.once": "vitest --watch=false",
-    "lint": "eslint",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "start": "npm run dev -- --port=8100",
     "start.ios": "dotenv -c -- bash -c 'npx vite build && npx cap copy ios && npx cap run ios --target=$IOS_TARGET_DEVICE --live-reload --port=$DEV_PORT --host=$DEV_HOST & npx vite --host=$DEV_HOST --port=$DEV_PORT --mode=development'",
     "start.logserver": "node utilities/devLogServer.js"

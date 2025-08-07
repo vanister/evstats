@@ -21,7 +21,8 @@ export type ChargeStatDataset = {
 };
 
 export type ChargeStatData = {
-  vehicleId: number;
+  vehicleId: number; // Kept for backward compatibility
+  vehicleIds: number[]; // Array of vehicle IDs included in this data
   labels: (string | number)[];
   datasets: ChargeStatDataset[];
   averages: ChargeAverage[];

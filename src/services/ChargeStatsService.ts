@@ -1,5 +1,6 @@
 import { ChargeStatsRepository } from '../data/repositories/ChargeStatsRepository';
 import { RateRepository } from '../data/repositories/RateRepository';
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 import {
   ChargeStatData,
   ChargeStatDataset,
@@ -12,13 +13,15 @@ import { getColor } from '../screens/ChargeStatsScreen/helpers';
 
 export interface ChargeStatsService {
   getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData>;
+  getAllVehiclesLast31Days(fromDate?: Date): Promise<ChargeStatData>;
 }
 
 /** Charge stats chart data service. */
 export class EvsChargeStatsService extends BaseService implements ChargeStatsService {
   constructor(
     private readonly chargeStatsRepository: ChargeStatsRepository,
-    private readonly rateRepository: RateRepository
+    private readonly rateRepository: RateRepository,
+    private readonly vehicleRepository: VehicleRepository
   ) {
     super();
   } 
@@ -31,6 +34,28 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
     const data: ChargeStatData = {
       vehicleId,
+      vehicleIds: [vehicleId], // Single vehicle array
+      labels: Array.from({ length: 31 }, (_, i) => i), // 0, 1, 2, ..., 30
+      datasets, // Data is already reversed in createDataset
+      averages
+    };
+
+    return data;
+  }
+
+  async getAllVehiclesLast31Days(fromDate?: Date): Promise<ChargeStatData> {
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getLast31DaysAllVehicles();
+    
+    // Get unique vehicle IDs from the charge stats data
+    const vehicleIds = Array.from(new Set(chargeStats.map(stat => stat.vehicle_id)));
+    
+    const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes, fromDate);
+    const averages: ChargeAverage[] = this.getAverages(datasets);
+
+    const data: ChargeStatData = {
+      vehicleId: 0, // Use 0 to indicate "all vehicles" for backward compatibility
+      vehicleIds, // Array of all vehicle IDs included in this data
       labels: Array.from({ length: 31 }, (_, i) => i), // 0, 1, 2, ..., 30
       datasets, // Data is already reversed in createDataset
       averages

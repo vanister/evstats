@@ -215,6 +215,10 @@ The following temporary files are generated during development:
 
 Use WebSearch or WebFetch tools to verify API usage before implementing features.
 
+## Icon Resources
+
+- Use https://ionic.io/ionicons as a reference for the available icons for the app
+
 ## Type Safety Guidelines
 
 - Do not use `any` for types, always be explicit when typing
