@@ -16,6 +16,7 @@ export default function MainLayout() {
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/sessions" component={SessionScreen} />
+        <Route exact path="/sessions/new" render={() => <SessionDetailsScreen new={true} />} />
         <Route exact path="/sessions/:id" component={SessionDetailsScreen} />
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
         <Route exact path="/vehicles" component={VehicleScreen} />

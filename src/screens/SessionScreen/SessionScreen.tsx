@@ -1,6 +1,6 @@
 import { IonIcon, IonButton, useIonRouter } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import EvsPage from '../../components/EvsPage';
 import { SessionLog } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
@@ -10,9 +10,14 @@ import { useAppSelector } from '../../redux/hooks';
 
 export default function SessionScreen() {
   const router = useIonRouter();
-  const { sessions } = useSessions();
+  const { sessions, loadSessions } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
+  // Load sessions on mount
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
+
   const sessionLogs = useMemo(
     () => sessions.map((s) => toSessionLogItem(s, vehicles, rateTypes)),
     [sessions, vehicles, rateTypes]

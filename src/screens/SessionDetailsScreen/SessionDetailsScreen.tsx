@@ -10,7 +10,6 @@ import { SessionFormState } from '../SessionScreen/session-types';
 import { validateSession, isValidSession } from '../SessionScreen/validator';
 import { useSessions } from '../SessionScreen/useSessions';
 import { useAppSelector } from '../../redux/hooks';
-import { logToDevServer } from '../../logger';
 import SessionForm from '../SessionScreen/components/SessionForm';
 
 // Form initial state - use null for unset values
@@ -22,50 +21,57 @@ const NEW_SESSION: SessionFormState = {
 };
 
 type SessionDetailsParams = {
-  id: string;
+  id?: string;
 };
 
-export default function SessionDetailsScreen() {
+type SessionDetailsScreenProps = {
+  new?: boolean;
+};
+
+export default function SessionDetailsScreen({ new: isNew }: SessionDetailsScreenProps) {
   const { id } = useParams<SessionDetailsParams>();
   const router = useIonRouter();
   const [showAlert] = useIonAlert();
   const {
     lastUsedRateTypeId,
     selectedVehicleId,
-    sessions,
     addSession,
+    getSession,
     updateSession,
     operationLoading
   } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
 
-  const isNew = id === 'new';
-  const existingSession = isNew ? null : sessions.find((s) => s.id === parseInt(id));
-
-  // Debug logging
-  logToDevServer(
-    `SessionDetailsScreen - ID: ${id}, isNew: ${isNew}, sessions.length: ${
-      sessions.length
-    }, existingSession: ${existingSession ? 'found' : 'not found'}`
-  );
-
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
     rateTypeId: lastUsedRateTypeId ?? null,
-    vehicleId: selectedVehicleId ?? (vehicles.length > 0 ? vehicles[0].id : null),
-    ...(existingSession ?? {})
+    vehicleId: selectedVehicleId ?? (vehicles.length > 0 ? vehicles[0].id : null)
   });
 
-  // Redirect if session not found and not creating new (but only after sessions have loaded)
+  // Single effect to handle both new and existing sessions
   useEffect(() => {
-    if (!isNew && sessions.length > 0 && !existingSession) {
-      logToDevServer(
-        `SessionDetailsScreen - Session not found, redirecting back to list. ID: ${id}`
-      );
-      router.push('/sessions', 'root', 'replace');
+    if (isNew) {
+      // For new sessions, form is already initialized with defaults
+      return;
     }
-  }, [isNew, existingSession, sessions.length, router, id]);
+
+    if (id) {
+      // For existing sessions, load the session data
+      const loadSession = async () => {
+        try {
+          const existingSession = await getSession(parseInt(id));
+          if (existingSession) {
+            setSession(() => existingSession);
+          }
+        } catch (error) {
+          // Handle error - could redirect to not found page
+          console.error('Failed to load session:', error);
+        }
+      };
+      loadSession();
+    }
+  }, []);
 
   const handleSave = async () => {
     const validationError = validateSession(session);
@@ -88,7 +94,7 @@ export default function SessionDetailsScreen() {
       return;
     }
 
-    // Navigate back to sessions list on success
+    // Navigate back on success - sessions will be fresh when we return
     router.goBack();
   };
 

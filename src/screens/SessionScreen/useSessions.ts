@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Session } from '../../models/session';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
@@ -24,19 +23,18 @@ export function useSessions(): SessionHook {
   // Compute selected vehicle ID: lastUsed takes precedence, then default
   const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
 
-  // Load sessions on mount
-  useEffect(() => {
-    const loadSessions = async () => {
-      const sessions = await sessionService.list();
+  const loadSessions = async () => {
+    setState((d) => {
+      d.loading = true;
+    });
 
-      setState((d) => {
-        d.sessions = sessions;
-        d.loading = false;
-      });
-    };
+    const sessions = await sessionService.list();
 
-    loadSessions();
-  }, []);
+    setState((d) => {
+      d.sessions = sessions;
+      d.loading = false;
+    });
+  };
 
   const addSession = async (session: Session) => {
     setState((s) => {
@@ -112,6 +110,7 @@ export function useSessions(): SessionHook {
     ...state,
     lastUsedRateTypeId,
     selectedVehicleId,
+    loadSessions,
     addSession,
     getSession,
     updateSession

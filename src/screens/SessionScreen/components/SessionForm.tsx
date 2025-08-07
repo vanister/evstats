@@ -1,5 +1,5 @@
 import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
-import { IonInput, IonItem, IonList, IonNote, IonSelectOption } from '@ionic/react';
+import { IonInput, IonItem, IonList, IonNote, IonSelectOption, IonDatetimeButton, IonModal, IonDatetime, IonLabel } from '@ionic/react';
 import EvsSelect from '../../../components/EvsSelect';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
@@ -45,16 +45,17 @@ function SessionForm(
             onIonInput={(e) => onSessionFieldChange('kWh', e.detail.value ? +e.detail.value : null)}
           />
         </IonItem>
-        <IonItem>
-          <IonInput
-            label="Date"
-            labelPlacement="fixed"
-            placeholder="Session date"
-            type="date"
-            required
-            value={session.date}
-            onIonChange={(e) => onSessionFieldChange('date', e.detail.value)}
-          />
+        <IonItem button={false}>
+          <IonLabel position="fixed">Date</IonLabel>
+          <IonDatetimeButton datetime="session-date" />
+          <IonModal keepContentsMounted={true}>
+            <IonDatetime
+              id="session-date"
+              presentation="date"
+              value={session.date}
+              onIonChange={(e) => onSessionFieldChange('date', e.detail.value as string)}
+            />
+          </IonModal>
         </IonItem>
       </IonList>
       <IonList inset>

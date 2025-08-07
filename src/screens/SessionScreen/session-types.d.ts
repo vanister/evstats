@@ -31,6 +31,7 @@ export type UseSessionState = {
 export type SessionHook = UseSessionState & {
   lastUsedRateTypeId?: number;
   selectedVehicleId?: number;
+  loadSessions: () => Promise<void>;
   addSession: (session: Session) => Promise<string | null>;
   getSession: (id: number) => Promise<Session | null>;
   updateSession: (session: Session) => Promise<string | null>;
