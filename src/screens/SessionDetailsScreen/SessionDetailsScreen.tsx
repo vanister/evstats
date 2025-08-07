@@ -44,7 +44,11 @@ export default function SessionDetailsScreen() {
   const existingSession = isNew ? null : sessions.find((s) => s.id === parseInt(id));
 
   // Debug logging
-  logToDevServer(`SessionDetailsScreen - ID: ${id}, isNew: ${isNew}, sessions.length: ${sessions.length}, existingSession: ${existingSession ? 'found' : 'not found'}`);
+  logToDevServer(
+    `SessionDetailsScreen - ID: ${id}, isNew: ${isNew}, sessions.length: ${
+      sessions.length
+    }, existingSession: ${existingSession ? 'found' : 'not found'}`
+  );
 
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
@@ -56,7 +60,9 @@ export default function SessionDetailsScreen() {
   // Redirect if session not found and not creating new (but only after sessions have loaded)
   useEffect(() => {
     if (!isNew && sessions.length > 0 && !existingSession) {
-      logToDevServer(`SessionDetailsScreen - Session not found, redirecting back to list. ID: ${id}`);
+      logToDevServer(
+        `SessionDetailsScreen - Session not found, redirecting back to list. ID: ${id}`
+      );
       router.push('/sessions', 'root', 'replace');
     }
   }, [isNew, existingSession, sessions.length, router, id]);
@@ -75,9 +81,7 @@ export default function SessionDetailsScreen() {
       return;
     }
 
-    const errorMessage = isNew
-      ? await addSession(session)
-      : await updateSession(session);
+    const errorMessage = isNew ? await addSession(session) : await updateSession(session);
 
     if (errorMessage) {
       await showAlert(errorMessage);
@@ -87,7 +91,6 @@ export default function SessionDetailsScreen() {
     // Navigate back to sessions list on success
     router.goBack();
   };
-
 
   // Create header save button
   const saveButton = (
@@ -116,7 +119,7 @@ export default function SessionDetailsScreen() {
         rateTypes={rateTypes}
         onSessionFieldChange={(field, value) => {
           setSession((draft) => {
-            (draft as any)[field] = value;
+            draft[field as string] = value;
           });
         }}
       />

@@ -102,7 +102,9 @@ function SessionForm(
             min={0}
             step="0.01"
             value={session.rateOverride ?? ''}
-            onIonInput={(e) => onSessionFieldChange('rateOverride', e.detail.value ? +e.detail.value : undefined)}
+            onIonInput={(e) =>
+              onSessionFieldChange('rateOverride', e.detail.value ? +e.detail.value : undefined)
+            }
           />
         </IonItem>
       </IonList>
