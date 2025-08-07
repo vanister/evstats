@@ -1,7 +1,7 @@
 import './ChargeStatsScreen.scss';
 
 import { useEffect, useState } from 'react';
-import { IonButton, IonIcon, IonActionSheet } from '@ionic/react';
+import { IonButton, IonIcon, IonActionSheet, useIonViewWillEnter } from '@ionic/react';
 import { filter } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
@@ -52,10 +52,15 @@ export default function ChargeStatsScreen() {
     }
   };
 
-  // Load data when component mounts or filter changes
+  // Load data initially when screen enters
+  useIonViewWillEnter(() => {
+    loadChartData();
+  });
+
+  // Reload data when filter changes
   useEffect(() => {
     loadChartData();
-  }, [selectedVehicleFilter, vehicles]);
+  }, [selectedVehicleFilter]);
 
 
   const handleVehicleFilterChange = (value: number) => {

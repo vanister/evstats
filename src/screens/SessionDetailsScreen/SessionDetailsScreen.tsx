@@ -1,6 +1,5 @@
-import { IonButton, IonIcon, useIonAlert } from '@ionic/react';
+import { IonButton, IonIcon, useIonAlert, useIonViewWillEnter } from '@ionic/react';
 import { checkmark } from 'ionicons/icons';
-import { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useIonRouter } from '@ionic/react';
 import EvsPage from '../../components/EvsPage';
@@ -49,29 +48,30 @@ export default function SessionDetailsScreen({ new: isNew }: SessionDetailsScree
     vehicleId: selectedVehicleId ?? (vehicles.length > 0 ? vehicles[0].id : null)
   });
 
-  // Single effect to handle both new and existing sessions
-  useEffect(() => {
+  // Load session data when entering the screen
+  useIonViewWillEnter(() => {
     if (isNew) {
       // For new sessions, form is already initialized with defaults
       return;
     }
 
-    if (id) {
-      // For existing sessions, load the session data
-      const loadSession = async () => {
-        try {
-          const existingSession = await getSession(parseInt(id));
-          if (existingSession) {
-            setSession(() => existingSession);
-          }
-        } catch (error) {
-          // Handle error - could redirect to not found page
-          console.error('Failed to load session:', error);
+    // todo - handle not found case by redirecting to a not found page
+
+    // For existing sessions, load the session data
+    const loadSession = async () => {
+      try {
+        const existingSession = await getSession(parseInt(id));
+        if (existingSession) {
+          setSession(() => existingSession);
         }
-      };
-      loadSession();
-    }
-  }, []);
+      } catch (error) {
+        // Handle error - could redirect to not found page
+        console.error('Failed to load session:', error);
+      }
+    };
+
+    loadSession();
+  });
 
   const handleSave = async () => {
     const validationError = validateSession(session);

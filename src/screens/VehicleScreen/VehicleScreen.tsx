@@ -19,7 +19,7 @@ export default function VehicleScreen() {
     vehicleStats,
     loadingStats,
     defaultVehicleId,
-    refreshStats,
+    loadVehicleStats,
     addNewVehicle,
     editVehicle,
     removeVehicle,
@@ -27,7 +27,7 @@ export default function VehicleScreen() {
   } = useVehicles();
 
   useIonViewWillEnter(() => {
-    refreshStats();
+    loadVehicleStats();
   });
 
   const handleAddClick = () => {

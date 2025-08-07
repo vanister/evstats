@@ -54,7 +54,7 @@ export function createChartConfig({
 }
 
 function createDateTickCallback(today: Date) {
-  return (value: number, _index: number, _ticks: any) => {
+  return (value: number, _index: number, _ticks: unknown) => {
     // Since data is reversed but labels are [0,1,2,...,30], 
     // we need to reverse the label value to get the correct date
     const daysAgo = 30 - value;

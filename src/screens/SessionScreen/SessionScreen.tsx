@@ -1,6 +1,6 @@
-import { IonIcon, IonButton, useIonRouter } from '@ionic/react';
+import { IonIcon, IonButton, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import EvsPage from '../../components/EvsPage';
 import { SessionLog } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
@@ -13,10 +13,10 @@ export default function SessionScreen() {
   const { sessions, loadSessions } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
-  // Load sessions on mount
-  useEffect(() => {
+  // Load sessions whenever we enter this screen
+  useIonViewWillEnter(() => {
     loadSessions();
-  }, [loadSessions]);
+  });
 
   const sessionLogs = useMemo(
     () => sessions.map((s) => toSessionLogItem(s, vehicles, rateTypes)),
