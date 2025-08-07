@@ -21,18 +21,3 @@ export type SessionFormState = {
   rateOverride?: number;
   vehicleId: number | null;
 };
-
-export type UseSessionState = {
-  loading: boolean;
-  sessions: Session[];
-  operationLoading: boolean;
-};
-
-export type SessionHook = UseSessionState & {
-  lastUsedRateTypeId?: number;
-  selectedVehicleId?: number;
-  loadSessions: () => Promise<void>;
-  addSession: (session: Session) => Promise<string | null>;
-  getSession: (id: number) => Promise<Session | null>;
-  updateSession: (session: Session) => Promise<string | null>;
-};

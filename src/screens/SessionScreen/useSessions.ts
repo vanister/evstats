@@ -5,7 +5,12 @@ import { useImmerState } from '../../hooks/useImmerState';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { updateLastUsed } from '../../redux/thunks/updateLastUsed';
 import { logToDevServer } from '../../logger';
-import { UseSessionState, SessionHook } from './session-types';
+
+export type UseSessionState = {
+  loading: boolean;
+  sessions: Session[];
+  operationLoading: boolean;
+};
 
 const INITIAL_STATE: UseSessionState = {
   loading: true,
@@ -13,7 +18,7 @@ const INITIAL_STATE: UseSessionState = {
   operationLoading: false
 };
 
-export function useSessions(): SessionHook {
+export function useSessions() {
   const dispatch = useAppDispatch();
   const sessionService = useServices('sessionService');
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
@@ -37,72 +42,81 @@ export function useSessions(): SessionHook {
     });
   }, [sessionService, setState]);
 
-  const addSession = useCallback(async (session: Session): Promise<string | null> => {
-    setState((s) => {
-      s.operationLoading = true;
-    });
-
-    try {
-      const sessionWithId = await sessionService.add(session);
-
-      await dispatch(
-        updateLastUsed({ rateTypeId: session.rateTypeId, vehicleId: session.vehicleId })
-      );
-
-      // add the new session with its id
+  const addSession = useCallback(
+    async (session: Session): Promise<string | null> => {
       setState((s) => {
-        s.sessions.push(sessionWithId);
-        s.operationLoading = false;
+        s.operationLoading = true;
       });
 
-      return null;
-    } catch (error) {
-      logToDevServer(`Failed to add session: ${error.message}`, 'error', error.stack);
+      try {
+        const sessionWithId = await sessionService.add(session);
+
+        await dispatch(
+          updateLastUsed({ rateTypeId: session.rateTypeId, vehicleId: session.vehicleId })
+        );
+
+        // add the new session with its id
+        setState((s) => {
+          s.sessions.push(sessionWithId);
+          s.operationLoading = false;
+        });
+
+        return null;
+      } catch (error) {
+        logToDevServer(`Failed to add session: ${error.message}`, 'error', error.stack);
+        setState((s) => {
+          s.operationLoading = false;
+        });
+        return error.message;
+      }
+    },
+    [sessionService, dispatch, setState]
+  );
+
+  const getSession = useCallback(
+    async (id: number): Promise<Session | null> => {
+      try {
+        const session = await sessionService.get(id);
+        return session;
+      } catch (error) {
+        logToDevServer(`Failed to get session: ${error.message}`, 'error', error.stack);
+        return null;
+      }
+    },
+    [sessionService]
+  );
+
+  const updateSession = useCallback(
+    async (session: Session): Promise<string | null> => {
       setState((s) => {
-        s.operationLoading = false;
-      });
-      return error.message;
-    }
-  }, [sessionService, dispatch, setState]);
-
-  const getSession = useCallback(async (id: number): Promise<Session | null> => {
-    try {
-      const session = await sessionService.get(id);
-      return session;
-    } catch (error) {
-      logToDevServer(`Failed to get session: ${error.message}`, 'error', error.stack);
-      return null;
-    }
-  }, [sessionService]);
-
-  const updateSession = useCallback(async (session: Session): Promise<string | null> => {
-    setState((s) => {
-      s.operationLoading = true;
-    });
-
-    try {
-      await sessionService.update(session);
-
-      await dispatch(
-        updateLastUsed({ rateTypeId: session.rateTypeId, vehicleId: session.vehicleId })
-      );
-
-      // find the session log item and update it with the updated values
-      setState((s) => {
-        const existingSessionLogId = s.sessions.findIndex((sl) => sl.id === session.id);
-        s.sessions[existingSessionLogId] = session;
-        s.operationLoading = false;
+        s.operationLoading = true;
       });
 
-      return null;
-    } catch (error) {
-      logToDevServer(`Failed to update session: ${error.message}`, 'error', error.stack);
-      setState((s) => {
-        s.operationLoading = false;
-      });
-      return error.message;
-    }
-  }, [sessionService, dispatch, setState]);
+      try {
+        await sessionService.update(session);
+
+        await dispatch(
+          updateLastUsed({ rateTypeId: session.rateTypeId, vehicleId: session.vehicleId })
+        );
+
+        // find the session log item and update it with the updated values
+        setState((s) => {
+          const existingSessionLogId = s.sessions.findIndex((sl) => sl.id === session.id);
+          s.sessions[existingSessionLogId] = session;
+          s.operationLoading = false;
+        });
+
+        return null;
+      } catch (error) {
+        logToDevServer(`Failed to update session: ${error.message}`, 'error', error.stack);
+        setState((s) => {
+          s.operationLoading = false;
+        });
+        return error.message;
+      }
+    },
+    [sessionService, dispatch, setState]
+  );
 
   return {
     ...state,

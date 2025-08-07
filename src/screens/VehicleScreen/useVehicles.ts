@@ -7,12 +7,16 @@ import { clearVehicleId } from '../../redux/lastUsedSlice';
 import { setDefaultVehicleId, clearDefaultVehicleId } from '../../redux/defaultVehicleSlice';
 import { useImmerState } from '../../hooks/useImmerState';
 import { logToDevServer } from '../../logger';
-import { VehicleLocalState } from './vehicle-types';
+import { VehicleStats } from '../../models/vehicleStats';
+
+export type VehicleLocalState = {
+  vehicleStats: VehicleStats[];
+  loadingStats: boolean;
+};
 
 const INITIAL_STATE: VehicleLocalState = {
   vehicleStats: [],
-  loadingStats: true,
-  refreshTrigger: 0
+  loadingStats: true
 };
 
 export function useVehicles() {
@@ -48,12 +52,6 @@ export function useVehicles() {
       });
     }
   }, [vehicles, vehicleStatsService, setState]);
-
-  const refreshStats = useCallback((): void => {
-    setState((draft) => {
-      draft.refreshTrigger += 1;
-    });
-  }, [setState]);
 
   const setDefaultVehicle = useCallback(
     async (vehicle: Vehicle): Promise<void> => {
@@ -133,7 +131,6 @@ export function useVehicles() {
     loadingStats: state.loadingStats,
     defaultVehicleId,
     loadVehicleStats,
-    refreshStats,
     addNewVehicle,
     editVehicle,
     removeVehicle,
