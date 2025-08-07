@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --logLevel error",
     "preview": "vite preview",
     "test": "vitest",
     "test.lcov": "vitest run --coverage",
