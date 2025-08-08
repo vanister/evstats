@@ -161,6 +161,7 @@ export default function SessionScreen() {
       className="sessions"
       title="Sessions"
       fixedSlotPlacement="before"
+      hideBack={true}
       headerButtons={headerButtons}
       searchContent={searchToolbarContent}
     >

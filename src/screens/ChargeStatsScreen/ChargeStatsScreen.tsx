@@ -121,6 +121,7 @@ export default function ChargeStatsScreen() {
       className="charge-stats-screen"
       title="Charge Stats"
       padding
+      hideBack={true}
       headerButtons={headerButtons}
     >
       {loading && <EmptyState>Loading charge statistics...</EmptyState>}

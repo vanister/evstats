@@ -13,12 +13,12 @@ import EvsPage from '../../components/EvsPage';
 
 export default function SettingsScreen() {
   return (
-    <EvsPage title="Settings">
+    <EvsPage title="Settings" hideBack={true}>
       <div className="settings-content">
         <div className="ion-padding" style={{ textAlign: 'center', paddingBottom: '16px' }}>
           <IonText color="medium">
             <h2>Coming Soon!</h2>
-            <p>We're working on these exciting features:</p>
+            <p>We&apos;re working on these exciting features:</p>
           </IonText>
         </div>
 
