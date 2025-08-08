@@ -8,13 +8,18 @@ export interface VehicleStatsRepository {
   getAllVehicleStats(): Promise<VehicleStats[]>;
 }
 
-export class EvsVehicleStatsRepository extends BaseRepository<VehicleStatsDbo> implements VehicleStatsRepository {
+export class EvsVehicleStatsRepository
+  extends BaseRepository<VehicleStatsDbo>
+  implements VehicleStatsRepository
+{
   constructor(context: DbContext) {
     super(context);
   }
 
   async getVehicleStats(vehicleId: number): Promise<VehicleStats | null> {
-    const values = await this.context.query<VehicleStatsDbo>(VehicleStatsSql.GetVehicleStats, [vehicleId]);
+    const values = await this.context.query<VehicleStatsDbo>(VehicleStatsSql.GetVehicleStats, [
+      vehicleId
+    ]);
     const result = values?.[0];
 
     if (!result) {
@@ -26,19 +31,24 @@ export class EvsVehicleStatsRepository extends BaseRepository<VehicleStatsDbo> i
       totalSessions: result.totalSessions,
       totalKwh: result.totalKwh,
       lastChargeDate: result.lastChargeDate,
-      averageKwhPerSession: result.averageKwhPerSession
+      totalCost: result.totalCost
     };
   }
 
   async getAllVehicleStats(): Promise<VehicleStats[]> {
-    const values = await this.context.query<VehicleStatsDbo>(VehicleStatsSql.GetAllVehicleStats, []);
+    const values = await this.context.query<VehicleStatsDbo>(
+      VehicleStatsSql.GetAllVehicleStats,
+      []
+    );
 
-    return values?.map((result: VehicleStatsDbo) => ({
-      vehicleId: result.vehicle_id,
-      totalSessions: result.totalSessions,
-      totalKwh: result.totalKwh,
-      lastChargeDate: result.lastChargeDate,
-      averageKwhPerSession: result.averageKwhPerSession
-    })) ?? [];
+    return (
+      values?.map((result: VehicleStatsDbo) => ({
+        vehicleId: result.vehicle_id,
+        totalSessions: result.totalSessions,
+        totalKwh: result.totalKwh,
+        lastChargeDate: result.lastChargeDate,
+        totalCost: result.totalCost
+      })) ?? []
+    );
   }
 }

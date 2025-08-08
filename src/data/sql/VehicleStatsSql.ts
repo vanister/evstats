@@ -5,8 +5,8 @@ export class VehicleStatsSql {
       COUNT(*) as totalSessions,
       ROUND(SUM(kwh), 2) as totalKwh,
       MAX(date) as lastChargeDate,
-      ROUND(AVG(kwh), 2) as averageKwhPerSession
-    FROM sessions 
+      ROUND(SUM(kwh * COALESCE(rate_override, rate)), 2) as totalCost
+    FROM vw_vehicle_charge_summary
     WHERE vehicle_id = ?
     GROUP BY vehicle_id;
   `;
@@ -17,8 +17,8 @@ export class VehicleStatsSql {
       COUNT(*) as totalSessions,
       ROUND(SUM(kwh), 2) as totalKwh,
       MAX(date) as lastChargeDate,
-      ROUND(AVG(kwh), 2) as averageKwhPerSession
-    FROM sessions 
+      ROUND(SUM(kwh * COALESCE(rate_override, rate)), 2) as totalCost
+    FROM vw_vehicle_charge_summary
     GROUP BY vehicle_id;
   `;
 }

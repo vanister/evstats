@@ -70,39 +70,29 @@ export default function VehicleCard({
                 <span className="stat-value">{stats.totalKwh}</span>
               </div>
               <div className="stat-item">
-                <span className="stat-label">Avg per Session:</span>
-                <span className="stat-value">{stats.averageKwhPerSession} kWh</span>
+                <span className="stat-label">Total Cost:</span>
+                <span className="stat-value">${stats.totalCost.toFixed(2)}</span>
               </div>
-              {stats.lastChargeDate && (
-                <div className="stat-item">
-                  <span className="stat-label">Last Charge:</span>
-                  <span className="stat-value">{formatDateForDisplay(stats.lastChargeDate)}</span>
-                </div>
-              )}
+              <div className="stat-item">
+                <span className="stat-label">Last Charge:</span>
+                <span className="stat-value">
+                  {stats.lastChargeDate ? formatDateForDisplay(stats.lastChargeDate) : 'Never'}
+                </span>
+              </div>
             </div>
           ) : (
             <p className="no-stats">No charging data yet</p>
           )}
         </div>
       </IonCardContent>
-      <IonButton
-        fill="clear"
-        onClick={() => props.onEditClick?.(vehicle)}
-      >
+      <IonButton fill="clear" onClick={() => props.onEditClick?.(vehicle)}>
         Edit
       </IonButton>
-      <IonButton
-        fill="clear"
-        color="danger"
-        onClick={() => props.onDeleteClick?.(vehicle)}
-      >
+      <IonButton fill="clear" color="danger" onClick={() => props.onDeleteClick?.(vehicle)}>
         Delete
       </IonButton>
       {!isDefault && (
-        <IonButton
-          fill="clear"
-          onClick={() => props.onSetDefaultClick?.(vehicle)}
-        >
+        <IonButton fill="clear" onClick={() => props.onSetDefaultClick?.(vehicle)}>
           Default
         </IonButton>
       )}

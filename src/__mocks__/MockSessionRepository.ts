@@ -60,14 +60,15 @@ export class MockSessionRepository implements SessionRepository {
     const totalKwh = vehicleSessions.reduce((sum, session) => sum + session.kwh, 0);
     const sortedByDate = vehicleSessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const lastChargeDate = sortedByDate[0]?.date;
-    const averageKwhPerSession = totalKwh / vehicleSessions.length;
+    // Mock total cost calculation using a default rate of $0.12 per kWh
+    const totalCost = totalKwh * 0.12;
 
     return {
       vehicleId,
       totalSessions: vehicleSessions.length,
       totalKwh: Math.round(totalKwh * 100) / 100,
       lastChargeDate,
-      averageKwhPerSession: Math.round(averageKwhPerSession * 100) / 100
+      totalCost: Math.round(totalCost * 100) / 100
     };
   }
 

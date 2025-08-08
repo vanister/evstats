@@ -1,4 +1,5 @@
 import { VehicleStatsRepository } from '../data/repositories/VehicleStatsRepository';
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 import { VehicleStats } from '../models/vehicleStats';
 import { BaseService } from './BaseService';
 
@@ -8,20 +9,23 @@ export interface VehicleStatsService {
 }
 
 export class EvsVehicleStatsService extends BaseService implements VehicleStatsService {
-  constructor(private vehicleStatsRepository: VehicleStatsRepository) {
+  constructor(
+    private vehicleStatsRepository: VehicleStatsRepository,
+    private vehicleRepository: VehicleRepository
+  ) {
     super();
   }
 
   async getStatsForVehicle(vehicleId: number): Promise<VehicleStats> {
     const stats = await this.vehicleStatsRepository.getVehicleStats(vehicleId);
-    
+
     if (!stats) {
       return {
         vehicleId,
         totalSessions: 0,
         totalKwh: 0,
         lastChargeDate: undefined,
-        averageKwhPerSession: 0
+        totalCost: 0
       };
     }
 
@@ -29,6 +33,21 @@ export class EvsVehicleStatsService extends BaseService implements VehicleStatsS
   }
 
   async getStatsForAllVehicles(): Promise<VehicleStats[]> {
-    return await this.vehicleStatsRepository.getAllVehicleStats();
+    const allVehicles = await this.vehicleRepository.list();
+    const existingStats = await this.vehicleStatsRepository.getAllVehicleStats();
+
+    // Create stats for all vehicles, using existing stats or default empty stats
+    return allVehicles.map((vehicleDbo) => {
+      const existingStat = existingStats.find((stat) => stat.vehicleId === vehicleDbo.id);
+      return (
+        existingStat || {
+          vehicleId: vehicleDbo.id,
+          totalSessions: 0,
+          totalKwh: 0,
+          lastChargeDate: undefined,
+          totalCost: 0
+        }
+      );
+    });
   }
 }

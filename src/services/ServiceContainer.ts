@@ -65,7 +65,8 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     preferenceService
   );
   const vehicleStatsService: VehicleStatsService = new EvsVehicleStatsService(
-    vehicleStatsRepository
+    vehicleStatsRepository,
+    vehicleRepository
   );
 
   // register the services here

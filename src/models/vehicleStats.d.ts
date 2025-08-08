@@ -4,7 +4,7 @@ export type VehicleStats = {
   totalSessions: number;
   totalKwh: number;
   lastChargeDate?: string;
-  averageKwhPerSession: number;
+  totalCost: number;
 };
 
 /** Database result type for vehicle statistics query */
@@ -13,5 +13,5 @@ export type VehicleStatsDbo = {
   totalSessions: number;
   totalKwh: number;
   lastChargeDate?: string;
-  averageKwhPerSession: number;
+  totalCost: number;
 };
