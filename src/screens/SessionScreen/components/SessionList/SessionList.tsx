@@ -19,7 +19,8 @@ export default function SessionList(props: SessionListProps) {
     return (
       <div className="session-list">
         <div className="empty-list-message">
-          <h3>There are no sessions</h3>
+          <h3>No sessions found</h3>
+          <p>Try adjusting your filters or add a new session</p>
         </div>
       </div>
     );
