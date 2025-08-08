@@ -74,13 +74,7 @@ export function createCostChartConfig({
           display: false
         }
       },
-      interaction: {
-        intersect: false
-      },
-      animation: false,
-      onHover: function() {
-        // Disable hover animations to prevent redraw
-      }
+      animation: false
     },
     plugins: [{
       id: 'costLabels',
