@@ -6,6 +6,7 @@ import { filter } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
 import VehicleChargeBarChart from './components/VehicleChargeBarChart/VehicleChargeBarChart';
+import CostBarChart from './components/CostBarChart/CostBarChart';
 import EmptyState from '../../components/EmptyState';
 import { ChargeStatData } from '../../models/chargeStats';
 import { Vehicle } from '../../models/vehicle';
@@ -21,7 +22,7 @@ export default function ChargeStatsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [selectedVehicleFilter, setSelectedVehicleFilter] = useState<number>(ALL_VEHICLES_ID);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
-  
+
   const showEmptyState = !chartData && !loading && !error;
 
   const loadChartData = async () => {
@@ -33,16 +34,16 @@ export default function ChargeStatsScreen() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       let data: ChargeStatData;
-      
+
       if (selectedVehicleFilter === ALL_VEHICLES_ID) {
         data = await chargeStatsService.getAllVehiclesLast31Days();
       } else {
         data = await chargeStatsService.getLast31Days(selectedVehicleFilter);
       }
-      
+
       setChartData(data);
     } catch (error) {
       logToDevServer(`Error loading charge stats: ${error.message}`, 'error', error.stack);
@@ -62,7 +63,6 @@ export default function ChargeStatsScreen() {
     loadChartData();
   }, [selectedVehicleFilter]);
 
-
   const handleVehicleFilterChange = (value: number) => {
     setSelectedVehicleFilter(value);
     setIsActionSheetOpen(false);
@@ -80,9 +80,19 @@ export default function ChargeStatsScreen() {
     if (selectedVehicleFilter === ALL_VEHICLES_ID) {
       return 'Last 31 Days - All Vehicles';
     }
-    
-    const vehicle = vehicles.find(v => v.id === selectedVehicleFilter);
+
+    const vehicle = vehicles.find((v) => v.id === selectedVehicleFilter);
     return vehicle ? `Last 31 Days - ${getVehicleDisplayName(vehicle)}` : 'Last 31 Days';
+  };
+
+  const getCostChartTitle = () => {
+    const baseTitle = 'Costs';
+    if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+      return `${baseTitle} - All Vehicles`;
+    }
+
+    const vehicle = vehicles.find((v) => v.id === selectedVehicleFilter);
+    return vehicle ? `${baseTitle} - ${getVehicleDisplayName(vehicle)}` : baseTitle;
   };
 
   // Create action sheet buttons
@@ -91,7 +101,7 @@ export default function ChargeStatsScreen() {
       text: 'All Vehicles',
       handler: () => handleVehicleFilterChange(ALL_VEHICLES_ID)
     },
-    ...vehicles.map(vehicle => ({
+    ...vehicles.map((vehicle) => ({
       text: getVehicleDisplayName(vehicle),
       handler: () => handleVehicleFilterChange(vehicle.id!)
     })),
@@ -127,8 +137,17 @@ export default function ChargeStatsScreen() {
       {loading && <EmptyState>Loading charge statistics...</EmptyState>}
       {error && <EmptyState>Error: {error}</EmptyState>}
       {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
-      {chartData && <VehicleChargeBarChart data={chartData} title={getChartTitle()} />}
-      
+      {chartData && (
+        <>
+          <VehicleChargeBarChart data={chartData} title={getChartTitle()} />
+          <CostBarChart
+            costTotals={chartData.costTotals}
+            totalCost={chartData.totalCost}
+            title={getCostChartTitle()}
+          />
+        </>
+      )}
+
       <IonActionSheet
         isOpen={isActionSheetOpen}
         onDidDismiss={() => setIsActionSheetOpen(false)}

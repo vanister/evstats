@@ -20,10 +20,18 @@ export type ChargeStatDataset = {
   backgroundColor: string;
 };
 
+export type CostTotal = {
+  name: string;
+  cost: number;
+  color: string;
+};
+
 export type ChargeStatData = {
   vehicleId: number; // Kept for backward compatibility
   vehicleIds: number[]; // Array of vehicle IDs included in this data
   labels: (string | number)[];
   datasets: ChargeStatDataset[];
   averages: ChargeAverage[];
+  costTotals: CostTotal[];
+  totalCost: number;
 };
