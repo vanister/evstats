@@ -1,4 +1,5 @@
 import { ChargeColors } from '../../constants';
+import { getDateFromDaysAgo as getDateFromDaysAgoUtil } from '../../utilities/dateUtility';
 
 export function getColor(name: string): string {
   switch (name) {
@@ -18,7 +19,5 @@ export function getColor(name: string): string {
 }
 
 export function getDateFromDaysAgo(baseDate: Date, daysAgo: number) {
-  const date = new Date(baseDate);
-  date.setDate(baseDate.getDate() - daysAgo);
-  return date;
+  return getDateFromDaysAgoUtil(baseDate, daysAgo);
 }

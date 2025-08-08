@@ -11,6 +11,12 @@ import {
 import { RateTypeDbo } from '../models/rateType';
 import { BaseService } from './BaseService';
 import { getColor } from '../screens/ChargeStatsScreen/helpers';
+import {
+  parseLocalDate,
+  getStartOfDay,
+  getStartOfToday,
+  getDaysDifference
+} from '../utilities/dateUtility';
 
 export interface ChargeStatsService {
   getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData>;
@@ -25,7 +31,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     private readonly vehicleRepository: VehicleRepository
   ) {
     super();
-  } 
+  }
 
   async getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData> {
     const rateTypes = await this.rateRepository.list();
@@ -51,10 +57,10 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
   async getAllVehiclesLast31Days(fromDate?: Date): Promise<ChargeStatData> {
     const rateTypes = await this.rateRepository.list();
     const chargeStats = await this.chargeStatsRepository.getLast31DaysAllVehicles();
-    
+
     // Get unique vehicle IDs from the charge stats data
-    const vehicleIds = Array.from(new Set(chargeStats.map(stat => stat.vehicle_id)));
-    
+    const vehicleIds = Array.from(new Set(chargeStats.map((stat) => stat.vehicle_id)));
+
     const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes, fromDate);
     const averages: ChargeAverage[] = this.getAverages(datasets);
     const costTotals: CostTotal[] = this.getCostTotals(chargeStats);
@@ -80,26 +86,22 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
   ): ChargeStatDataset[] {
     // Define consistent ordering for rate types
     const orderedRateTypes = ['Home', 'DC', 'Other', 'Work'];
-    
-    const kwhByRateType: Record<string, number[]> = rateTypes.reduce(
+
+    const kwhByRateType: Record<string, (number | null)[]> = rateTypes.reduce(
       (acc, { name }) => ({
         ...acc,
-        [name]: new Array(31).fill(0)
+        [name]: new Array(31).fill(null)
       }),
       {}
     );
 
-    const today = fromDate ? new Date(fromDate) : new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = fromDate ? getStartOfDay(fromDate) : getStartOfToday();
 
     chargeStats.forEach(({ date, kwh, rate_name: rateName }) => {
-      // Parse date parts explicitly to ensure exact date representation
-      const [year, month, day] = date.split('-').map(Number);
-      const sessionDate = new Date(year, month - 1, day); // month is 0-based in Date constructor
-      
-      const daysDiff = Math.floor(
-        (today.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      // Use parseLocalDate to safely parse the database date string
+      const sessionDate = parseLocalDate(date);
+
+      const daysDiff = getDaysDifference(today, sessionDate);
 
       if (daysDiff >= 0 && daysDiff < 31) {
         // Use daysDiff directly so recent dates (smaller daysDiff) appear on the right
@@ -109,7 +111,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
     // Create datasets in the desired order
     const datasets = orderedRateTypes
-      .filter(rateName => kwhByRateType[rateName] !== undefined)
+      .filter((rateName) => !!kwhByRateType[rateName])
       .map<ChargeStatDataset>((rateName) => ({
         label: rateName,
         data: kwhByRateType[rateName].slice().reverse(), // Reverse here so recent dates appear on right
@@ -142,7 +144,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     chargeStats.forEach(({ kwh, rate, rate_override, rate_name: rateName }) => {
       const effectiveRate = rate_override || rate;
       const cost = kwh * effectiveRate;
-      
+
       if (!costByRateType[rateName]) {
         costByRateType[rateName] = 0;
       }
@@ -152,7 +154,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     // Use consistent ordering: Home, DC, Other, Work
     const orderedRateTypes = ['Home', 'DC', 'Other', 'Work'];
     const costTotals = orderedRateTypes
-      .filter(rateName => costByRateType[rateName] !== undefined)
+      .filter((rateName) => !!costByRateType[rateName])
       .map<CostTotal>((rateName) => ({
         name: rateName,
         cost: Math.round((costByRateType[rateName] || 0) * 100) / 100, // Round to 2 decimal places
@@ -165,7 +167,7 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
   private getTotalCost(chargeStats: ChargeStatsDbo[]): number {
     const totalCost = chargeStats.reduce((total, { kwh, rate, rate_override }) => {
       const effectiveRate = rate_override || rate;
-      return total + (kwh * effectiveRate);
+      return total + kwh * effectiveRate;
     }, 0);
 
     return Math.round(totalCost * 100) / 100; // Round to 2 decimal places

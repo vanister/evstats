@@ -16,7 +16,7 @@ export type ChargeAverage = {
 
 export type ChargeStatDataset = {
   label: string;
-  data: number[];
+  data: (number | null)[];
   backgroundColor: string;
 };
 

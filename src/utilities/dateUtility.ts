@@ -1,4 +1,4 @@
-import { format, parse } from 'date-fns';
+import { format, parse, differenceInDays, startOfDay, subDays } from 'date-fns';
 
 /**
  * Gets today's date in ISO8601 format (YYYY-MM-DD).
@@ -11,6 +11,34 @@ export function today(trimDashes = false): string {
   }
 
   return today;
+}
+
+/**
+ * Gets the start of day for a given date, normalizing the time to 00:00:00.
+ */
+export function getStartOfDay(date: Date): Date {
+  return startOfDay(date);
+}
+
+/**
+ * Gets the start of today.
+ */
+export function getStartOfToday(): Date {
+  return startOfDay(new Date());
+}
+
+/**
+ * Calculates the difference in days between two dates.
+ */
+export function getDaysDifference(dateLeft: Date, dateRight: Date): number {
+  return differenceInDays(dateLeft, dateRight);
+}
+
+/**
+ * Gets a date that is a specified number of days before the given date.
+ */
+export function getDateFromDaysAgo(baseDate: Date, daysAgo: number): Date {
+  return subDays(baseDate, daysAgo);
 }
 
 /**
