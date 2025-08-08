@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Chart, ChartConfiguration } from 'chart.js';
 import ChargeSummary from '../ChargeSummary/ChargeSummary';
 import { ChargeStatData } from '../../../../models/chargeStats';
-import { createChartConfig } from '../../chart-config';
+import { createChartConfig } from '../../charge-chart-config';
 
 type ChargeBarChartProps = {
   data: ChargeStatData | null;

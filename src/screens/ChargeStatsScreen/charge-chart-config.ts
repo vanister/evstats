@@ -1,6 +1,6 @@
 import { ChartConfiguration } from 'chart.js';
 import { getDateFromDaysAgo } from './helpers';
-import { CHART_RADIUS, CHART_TYPE } from './constants';
+import { CHART_RADIUS, CHART_TYPE, BAR_THICKNESS } from './constants';
 import { CreateChartConfigOptions } from './charge-stats-types';
 
 export function createChartConfig({
@@ -11,6 +11,7 @@ export function createChartConfig({
   const { labels } = data;
   const datasets = data.datasets.map((ds) => ({
     borderRadius: CHART_RADIUS,
+    barThickness: BAR_THICKNESS,
     ...ds
   }));
 
@@ -61,15 +62,15 @@ export function createChartConfig({
 
 function createDateTickCallback(today: Date) {
   return (value: number, _index: number, _ticks: unknown) => {
-    // Since data is reversed but labels are [0,1,2,...,30], 
+    // Since data is reversed but labels are [0,1,2,...,30],
     // we need to reverse the label value to get the correct date
     const daysAgo = 30 - value;
     const date = getDateFromDaysAgo(today, daysAgo);
-    
+
     // Show month/day format for better readability
-    return date.toLocaleDateString(undefined, { 
-      month: 'numeric', 
-      day: 'numeric' 
+    return date.toLocaleDateString(undefined, {
+      month: 'numeric',
+      day: 'numeric'
     });
   };
 }
@@ -77,7 +78,7 @@ function createDateTickCallback(today: Date) {
 function createTooltipTitleCallback(today: Date) {
   return (tooltipItems: { label: string }[]) => {
     const value = +tooltipItems[0].label;
-    // Since data is reversed but labels are [0,1,2,...,30], 
+    // Since data is reversed but labels are [0,1,2,...,30],
     // we need to reverse the label value to get the correct date
     const daysAgo = 30 - value;
     const date = getDateFromDaysAgo(today, daysAgo);
