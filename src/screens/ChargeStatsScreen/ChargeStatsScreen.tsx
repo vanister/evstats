@@ -1,11 +1,11 @@
 import './ChargeStatsScreen.scss';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { IonButton, IonIcon, IonActionSheet, useIonViewWillEnter } from '@ionic/react';
 import { filter } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
-import VehicleChargeBarChart from './components/VehicleChargeBarChart/VehicleChargeBarChart';
+import ChargeBarChart from './components/ChargeBarChart/ChargeBarChart';
 import CostBarChart from './components/CostBarChart/CostBarChart';
 import EmptyState from '../../components/EmptyState';
 import { ChargeStatData } from '../../models/chargeStats';
@@ -63,14 +63,14 @@ export default function ChargeStatsScreen() {
     loadChartData();
   }, [selectedVehicleFilter]);
 
-  const handleVehicleFilterChange = (value: number) => {
+  const handleVehicleFilterChange = useCallback((value: number) => {
     setSelectedVehicleFilter(value);
     setIsActionSheetOpen(false);
-  };
+  }, []);
 
-  const handleFilterButtonClick = () => {
+  const handleFilterButtonClick = useCallback(() => {
     setIsActionSheetOpen(true);
-  };
+  }, []);
 
   const getVehicleDisplayName = (vehicle: Vehicle) => {
     return vehicle.nickname || `${vehicle.make} ${vehicle.model}`;
@@ -96,7 +96,7 @@ export default function ChargeStatsScreen() {
   };
 
   // Create action sheet buttons
-  const actionSheetButtons = [
+  const actionSheetButtons = useMemo(() => [
     {
       text: 'All Vehicles',
       handler: () => handleVehicleFilterChange(ALL_VEHICLES_ID)
@@ -109,7 +109,7 @@ export default function ChargeStatsScreen() {
       text: 'Cancel',
       role: 'cancel'
     }
-  ];
+  ], [vehicles, handleVehicleFilterChange]);
 
   // Create header filter button
   const filterButton = (
@@ -139,7 +139,7 @@ export default function ChargeStatsScreen() {
       {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
       {chartData && (
         <>
-          <VehicleChargeBarChart data={chartData} title={getChartTitle()} />
+          <ChargeBarChart data={chartData} title={getChartTitle()} />
           <CostBarChart
             costTotals={chartData.costTotals}
             totalCost={chartData.totalCost}

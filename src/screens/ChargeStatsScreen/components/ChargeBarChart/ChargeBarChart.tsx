@@ -4,13 +4,13 @@ import ChargeSummary from '../ChargeSummary/ChargeSummary';
 import { ChargeStatData } from '../../../../models/chargeStats';
 import { createChartConfig } from '../../chart-config';
 
-type VehicleChargeBarChartProps = {
+type ChargeBarChartProps = {
   data: ChargeStatData | null;
   title?: string;
   today?: Date;
 };
 
-export default function VehicleChargeBarChart({ data, title, today: todayProp }: VehicleChargeBarChartProps) {
+export default function ChargeBarChart({ data, title, today: todayProp }: ChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
   const today = useRef(todayProp || new Date());
