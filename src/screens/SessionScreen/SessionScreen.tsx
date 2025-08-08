@@ -107,7 +107,7 @@ export default function SessionScreen() {
   const headerButtons = [
     {
       key: 'filter',
-      slot: 'end',
+      slot: 'start',
       button: (
         <IonButton fill="clear" onClick={handleFilterClick}>
           <IonIcon icon={filter} />

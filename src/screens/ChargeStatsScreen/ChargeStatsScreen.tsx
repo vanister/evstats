@@ -112,7 +112,7 @@ export default function ChargeStatsScreen() {
     {
       key: 'filter',
       button: filterButton,
-      slot: 'end'
+      slot: 'start'
     }
   ];
 
