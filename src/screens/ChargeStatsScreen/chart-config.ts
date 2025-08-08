@@ -26,6 +26,9 @@ export function createChartConfig({
             callback: createDateTickCallback(today),
             maxTicksLimit: 6,
             autoSkip: true
+          },
+          grid: {
+            display: false
           }
         },
         y: {
@@ -34,6 +37,9 @@ export function createChartConfig({
           title: {
             display: true,
             text: 'kWh'
+          },
+          grid: {
+            display: false
           }
         }
       },
