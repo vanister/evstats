@@ -26,6 +26,12 @@ function SessionForm(
   { rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps,
   ref: MutableRefObject<HTMLFormElement>
 ) {
+  // Find the selected rate type to show its rate as placeholder
+  const selectedRateType = rateTypes.find((r) => r.id === session.rateTypeId);
+  const ratePlaceholder = selectedRateType
+    ? `${selectedRateType.amount}/kWh`
+    : 'Select rate type first';
+
   return (
     <form ref={ref}>
       <IonList inset>
@@ -55,8 +61,6 @@ function SessionForm(
             />
           </IonModal>
         </IonItem>
-      </IonList>
-      <IonList inset>
         <IonItem>
           <EvsSelect
             inset
@@ -95,8 +99,9 @@ function SessionForm(
         </IonItem>
         <IonItem>
           <IonInput
-            label="Rate override"
+            label="Rate"
             labelPlacement="fixed"
+            placeholder={ratePlaceholder}
             type="number"
             min={0}
             step="0.01"
@@ -108,7 +113,7 @@ function SessionForm(
         </IonItem>
       </IonList>
       <IonNote color="medium" className="ion-margin-horizontal">
-        Setting a Rate override will replace the preset rate
+        Override the rate if needed
       </IonNote>
     </form>
   );

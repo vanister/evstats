@@ -25,6 +25,7 @@ type EvsPageProps = PropsWithChildrenAndClass<{
   condensedHeader?: boolean;
   hideBack?: boolean;
   headerButtons?: HeaderButton[];
+  searchContent?: ReactNode;
 }>;
 
 function EvsPage(
@@ -48,6 +49,11 @@ function EvsPage(
             </IonButtons>
           ))}
         </IonToolbar>
+        {props.searchContent && (
+          <IonToolbar>
+            {props.searchContent}
+          </IonToolbar>
+        )}
       </IonHeader>
       <IonContent
         className={classNames('evs-page-content', { 'ion-padding': props.padding })}

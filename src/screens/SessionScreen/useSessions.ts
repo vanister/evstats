@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Session } from '../../models/session';
 import { useServices } from '../../providers/ServiceProvider';
 import { useImmerState } from '../../hooks/useImmerState';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 import { updateLastUsed } from '../../redux/thunks/updateLastUsed';
 import { logToDevServer } from '../../logger';
 
@@ -22,12 +22,6 @@ export function useSessions() {
   const dispatch = useAppDispatch();
   const sessionService = useServices('sessionService');
   const [state, setState] = useImmerState<UseSessionState>(INITIAL_STATE);
-  const lastUsedRateTypeId = useAppSelector((s) => s.lastUsed.rateTypeId);
-  const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
-  const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
-
-  // Compute selected vehicle ID: lastUsed takes precedence, then default
-  const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
 
   const loadSessions = useCallback(async (): Promise<void> => {
     setState((d) => {
@@ -120,8 +114,6 @@ export function useSessions() {
 
   return {
     ...state,
-    lastUsedRateTypeId,
-    selectedVehicleId,
     loadSessions,
     addSession,
     getSession,

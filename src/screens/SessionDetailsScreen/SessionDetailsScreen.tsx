@@ -10,14 +10,6 @@ import { useSessions } from '../SessionScreen/useSessions';
 import { useAppSelector } from '../../redux/hooks';
 import SessionForm from '../SessionScreen/components/SessionForm';
 
-// Form initial state - use null for unset values
-const NEW_SESSION: SessionFormState = {
-  date: today(),
-  kWh: null,
-  rateTypeId: null,
-  vehicleId: null
-};
-
 type SessionDetailsParams = {
   id: string;
 };
@@ -26,24 +18,31 @@ type SessionLocationState = {
   isNew?: boolean;
 };
 
+// Form initial state - use null for unset values
+const NEW_SESSION: SessionFormState = {
+  date: today(),
+  kWh: null,
+  rateTypeId: null,
+  vehicleId: null
+};
+
+const NEW_SESSION_ID = 'new';
+
 export default function SessionDetailsScreen() {
   const { id } = useParams<SessionDetailsParams>();
   const location = useLocation<SessionLocationState>();
-
-  // Determine if this is a new session from location state with fallback to URL check
-  const isNew = location.state?.isNew === true || id === '-1';
   const router = useIonRouter();
   const [showAlert] = useIonAlert();
-  const {
-    lastUsedRateTypeId,
-    selectedVehicleId,
-    addSession,
-    getSession,
-    updateSession,
-    operationLoading
-  } = useSessions();
+  const { addSession, getSession, updateSession, operationLoading } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
+  const lastUsedRateTypeId = useAppSelector((s) => s.lastUsed.rateTypeId);
+  const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
+  const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
+  // Compute selected vehicle ID: lastUsed takes precedence, then default
+  const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
+  // Determine if this is a new session from location state with fallback to URL check
+  const isNew = location.state?.isNew === true || id === NEW_SESSION_ID;
 
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
@@ -100,18 +99,15 @@ export default function SessionDetailsScreen() {
     router.goBack();
   };
 
-  // Create header save button
-  const saveButton = (
-    <IonButton fill="clear" onClick={handleSave} disabled={operationLoading}>
-      Save
-    </IonButton>
-  );
-
   const headerButtons = [
     {
       key: 'save',
-      button: saveButton,
-      slot: 'end'
+      slot: 'end',
+      button: (
+        <IonButton fill="clear" onClick={handleSave} disabled={operationLoading}>
+          Save
+        </IonButton>
+      )
     }
   ];
 
