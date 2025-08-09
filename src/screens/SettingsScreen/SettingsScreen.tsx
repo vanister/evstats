@@ -1,4 +1,6 @@
-import { IonText, IonList, IonItem, IonLabel, IonIcon } from '@ionic/react';
+import './SettingsScreen.scss';
+
+import { IonList, IonItem, IonLabel, IonIcon, IonNote, useIonRouter } from '@ionic/react';
 import { 
   downloadOutline, 
   cloudUploadOutline, 
@@ -12,22 +14,18 @@ import {
 import EvsPage from '../../components/EvsPage';
 
 export default function SettingsScreen() {
-  return (
-    <EvsPage title="Settings" hideBack={true}>
-      <div className="settings-content">
-        <div className="ion-padding" style={{ textAlign: 'center', paddingBottom: '16px' }}>
-          <IonText color="medium">
-            <h2>Coming Soon!</h2>
-            <p>We&apos;re working on these exciting features:</p>
-          </IonText>
-        </div>
+  const router = useIonRouter();
 
-        <IonList>
-          <IonText color="primary" style={{ padding: '16px', display: 'block', fontWeight: 'bold' }}>
-            Data & Customization
-          </IonText>
+  const handleRatesClick = () => {
+    router.push('/settings/rates');
+  };
+
+  return (
+    <EvsPage className="settings-screen" title="Settings" hideBack={true}>
+      <div className="settings-content">
+        <IonList inset>
           
-          <IonItem>
+          <IonItem button onClick={handleRatesClick}>
             <IonIcon icon={flashOutline} slot="start" />
             <IonLabel>Update default rates</IonLabel>
           </IonItem>
@@ -56,9 +54,12 @@ export default function SettingsScreen() {
             </IonLabel>
           </IonItem>
 
-          <IonText color="primary" style={{ padding: '16px', display: 'block', fontWeight: 'bold', marginTop: '16px' }}>
-            User Experience
-          </IonText>
+        </IonList>
+        <IonNote color="medium" className="settings-note">
+          Customize your charging rates and manage your data
+        </IonNote>
+
+        <IonList inset>
           
           <IonItem>
             <IonIcon icon={speedometerOutline} slot="start" />
@@ -73,9 +74,12 @@ export default function SettingsScreen() {
             <IonLabel>Default vehicle/rate selection</IonLabel>
           </IonItem>
 
-          <IonText color="primary" style={{ padding: '16px', display: 'block', fontWeight: 'bold', marginTop: '16px' }}>
-            Smart Features
-          </IonText>
+        </IonList>
+        <IonNote color="medium" className="settings-note">
+          Personalize the app experience to your preferences
+        </IonNote>
+
+        <IonList inset>
           
           <IonItem>
             <IonIcon icon={timeOutline} slot="start" />
@@ -101,6 +105,9 @@ export default function SettingsScreen() {
             </IonLabel>
           </IonItem>
         </IonList>
+        <IonNote color="medium" className="settings-note">
+          Advanced features for an enhanced charging experience
+        </IonNote>
       </div>
     </EvsPage>
   );

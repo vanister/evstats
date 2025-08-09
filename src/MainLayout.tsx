@@ -4,6 +4,7 @@ import { Route } from 'react-router';
 import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
 import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
+import DefaultRatesScreen from './screens/DefaultRatesScreen/DefaultRatesScreen';
 import { useAppSelector } from './redux/hooks';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
 import MainRouteRedirect from './MainRouteRedirect';
@@ -18,6 +19,7 @@ export default function MainLayout() {
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
         <Route exact path="/vehicles" component={VehicleScreen} />
         <Route exact path="/settings" component={SettingsScreen} />
+        <Route exact path="/settings/rates" component={DefaultRatesScreen} />
         <Route exact path="/">
           <MainRouteRedirect />
         </Route>

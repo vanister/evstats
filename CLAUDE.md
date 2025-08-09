@@ -226,3 +226,4 @@ Use WebSearch or WebFetch tools to verify API usage before implementing features
 ## Type Safety Guidelines
 
 - Do not use `any` for types, always be explicit when typing
+- No inline styles unless they are dynamic or absolutely required

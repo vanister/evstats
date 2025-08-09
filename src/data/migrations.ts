@@ -73,5 +73,21 @@ export const migrations: capSQLiteVersionUpgrade[] = [
       SELECT 'DC', 0.32, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types);
       `
     ]
+  },
+  {
+    // Add color column to rate_types
+    toVersion: 2,
+    statements: [
+      `ALTER TABLE rate_types ADD COLUMN color TEXT DEFAULT '#004D80';`,
+      `
+      UPDATE rate_types SET color = CASE 
+        WHEN name = 'Home' THEN '#004D80'
+        WHEN name = 'Work' THEN '#F27200' 
+        WHEN name = 'Other' THEN '#929292'
+        WHEN name = 'DC' THEN '#B51700'
+        ELSE '#004D80'
+      END;
+      `
+    ]
   }
 ];

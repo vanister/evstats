@@ -26,7 +26,7 @@ import AlertableError from './components/AlertableError';
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
 
 const databaseManager = getInstance();
-const currentDbVersion = 1;
+const currentDbVersion = 2;
 const container = document.getElementById('root');
 const root = createRoot(container!);
 

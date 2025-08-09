@@ -6,6 +6,7 @@ import { DbContext } from '../DbContext';
 export interface RateRepository {
   get(id: number): Promise<RateTypeDbo>;
   list(): Promise<RateTypeDbo[]>;
+  update(rate: RateTypeDbo): Promise<void>;
 }
 
 export class EvsRateRepository extends BaseRepository<RateTypeDbo> implements RateRepository {
@@ -24,5 +25,15 @@ export class EvsRateRepository extends BaseRepository<RateTypeDbo> implements Ra
     const values = await this.context.query<RateTypeDbo>(RateSql.List);
 
     return values ?? [];
+  }
+
+  async update(rate: RateTypeDbo): Promise<void> {
+    await this.context.run(RateSql.Update, [
+      rate.amount,
+      rate.name,
+      rate.unit,
+      rate.color,
+      rate.id
+    ]);
   }
 }

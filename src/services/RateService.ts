@@ -6,6 +6,7 @@ import { BaseService } from './BaseService';
 export interface RateService {
   list(cache?: boolean): Promise<RateType[]>;
   get(id: number): Promise<RateType>;
+  update(rate: RateType): Promise<void>;
 }
 
 export class EvsRateService extends BaseService implements RateService {
@@ -25,5 +26,9 @@ export class EvsRateService extends BaseService implements RateService {
     }
 
     return rate;
+  }
+
+  async update(rate: RateType): Promise<void> {
+    return this.rateRepository.update(rate);
   }
 }
