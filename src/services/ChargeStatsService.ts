@@ -10,7 +10,6 @@ import {
 } from '../models/chargeStats';
 import { RateTypeDbo } from '../models/rateType';
 import { BaseService } from './BaseService';
-import { getColor } from '../screens/ChargeStatsScreen/helpers';
 import {
   parseLocalDate,
   getStartOfDay,
@@ -37,8 +36,8 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     const rateTypes = await this.rateRepository.list();
     const chargeStats = await this.chargeStatsRepository.getLast31Days(vehicleId);
     const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes, fromDate);
-    const averages: ChargeAverage[] = this.getAverages(datasets);
-    const costTotals: CostTotal[] = this.getCostTotals(chargeStats);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
     const totalCost: number = this.getTotalCost(chargeStats);
 
     const data: ChargeStatData = {
@@ -62,8 +61,8 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     const vehicleIds = Array.from(new Set(chargeStats.map((stat) => stat.vehicle_id)));
 
     const datasets: ChargeStatDataset[] = this.createDataset(chargeStats, rateTypes, fromDate);
-    const averages: ChargeAverage[] = this.getAverages(datasets);
-    const costTotals: CostTotal[] = this.getCostTotals(chargeStats);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
     const totalCost: number = this.getTotalCost(chargeStats);
 
     const data: ChargeStatData = {
@@ -79,13 +78,22 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     return data;
   }
 
+  private getRateTypeColor(rateName: string, rateTypes: RateTypeDbo[]): string {
+    const rateType = rateTypes.find((rt) => rt.name === rateName);
+
+    if (rateType?.color) {
+      return rateType.color;
+    }
+
+    return '#929292';
+  }
+
   private createDataset(
     chargeStats: ChargeStatsDbo[],
     rateTypes: RateTypeDbo[],
     fromDate?: Date
   ): ChargeStatDataset[] {
-    // Define consistent ordering for rate types
-    const orderedRateTypes = ['Home', 'DC', 'Other', 'Work'];
+    const rateTypeNames = rateTypes.map((rt) => rt.name);
 
     const kwhByRateType: Record<string, (number | null)[]> = rateTypes.reduce(
       (acc, { name }) => ({
@@ -104,24 +112,22 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       const daysDiff = getDaysDifference(today, sessionDate);
 
       if (daysDiff >= 0 && daysDiff < 31) {
-        // Use daysDiff directly so recent dates (smaller daysDiff) appear on the right
         kwhByRateType[rateName][daysDiff] = kwh;
       }
     });
 
-    // Create datasets in the desired order
-    const datasets = orderedRateTypes
+    const datasets = rateTypeNames
       .filter((rateName) => !!kwhByRateType[rateName])
       .map<ChargeStatDataset>((rateName) => ({
         label: rateName,
-        data: kwhByRateType[rateName].slice().reverse(), // Reverse here so recent dates appear on right
-        backgroundColor: getColor(rateName)
+        data: kwhByRateType[rateName].slice().reverse(),
+        backgroundColor: this.getRateTypeColor(rateName, rateTypes)
       }));
 
     return datasets;
   }
 
-  private getAverages(datasets: ChargeStatDataset[]): ChargeAverage[] {
+  private getAverages(datasets: ChargeStatDataset[], rateTypes: RateTypeDbo[]): ChargeAverage[] {
     const sum = (prev: number, curr: number) => prev + curr;
     const total = datasets.flatMap((ds) => ds.data).reduce(sum, 0);
 
@@ -131,14 +137,14 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       return {
         name: label,
         percent: Math.round(percent),
-        color: getColor(label)
+        color: this.getRateTypeColor(label, rateTypes)
       };
     });
 
     return averages;
   }
 
-  private getCostTotals(chargeStats: ChargeStatsDbo[]): CostTotal[] {
+  private getCostTotals(chargeStats: ChargeStatsDbo[], rateTypes: RateTypeDbo[]): CostTotal[] {
     const costByRateType: Record<string, number> = {};
 
     chargeStats.forEach(({ kwh, rate, rate_override, rate_name: rateName }) => {
@@ -151,14 +157,13 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       costByRateType[rateName] += cost;
     });
 
-    // Use consistent ordering: Home, DC, Other, Work
-    const orderedRateTypes = ['Home', 'DC', 'Other', 'Work'];
-    const costTotals = orderedRateTypes
+    const rateTypeNames = rateTypes.map((rt) => rt.name);
+    const costTotals = rateTypeNames
       .filter((rateName) => !!costByRateType[rateName])
       .map<CostTotal>((rateName) => ({
         name: rateName,
-        cost: Math.round((costByRateType[rateName] || 0) * 100) / 100, // Round to 2 decimal places
-        color: getColor(rateName)
+        cost: Math.round((costByRateType[rateName] || 0) * 100) / 100,
+        color: this.getRateTypeColor(rateName, rateTypes)
       }));
 
     return costTotals;
@@ -170,6 +175,6 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       return total + kwh * effectiveRate;
     }, 0);
 
-    return Math.round(totalCost * 100) / 100; // Round to 2 decimal places
+    return Math.round(totalCost * 100) / 100;
   }
 }

@@ -7,7 +7,6 @@ import {
   COST_LABEL_COLOR,
   COST_LABEL_PADDING
 } from './constants';
-import { getColor } from './helpers';
 
 export type CreateCostChartConfigOptions = {
   costTotals: CostTotal[];
@@ -20,21 +19,6 @@ export function createCostChartConfig({
   totalCost,
   title
 }: CreateCostChartConfigOptions): ChartConfiguration {
-  // Always show all rate categories, even if no data
-  const allRateTypes = ['Home', 'DC', 'Other', 'Work'];
-
-  // Create a complete cost array with all rate types
-  const completeCostTotals = allRateTypes.map((rateName) => {
-    const existingCost = costTotals?.find((ct) => ct.name === rateName);
-    return (
-      existingCost || {
-        name: rateName,
-        cost: 0,
-        color: getColor(rateName)
-      }
-    );
-  });
-
   return {
     type: 'bar',
     options: {
@@ -105,12 +89,12 @@ export function createCostChartConfig({
       }
     ],
     data: {
-      labels: completeCostTotals.map((ct) => ct.name),
+      labels: costTotals.map((ct) => ct.name),
       datasets: [
         {
           label: 'Cost',
-          data: completeCostTotals.map((ct) => ct.cost),
-          backgroundColor: completeCostTotals.map((ct) => ct.color),
+          data: costTotals.map((ct) => ct.cost),
+          backgroundColor: costTotals.map((ct) => ct.color),
           borderRadius: CHART_RADIUS,
           borderSkipped: false,
           barThickness: BAR_THICKNESS

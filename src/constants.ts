@@ -16,12 +16,5 @@ export enum PreferenceKeys {
   DefaultVehicleId = 'EVS_DEFAULT_VEHICLE_ID'
 }
 
-export enum ChargeColors {
-  Home = '#004D80',
-  Work = '#F27200',
-  Other = '#929292',
-  DC = '#B51700'
-}
-
 /** Vehicle ID constant representing all vehicles in filtering contexts */
 export const ALL_VEHICLES_ID = -1;

@@ -1,6 +1,6 @@
 import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { useRef } from 'react';
-import { ModalRoles, ChargeColors } from '../../../../constants';
+import { ModalRoles } from '../../../../constants';
 import { RateType } from '../../../../models/rateType';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import RateForm from './RateForm';
@@ -29,7 +29,7 @@ const NEW_RATE: RateType = {
   name: '',
   amount: 0,
   unit: 'kWh',
-  color: ChargeColors.Home
+  color: '#004D80' // Default to Home color
 };
 
 export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: RateModalProps) {
@@ -69,7 +69,9 @@ export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: Rat
     // Validate hex color format
     const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
     if (!rate.color || !hexColorRegex.test(rate.color)) {
-      await showAlert('Color must be a valid hex code (e.g., #004D80)', [{ text: 'OK', role: 'cancel' }]);
+      await showAlert('Color must be a valid hex code (e.g., #004D80)', [
+        { text: 'OK', role: 'cancel' }
+      ]);
       return;
     }
 

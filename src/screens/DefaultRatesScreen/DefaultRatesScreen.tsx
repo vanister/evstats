@@ -1,4 +1,11 @@
-import { useIonViewWillEnter, IonList, IonItem, IonLabel, IonNote, useIonAlert } from '@ionic/react';
+import {
+  useIonViewWillEnter,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonNote,
+  useIonAlert
+} from '@ionic/react';
 import { useState, useRef } from 'react';
 import EvsPage from '../../components/EvsPage';
 import { RateType } from '../../models/rateType';
@@ -7,7 +14,6 @@ import { useServices } from '../../providers/ServiceProvider';
 import RateModal from './components/RateModal/RateModal';
 import { useAppDispatch } from '../../redux/hooks';
 import { setRateTypes } from '../../redux/rateTypeSlice';
-import { ChargeColors } from '../../constants';
 
 export default function DefaultRatesScreen() {
   const pageRef = useRef<HTMLElement>(null);
@@ -22,7 +28,6 @@ export default function DefaultRatesScreen() {
     // Rate types are loaded globally, no need to reload here
   });
 
-
   const handleEditRateClick = (rateType: RateType) => {
     setShowModal(true);
     setEditingRate(rateType);
@@ -35,12 +40,10 @@ export default function DefaultRatesScreen() {
       // Reload rate types to refresh the list
       const updatedRates = await rateService.list();
       dispatch(setRateTypes(updatedRates));
-      
+
       return true;
     } catch (error) {
-      await showAlert(`Failed to update rate: ${error.message}`, [
-        { text: 'OK', role: 'cancel' }
-      ]);
+      await showAlert(`Failed to update rate: ${error.message}`, [{ text: 'OK', role: 'cancel' }]);
       return false;
     }
   };
@@ -50,27 +53,27 @@ export default function DefaultRatesScreen() {
     setEditingRate(null);
   };
 
-
   return (
-    <EvsPage
-      ref={pageRef}
-      className="default-rates-screen"
-      title="Default Rates"
-    >
+    <EvsPage ref={pageRef} className="default-rates-screen" title="Default Rates">
       <IonList inset>
         {rateTypes.map((rateType) => (
           <IonItem key={rateType.id} button onClick={() => handleEditRateClick(rateType)}>
-            <div slot="start" style={{
-              width: '24px',
-              height: '24px',
-              borderRadius: '50%',
-              backgroundColor: rateType.color || ChargeColors.Home,
-              border: '2px solid #ccc'
-            }} />
+            <div
+              slot="start"
+              style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                backgroundColor: rateType.color || '#004D80', // Default to Home color
+                border: '2px solid #ccc'
+              }}
+            />
             <IonLabel>
               <h2>{rateType.name}</h2>
             </IonLabel>
-            <IonNote slot="end">{rateType.amount.toFixed(2)}/{rateType.unit}</IonNote>
+            <IonNote slot="end">
+              {rateType.amount.toFixed(2)}/{rateType.unit}
+            </IonNote>
           </IonItem>
         ))}
       </IonList>
