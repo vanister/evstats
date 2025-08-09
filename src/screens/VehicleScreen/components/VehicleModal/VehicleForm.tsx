@@ -1,4 +1,4 @@
-import { IonInput, IonItem, IonList, IonListHeader, IonNote } from '@ionic/react';
+import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
 import { forwardRef, MutableRefObject } from 'react';
 import { Vehicle } from '../../../../models/vehicle';
 
@@ -14,7 +14,6 @@ function VehicleForm(
   return (
     <form ref={ref}>
       <IonList inset>
-        <IonListHeader>Details</IonListHeader>
         <IonItem>
           <IonInput
             type="text"
@@ -83,8 +82,11 @@ function VehicleForm(
           />
         </IonItem>
       </IonList>
+      <IonNote color="medium" className="ion-margin-horizontal">
+        Vehicle identification and basic information
+      </IonNote>
+
       <IonList inset>
-        <IonListHeader>Features</IonListHeader>
         <IonItem>
           <IonInput
             type="number"
