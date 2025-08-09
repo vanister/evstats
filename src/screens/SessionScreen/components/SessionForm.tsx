@@ -21,7 +21,12 @@ type SessionFormProps = {
   onSessionFieldChange: (field: keyof SessionFormState, value: string | number | undefined) => void;
 };
 
-export default function SessionForm({ rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps) {
+export default function SessionForm({
+  rateTypes,
+  session,
+  vehicles,
+  onSessionFieldChange
+}: SessionFormProps) {
   // Find the selected rate type to show its rate as placeholder
   const selectedRateType = rateTypes.find((r) => r.id === session.rateTypeId);
   const ratePlaceholder = selectedRateType

@@ -78,7 +78,10 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
     }
   };
 
-  const handleSessionFieldValueChange = (field: keyof SessionFormState, value: string | number | undefined) => {
+  const handleSessionFieldValueChange = (
+    field: keyof SessionFormState,
+    value: string | number | undefined
+  ) => {
     setSession((s) => {
       s[field as string] = value;
     });

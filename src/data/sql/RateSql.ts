@@ -8,5 +8,4 @@ export class RateSql {
     SET amount = ?, name = ?, unit = ?, color = ?
     WHERE id = ?;
   `;
-
 }

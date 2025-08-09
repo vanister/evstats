@@ -62,16 +62,16 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
   const handleSaveClick = async () => {
     // Sanitize the vehicle data first
     const sanitizedVehicle = sanitizeVehicle(vehicle);
-    
+
     // Validate the sanitized data
     const validationError = validateVehicle(sanitizedVehicle);
-    
+
     setFormState((f) => {
       f.isValid = validationError === null;
       f.vehicle = sanitizedVehicle;
     });
 
-    if (validationError) {      
+    if (validationError) {
       await showAlert({
         header: 'Validation Error',
         message: validationError,
