@@ -1,0 +1,10 @@
+/* Global component overrides and fixes */
+
+/* Fix IonNote text wrapping alignment when using ion-margin-horizontal */
+/* This styles notes that appear after inset lists to match list spacing */
+ion-note.ion-margin-horizontal {
+  margin: 8px 16px 24px 16px; /* Closer to list above, more separation below */
+  display: block;
+  line-height: 1.4;
+  font-size: 14px; /* Improved readability */
+}

@@ -55,7 +55,7 @@ export default function SettingsScreen() {
           </IonItem>
 
         </IonList>
-        <IonNote color="medium" className="settings-note">
+        <IonNote color="medium" className="ion-margin-horizontal">
           Customize your charging rates and manage your data
         </IonNote>
 
@@ -75,7 +75,7 @@ export default function SettingsScreen() {
           </IonItem>
 
         </IonList>
-        <IonNote color="medium" className="settings-note">
+        <IonNote color="medium" className="ion-margin-horizontal">
           Personalize the app experience to your preferences
         </IonNote>
 
@@ -105,7 +105,7 @@ export default function SettingsScreen() {
             </IonLabel>
           </IonItem>
         </IonList>
-        <IonNote color="medium" className="settings-note">
+        <IonNote color="medium" className="ion-margin-horizontal">
           Advanced features for an enhanced charging experience
         </IonNote>
       </div>

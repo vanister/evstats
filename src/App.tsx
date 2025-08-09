@@ -28,6 +28,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.scss';
 
+/* Component overrides and fixes */
+import './theme/overrides.scss';
+
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { AppInitializer } from './AppInitializer';
