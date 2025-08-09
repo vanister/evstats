@@ -26,7 +26,7 @@ export default function SettingsScreen() {
         <IonList inset>
           <IonItem button onClick={handleRatesClick}>
             <IonIcon icon={flashOutline} slot="start" />
-            <IonLabel>Update default rates</IonLabel>
+            <IonLabel>Update rates</IonLabel>
           </IonItem>
 
           <IonItem disabled>

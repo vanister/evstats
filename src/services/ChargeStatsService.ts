@@ -158,13 +158,11 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     });
 
     const rateTypeNames = rateTypes.map((rt) => rt.name);
-    const costTotals = rateTypeNames
-      .filter((rateName) => !!costByRateType[rateName])
-      .map<CostTotal>((rateName) => ({
-        name: rateName,
-        cost: Math.round((costByRateType[rateName] || 0) * 100) / 100,
-        color: this.getRateTypeColor(rateName, rateTypes)
-      }));
+    const costTotals = rateTypeNames.map<CostTotal>((rateName) => ({
+      name: rateName,
+      cost: Math.round((costByRateType[rateName] || 0) * 100) / 100,
+      color: this.getRateTypeColor(rateName, rateTypes)
+    }));
 
     return costTotals;
   }
