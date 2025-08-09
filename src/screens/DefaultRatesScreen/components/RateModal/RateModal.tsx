@@ -66,6 +66,13 @@ export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: Rat
       return;
     }
 
+    // Validate hex color format
+    const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
+    if (!rate.color || !hexColorRegex.test(rate.color)) {
+      await showAlert('Color must be a valid hex code (e.g., #004D80)', [{ text: 'OK', role: 'cancel' }]);
+      return;
+    }
+
     const successful = onSave ? await onSave(rate) : true;
 
     if (successful) {

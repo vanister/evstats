@@ -1,31 +1,28 @@
-import { IonInput, IonItem, IonList, IonListHeader, IonNote, IonButton, IonIcon } from '@ionic/react';
-import { colorPalette } from 'ionicons/icons';
-import { forwardRef, MutableRefObject, useState } from 'react';
+import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
+import { forwardRef, MutableRefObject } from 'react';
 import { RateType } from '../../../../models/rateType';
-import { ChargeColors } from '../../../../constants';
 
 type RateFormProps = {
   rate: RateType;
   onFieldValueChange: (field: keyof RateType, value: string | number) => void;
 };
 
-const AVAILABLE_COLORS = Object.values(ChargeColors);
-
 function RateForm(
   { rate, onFieldValueChange }: RateFormProps,
   ref: MutableRefObject<HTMLFormElement>
 ) {
-  const [showColorPicker, setShowColorPicker] = useState(false);
-
-  const handleColorSelect = (color: string) => {
-    onFieldValueChange('color', color);
-    setShowColorPicker(false);
+  const handleColorChange = (value: string) => {
+    // Ensure value starts with # and is valid hex format
+    let colorValue = value;
+    if (!colorValue.startsWith('#') && colorValue.length > 0) {
+      colorValue = '#' + colorValue;
+    }
+    onFieldValueChange('color', colorValue);
   };
 
   return (
     <form ref={ref}>
       <IonList inset>
-        <IonListHeader>Rate Details</IonListHeader>
         <IonItem>
           <IonInput
             type="text"
@@ -51,48 +48,34 @@ function RateForm(
             onIonInput={(e) => onFieldValueChange('amount', e.detail.value ? +e.detail.value : 0)}
           />
         </IonItem>
-        <IonItem button onClick={() => setShowColorPicker(!showColorPicker)}>
-          <div slot="start" style={{
+      </IonList>
+      <IonNote color="medium" className="ion-margin-horizontal">
+        Amount should be in dollars per kWh (e.g., 0.13 for 13 cents)
+      </IonNote>
+
+      <IonList inset>
+        <IonItem>
+          <IonInput
+            type="text"
+            label="Color"
+            labelPlacement="fixed"
+            placeholder="#004D80"
+            maxlength={7}
+            value={rate.color}
+            onIonInput={(e) => handleColorChange(e.detail.value)}
+          />
+          <div slot="end" style={{
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: rate.color || ChargeColors.Home,
-            border: '2px solid #ccc'
+            backgroundColor: rate.color || '#004D80',
+            border: '2px solid #ccc',
+            marginLeft: '8px'
           }} />
-          <IonNote>Color</IonNote>
-          <IonIcon icon={colorPalette} slot="end" />
         </IonItem>
       </IonList>
-
-      {showColorPicker && (
-        <IonList inset>
-          <IonListHeader>Choose Color</IonListHeader>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(4, 1fr)', 
-            gap: '12px', 
-            padding: '16px' 
-          }}>
-            {AVAILABLE_COLORS.map((color) => (
-              <IonButton
-                key={color}
-                fill="clear"
-                style={{
-                  '--border-radius': '50%',
-                  width: '40px',
-                  height: '40px',
-                  '--background': color,
-                  border: rate.color === color ? '3px solid #000' : '1px solid #ccc'
-                }}
-                onClick={() => handleColorSelect(color)}
-              />
-            ))}
-          </div>
-        </IonList>
-      )}
-
       <IonNote color="medium" className="ion-margin-horizontal">
-        Amount should be in dollars per kWh (e.g., 0.13 for 13 cents)
+        Color should be in hex format (e.g., #004D80, #F27200)
       </IonNote>
     </form>
   );
