@@ -36,7 +36,6 @@ const NEW_SESSION: SessionFormState = {
 
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
-  const form = useRef<HTMLFormElement>(null);
   const [showAlert] = useIonAlert();
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
@@ -101,7 +100,6 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
       ></ModalHeader>
       <IonContent color="light">
         <SessionForm
-          ref={form}
           session={session}
           vehicles={props.vehicles}
           rateTypes={props.rates}

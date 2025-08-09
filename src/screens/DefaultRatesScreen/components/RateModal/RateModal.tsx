@@ -42,7 +42,6 @@ export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: Rat
     }
   });
   const modal = useRef<HTMLIonModalElement>(null);
-  const form = useRef<HTMLFormElement>(null);
   const [showAlert] = useIonAlert();
   const { rate } = formState;
 
@@ -109,7 +108,7 @@ export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: Rat
         onPrimaryClick={handleSaveClick}
       />
       <IonContent color="light">
-        <RateForm ref={form} rate={rate} onFieldValueChange={handleRateFieldChange} />
+        <RateForm rate={rate} isNew={isNew} onFieldValueChange={handleRateFieldChange} />
       </IonContent>
     </IonModal>
   );

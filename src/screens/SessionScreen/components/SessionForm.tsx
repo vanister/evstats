@@ -1,4 +1,3 @@
-import { forwardRef, MutableRefObject } from 'react';
 import {
   IonInput,
   IonItem,
@@ -22,10 +21,7 @@ type SessionFormProps = {
   onSessionFieldChange: (field: keyof SessionFormState, value: string | number | undefined) => void;
 };
 
-function SessionForm(
-  { rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps,
-  ref: MutableRefObject<HTMLFormElement>
-) {
+export default function SessionForm({ rateTypes, session, vehicles, onSessionFieldChange }: SessionFormProps) {
   // Find the selected rate type to show its rate as placeholder
   const selectedRateType = rateTypes.find((r) => r.id === session.rateTypeId);
   const ratePlaceholder = selectedRateType
@@ -33,7 +29,7 @@ function SessionForm(
     : 'Select rate type first';
 
   return (
-    <form ref={ref}>
+    <form>
       <IonList inset>
         <IonItem>
           <IonInput
@@ -118,5 +114,3 @@ function SessionForm(
     </form>
   );
 }
-
-export default forwardRef(SessionForm);

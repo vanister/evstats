@@ -48,7 +48,6 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
     }
   });
   const modal = useRef<HTMLIonModalElement>(null);
-  const form = useRef<HTMLFormElement>(null);
   const [showAlert] = useIonAlert();
   const { vehicle } = formState;
 
@@ -115,7 +114,7 @@ export default function VehicleModal({ isNew, onDidDismiss, onSave, ...props }: 
         onPrimaryClick={handleSaveClick}
       />
       <IonContent color="light">
-        <VehicleForm ref={form} vehicle={vehicle} onFieldValueChange={handleVehicleFieldChange} />
+        <VehicleForm vehicle={vehicle} onFieldValueChange={handleVehicleFieldChange} />
       </IonContent>
     </IonModal>
   );

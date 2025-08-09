@@ -1,5 +1,4 @@
 import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
-import { forwardRef, MutableRefObject } from 'react';
 import { Vehicle } from '../../../../models/vehicle';
 
 type VehicleFormProps = {
@@ -7,12 +6,9 @@ type VehicleFormProps = {
   onFieldValueChange: (field: keyof Vehicle, value: string | number) => void;
 };
 
-function VehicleForm(
-  { vehicle, onFieldValueChange }: VehicleFormProps,
-  ref: MutableRefObject<HTMLFormElement>
-) {
+export default function VehicleForm({ vehicle, onFieldValueChange }: VehicleFormProps) {
   return (
-    <form ref={ref}>
+    <form>
       <IonList inset>
         <IonItem>
           <IonInput
@@ -116,5 +112,3 @@ function VehicleForm(
     </form>
   );
 }
-
-export default forwardRef(VehicleForm);

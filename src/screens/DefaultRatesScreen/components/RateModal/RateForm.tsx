@@ -1,18 +1,14 @@
 import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
-import { forwardRef, MutableRefObject } from 'react';
 import { RateType } from '../../../../models/rateType';
 
 type RateFormProps = {
   rate: RateType;
+  isNew?: boolean;
   onFieldValueChange: (field: keyof RateType, value: string | number) => void;
 };
 
-function RateForm(
-  { rate, onFieldValueChange }: RateFormProps,
-  ref: MutableRefObject<HTMLFormElement>
-) {
+export default function RateForm({ rate, isNew, onFieldValueChange }: RateFormProps) {
   const handleColorChange = (value: string) => {
-    // Ensure value starts with # and is valid hex format
     let colorValue = value;
     if (!colorValue.startsWith('#') && colorValue.length > 0) {
       colorValue = '#' + colorValue;
@@ -20,8 +16,15 @@ function RateForm(
     onFieldValueChange('color', colorValue);
   };
 
+  const getColorPlaceholder = () => {
+    if (isNew) {
+      return '#004D80';
+    }
+    return rate.color || '#004D80';
+  };
+
   return (
-    <form ref={ref}>
+    <form>
       <IonList inset>
         <IonItem>
           <IonInput
@@ -59,19 +62,22 @@ function RateForm(
             type="text"
             label="Color"
             labelPlacement="fixed"
-            placeholder="#004D80"
+            placeholder={getColorPlaceholder()}
             maxlength={7}
             value={rate.color}
             onIonInput={(e) => handleColorChange(e.detail.value)}
           />
-          <div slot="end" style={{
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            backgroundColor: rate.color || '#004D80',
-            border: '2px solid #ccc',
-            marginLeft: '8px'
-          }} />
+          <div
+            slot="end"
+            style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              backgroundColor: rate.color || '#004D80',
+              border: '2px solid #ccc',
+              marginLeft: '8px'
+            }}
+          />
         </IonItem>
       </IonList>
       <IonNote color="medium" className="ion-margin-horizontal">
@@ -80,5 +86,3 @@ function RateForm(
     </form>
   );
 }
-
-export default forwardRef(RateForm);
