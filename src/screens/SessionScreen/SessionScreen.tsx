@@ -1,27 +1,40 @@
 import {
   IonIcon,
   IonButton,
-  useIonRouter,
   useIonViewWillEnter,
   IonActionSheet,
   IonChip,
   IonLabel,
-  IonSearchbar
+  IonSearchbar,
+  useIonAlert
 } from '@ionic/react';
 import { add, filter, close } from 'ionicons/icons';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import EvsPage from '../../components/EvsPage';
-import { SessionLog } from '../../models/session';
+import { SessionLog, Session } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
+import SessionModal from './components/SessionModal/SessionModal';
 import { useSessions } from './useSessions';
 import { toSessionLogItem } from './helpers';
 import { useAppSelector } from '../../redux/hooks';
+import { SessionFormState } from './session-types';
+import { validateSession, isValidSession } from './validator';
 
 export default function SessionScreen() {
-  const router = useIonRouter();
-  const { sessions, loadSessions } = useSessions();
+  const pageRef = useRef<HTMLElement>(null);
+  const [showAlert] = useIonAlert();
+  const { sessions, loadSessions, addSession, updateSession, getSession } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
+  const lastUsedRateTypeId = useAppSelector((s) => s.lastUsed.rateTypeId);
+  const lastUsedVehicleId = useAppSelector((s) => s.lastUsed.vehicleId);
+  const defaultVehicleId = useAppSelector((s) => s.defaultVehicle.vehicleId);
+  const selectedVehicleId = lastUsedVehicleId || defaultVehicleId;
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [isNew, setIsNew] = useState(true);
+  const [editingSession, setEditingSession] = useState<Session>(null);
 
   // Filter state
   const [selectedVehicleFilter, setSelectedVehicleFilter] = useState<number | null>(null);
@@ -63,14 +76,46 @@ export default function SessionScreen() {
   }, [sessionLogs, selectedVehicleFilter, searchTerm]);
 
   const handleAddSessionClick = () => {
-    // Explicitly pass state to indicate this is a new session
-    router.push('/sessions/new', 'forward', 'push');
-    // Alternative approach using history directly if state is needed
-    // history.push('/sessions/new', { isNew: true });
+    setShowModal(true);
+    setIsNew(true);
+    setEditingSession(null);
   };
 
-  const handleSessionSelection = (sessionLog: SessionLog) => {
-    router.push(`/sessions/${sessionLog.id}`);
+  const handleSessionSelection = async (sessionLog: SessionLog) => {
+    const session = await getSession(sessionLog.id);
+    if (session) {
+      setShowModal(true);
+      setIsNew(false);
+      setEditingSession(session);
+    }
+  };
+
+  const handleSaveClick = async (sessionForm: SessionFormState): Promise<boolean> => {
+    const validationError = validateSession(sessionForm);
+
+    if (validationError) {
+      await showAlert(validationError, [{ text: 'OK', role: 'cancel' }]);
+      return false;
+    }
+
+    if (!isValidSession(sessionForm)) {
+      await showAlert('Invalid session data', [{ text: 'OK', role: 'cancel' }]);
+      return false;
+    }
+
+    const errorMessage = isNew ? await addSession(sessionForm) : await updateSession(sessionForm);
+
+    if (errorMessage) {
+      await showAlert(errorMessage, [{ text: 'OK', role: 'cancel' }]);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleModalDismiss = () => {
+    setShowModal(false);
+    setEditingSession(null);
   };
 
   const handleFilterClick = () => {
@@ -158,6 +203,7 @@ export default function SessionScreen() {
 
   return (
     <EvsPage
+      ref={pageRef}
       className="sessions"
       title="Sessions"
       fixedSlotPlacement="before"
@@ -194,6 +240,20 @@ export default function SessionScreen() {
         header="Filter by Vehicle"
         buttons={filterButtons}
       />
+
+      {showModal && (
+        <SessionModal
+          isNew={isNew}
+          presentingElement={pageRef.current}
+          session={editingSession}
+          vehicles={vehicles}
+          rates={rateTypes}
+          selectedVehicleId={selectedVehicleId}
+          selectedRateTypeId={lastUsedRateTypeId}
+          onSave={handleSaveClick}
+          onDidDismiss={handleModalDismiss}
+        />
+      )}
     </EvsPage>
   );
 }

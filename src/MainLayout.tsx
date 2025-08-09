@@ -3,7 +3,6 @@ import { car, flash, settings, statsChart } from 'ionicons/icons';
 import { Route } from 'react-router';
 import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
-import SessionDetailsScreen from './screens/SessionDetailsScreen/SessionDetailsScreen';
 import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 import { useAppSelector } from './redux/hooks';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
@@ -16,7 +15,6 @@ export default function MainLayout() {
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/sessions" component={SessionScreen} />
-        <Route exact path="/sessions/:id" component={SessionDetailsScreen} />
         <Route exact path="/chargestats" component={ChargeStatsScreen} />
         <Route exact path="/vehicles" component={VehicleScreen} />
         <Route exact path="/settings" component={SettingsScreen} />

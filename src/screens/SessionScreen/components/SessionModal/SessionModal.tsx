@@ -1,4 +1,4 @@
-import { IonContent, IonModal } from '@ionic/react';
+import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { useRef } from 'react';
 import { ModalRoles } from '../../../../constants';
 import { useImmerState } from '../../../../hooks/useImmerState';
@@ -9,6 +9,7 @@ import ModalHeader from '../../../../components/ModalHeader';
 import { Vehicle } from '../../../../models/vehicle';
 import { RateType } from '../../../../models/rateType';
 import { SessionFormState } from '../../session-types';
+import { validateSession, isValidSession } from '../../validator';
 
 type SessionModalProps = {
   allowCloseGesture?: boolean;
@@ -36,6 +37,7 @@ const NEW_SESSION: SessionFormState = {
 export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: SessionModalProps) {
   const modal = useRef<HTMLIonModalElement>(null);
   const form = useRef<HTMLFormElement>(null);
+  const [showAlert] = useIonAlert();
   const [session, setSession] = useImmerState<SessionFormState>({
     ...NEW_SESSION,
     rateTypeId: props.selectedRateTypeId ?? null,
@@ -57,9 +59,15 @@ export default function SessionModal({ isNew, onSave, onDidDismiss, ...props }: 
   };
 
   const handleSaveClick = async () => {
-    const isValid = form.current.reportValidity();
+    const validationError = validateSession(session);
 
-    if (!isValid) {
+    if (validationError) {
+      await showAlert(validationError, [{ text: 'OK', role: 'cancel' }]);
+      return;
+    }
+
+    if (!isValidSession(session)) {
+      await showAlert('Invalid session data', [{ text: 'OK', role: 'cancel' }]);
       return;
     }
 
