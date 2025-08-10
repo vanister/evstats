@@ -8,7 +8,6 @@ import ModalHeader from '../../../../components/ModalHeader';
 
 type RateModalProps = {
   allowSwipeToClose?: boolean;
-  isNew?: boolean;
   presentingElement?: HTMLElement;
   /** The editing rate. */
   rate?: RateType;
@@ -32,7 +31,7 @@ const NEW_RATE: RateType = {
   color: BuiltInRateColors.Other // Default to Home color
 };
 
-export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: RateModalProps) {
+export default function RateModal({ onDidDismiss, onSave, ...props }: RateModalProps) {
   const [formState, setFormState] = useImmerState<RateFormState>({
     isValid: true,
     isDirty: false,
@@ -103,12 +102,12 @@ export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: Rat
       canDismiss={modalCanDismiss}
     >
       <ModalHeader
-        title={isNew ? 'New Rate' : 'Edit Rate'}
+        title="Edit Rate"
         onSecondaryClick={handleCancelClick}
         onPrimaryClick={handleSaveClick}
       />
       <IonContent color="light">
-        <RateForm rate={rate} isNew={isNew} onFieldValueChange={handleRateFieldChange} />
+        <RateForm rate={rate} onFieldValueChange={handleRateFieldChange} />
       </IonContent>
     </IonModal>
   );

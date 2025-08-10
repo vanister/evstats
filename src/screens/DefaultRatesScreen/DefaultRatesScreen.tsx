@@ -8,12 +8,14 @@ import {
 } from '@ionic/react';
 import { useState, useRef } from 'react';
 import EvsPage from '../../components/EvsPage';
+import ColorIndicator from '../../components/ColorIndicator';
 import { RateType } from '../../models/rateType';
 import { useAppSelector } from '../../redux/hooks';
 import { useServices } from '../../providers/ServiceProvider';
 import RateModal from './components/RateModal/RateModal';
 import { useAppDispatch } from '../../redux/hooks';
 import { setRateTypes } from '../../redux/rateTypeSlice';
+import { BuiltInRateColors, IonSlots } from '../../constants';
 
 export default function DefaultRatesScreen() {
   const pageRef = useRef<HTMLElement>(null);
@@ -58,15 +60,10 @@ export default function DefaultRatesScreen() {
       <IonList inset>
         {rateTypes.map((rateType) => (
           <IonItem key={rateType.id} button onClick={() => handleEditRateClick(rateType)}>
-            <div
-              slot="start"
-              style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '50%',
-                backgroundColor: rateType.color || '#004D80', // Default to Home color
-                border: '2px solid #ccc'
-              }}
+            <ColorIndicator
+              color={rateType.color || BuiltInRateColors.Home}
+              size="medium"
+              slot={IonSlots.Start}
             />
             <IonLabel>
               <h2>{rateType.name}</h2>
@@ -80,7 +77,6 @@ export default function DefaultRatesScreen() {
 
       {showModal && (
         <RateModal
-          isNew={false}
           presentingElement={pageRef.current}
           rate={editingRate}
           onSave={handleSaveClick}
