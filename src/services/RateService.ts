@@ -25,7 +25,7 @@ export class EvsRateService extends BaseService implements RateService {
 
   async list(_cache = true): Promise<RateType[]> {
     const dbos = await this.rateRepository.list();
-    return dbos.map(dbo => this.mapFrom(dbo, this.dboToRatePropMap) as RateType);
+    return dbos.map((dbo) => this.mapFrom(dbo, this.dboToRatePropMap) as RateType);
   }
 
   async get(id: number): Promise<RateType> {

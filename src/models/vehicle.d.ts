@@ -6,7 +6,7 @@ export type Vehicle = {
   nickname?: string;
   trim?: string;
   vin?: string;
-  year?: number;
+  year: number;
   /**
    * The useable battery size.
    *
@@ -20,7 +20,7 @@ export type Vehicle = {
 /** The vehicle database object. */
 export type VehicleDbo = {
   id: number;
-  battery_size: number;
+  battery_size?: number;
   make: string;
   model: string;
   nickname?: string;
