@@ -16,6 +16,10 @@ export default function SettingsScreen() {
     router.push('/settings/rates');
   };
 
+  const handleImportClick = () => {
+    router.push('/settings/import');
+  };
+
   return (
     <EvsPage className="settings-screen" title="Settings" hideBack={true}>
       <div className="settings-content">
@@ -33,11 +37,11 @@ export default function SettingsScreen() {
             </IonLabel>
           </IonItem>
 
-          <IonItem disabled>
+          <IonItem button onClick={handleImportClick}>
             <IonIcon icon={downloadOutline} slot="start" />
             <IonLabel>
               <h3>Import data</h3>
-              <p>From other apps/formats</p>
+              <p>From CSV files</p>
             </IonLabel>
           </IonItem>
 

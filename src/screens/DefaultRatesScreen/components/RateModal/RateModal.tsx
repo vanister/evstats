@@ -28,7 +28,8 @@ const NEW_RATE: RateType = {
   name: '',
   amount: 0,
   unit: 'kWh',
-  color: BuiltInRateColors.Other // Default to Home color
+  color: BuiltInRateColors.Other,
+  defaultColor: BuiltInRateColors.Other
 };
 
 export default function RateModal({ onDidDismiss, onSave, ...props }: RateModalProps) {

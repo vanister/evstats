@@ -4,6 +4,7 @@ import { EvsRateService, RateService } from './RateService';
 import { SessionService, EvsSessionService } from './SessionService';
 import { VehicleService, EvsVehicleService } from './VehicleService';
 import { VehicleStatsService, EvsVehicleStatsService } from './VehicleStatsService';
+import { VehicleImportService, EvsVehicleImportService } from './VehicleImportService';
 import { logToDevServer } from '../logger';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
@@ -68,6 +69,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     vehicleStatsRepository,
     vehicleRepository
   );
+  const vehicleImportService: VehicleImportService = new EvsVehicleImportService(vehicleService);
 
   // register the services here
   container
@@ -77,7 +79,8 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     .set('rateService', rateService)
     .set('sessionService', sessionService)
     .set('vehicleService', vehicleService)
-    .set('vehicleStatsService', vehicleStatsService);
+    .set('vehicleStatsService', vehicleStatsService)
+    .set('vehicleImportService', vehicleImportService);
 
   isContainerBuilt = true;
   logToDevServer('service container initialized');
