@@ -11,7 +11,8 @@ export const migrations: capSQLiteVersionUpgrade[] = [
         name TEXT NOT NULL CHECK (name != ''),
         amount REAL NOT NULL CHECK (amount > 0),
         unit TEXT LENGTH(5) NOT NULL CHECK (unit != ''),
-        color TEXT DEFAULT '#929292' CHECK (color != '')
+        color TEXT DEFAULT '#929292' CHECK (color != ''),
+        default_color TEXT DEFAULT '#929292' CHECK (default_color != '')
       );
       `,
       `
@@ -64,14 +65,14 @@ export const migrations: capSQLiteVersionUpgrade[] = [
       `,
       // seed the initial rate types
       `
-      INSERT INTO rate_types (name, amount, unit, color)
-      SELECT 'Home', 0.13, 'kWh', '#004D80' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      INSERT INTO rate_types (name, amount, unit, color, default_color)
+      SELECT 'Home', 0.13, 'kWh', '#004D80', '#004D80' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'DC', 0.32, 'kWh', '#B51700' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      SELECT 'DC', 0.32, 'kWh', '#B51700', '#B51700' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'Other', 0.12, 'kWh', '#929292' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      SELECT 'Other', 0.12, 'kWh', '#929292', '#929292' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'Work', 0.17, 'kWh', '#F27200' WHERE NOT EXISTS (SELECT 1 FROM rate_types);
+      SELECT 'Work', 0.17, 'kWh', '#F27200', '#F27200' WHERE NOT EXISTS (SELECT 1 FROM rate_types);
       `
     ]
   }

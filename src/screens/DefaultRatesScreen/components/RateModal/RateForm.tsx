@@ -16,9 +16,7 @@ export default function RateForm({ rate, onFieldValueChange }: RateFormProps) {
   };
 
   const getColorPlaceholder = () => {
-    const originalColor = BuiltInRateColors[rate.name];
-
-    return originalColor ?? BuiltInRateColors.Other;
+    return rate.defaultColor || BuiltInRateColors.Other;
   };
 
   return (
@@ -66,7 +64,7 @@ export default function RateForm({ rate, onFieldValueChange }: RateFormProps) {
             onIonInput={(e) => handleColorChange(e.detail.value)}
           />
           <ColorIndicator
-            color={rate.color || BuiltInRateColors.Home}
+            color={rate.color || rate.defaultColor || BuiltInRateColors.Home}
             size="medium"
             className="color-indicator--form-end"
             slot={IonSlots.End}

@@ -7,6 +7,7 @@ export type RateType = {
   amount: number;
   unit: RateUnits;
   color: string;
+  defaultColor: string;
 };
 
 /** The rate_type database object. */
@@ -16,4 +17,5 @@ export type RateTypeDbo = {
   amount: number;
   unit: RateUnits;
   color: string;
+  default_color: string;
 };

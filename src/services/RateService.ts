@@ -1,7 +1,8 @@
 import { RateRepository } from '../data/repositories/RateRepository';
 import { NotFoundError } from '../errors/NotFoundError';
-import { RateType } from '../models/rateType';
+import { RateType, RateTypeDbo } from '../models/rateType';
 import { BaseService } from './BaseService';
+import { PartialPropertyRecord } from './service-types';
 
 export interface RateService {
   list(cache?: boolean): Promise<RateType[]>;
@@ -10,25 +11,35 @@ export interface RateService {
 }
 
 export class EvsRateService extends BaseService implements RateService {
+  private readonly rateToDboPropMap: PartialPropertyRecord<RateType, RateTypeDbo> = {
+    defaultColor: 'default_color'
+  };
+
+  private readonly dboToRatePropMap: PartialPropertyRecord<RateTypeDbo, RateType> = {
+    default_color: 'defaultColor'
+  };
+
   constructor(private rateRepository: RateRepository) {
     super();
   }
 
   async list(_cache = true): Promise<RateType[]> {
-    return this.rateRepository.list();
+    const dbos = await this.rateRepository.list();
+    return dbos.map(dbo => this.mapFrom(dbo, this.dboToRatePropMap) as RateType);
   }
 
   async get(id: number): Promise<RateType> {
-    const rate = this.rateRepository.get(id);
+    const dbo = await this.rateRepository.get(id);
 
-    if (!rate) {
+    if (!dbo) {
       throw new NotFoundError();
     }
 
-    return rate;
+    return this.mapFrom(dbo, this.dboToRatePropMap) as RateType;
   }
 
   async update(rate: RateType): Promise<void> {
-    return this.rateRepository.update(rate);
+    const dbo = this.mapFrom(rate, this.rateToDboPropMap) as RateTypeDbo;
+    return this.rateRepository.update(dbo);
   }
 }

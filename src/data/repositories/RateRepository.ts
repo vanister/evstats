@@ -33,6 +33,7 @@ export class EvsRateRepository extends BaseRepository<RateTypeDbo> implements Ra
       rate.name,
       rate.unit,
       rate.color,
+      rate.default_color,
       rate.id
     ]);
   }

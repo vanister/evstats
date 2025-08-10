@@ -22,6 +22,8 @@ import { getService, initializeServiceContainer } from './services/ServiceContai
 import { migrations } from './data/migrations';
 import AlertableError from './components/AlertableError';
 
+logToDevServer('---------- starting up ----------');
+
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
 
@@ -31,7 +33,6 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 
 logToDevServer(`app running in "${import.meta.env.MODE}" mode`);
-logToDevServer('starting up...');
 registerAppStateListeners(databaseManager);
 
 databaseManager
