@@ -8,10 +8,10 @@ export abstract class BaseService {
    *
    * `To` a new object that is created from the mapping.
    *
-   * Using a `PartialPropertyRecord` map of properties to look up for properties that are not a 1:1 match.
+   * Using a `propertyMap` of properties to look up for properties that are not a 1:1 match.
    *
    * @param from The object with the values to map proeprties from.
-   * @param propertyMap The property map to use for lookup.
+   * @param propertyMap The partial property map to use for lookup for non-1:1 matches.
    */
   protected mapFrom<From, To>(from: From, propertyMap: PartialPropertyRecord<From, To>): To {
     const to = Object.entries(from).reduce((prev, [key, value]) => {
