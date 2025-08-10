@@ -1,6 +1,6 @@
 import { IonContent, IonModal, useIonAlert } from '@ionic/react';
 import { useRef } from 'react';
-import { ModalRoles } from '../../../../constants';
+import { ModalRoles, BuiltInRateColors } from '../../../../constants';
 import { RateType } from '../../../../models/rateType';
 import { useImmerState } from '../../../../hooks/useImmerState';
 import RateForm from './RateForm';
@@ -29,7 +29,7 @@ const NEW_RATE: RateType = {
   name: '',
   amount: 0,
   unit: 'kWh',
-  color: '#004D80' // Default to Home color
+  color: BuiltInRateColors.Other // Default to Home color
 };
 
 export default function RateModal({ isNew, onDidDismiss, onSave, ...props }: RateModalProps) {

@@ -1,5 +1,6 @@
 import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
 import { RateType } from '../../../../models/rateType';
+import { BuiltInRateColors } from '../../../../constants';
 
 type RateFormProps = {
   rate: RateType;
@@ -18,9 +19,12 @@ export default function RateForm({ rate, isNew, onFieldValueChange }: RateFormPr
 
   const getColorPlaceholder = () => {
     if (isNew) {
-      return '#004D80';
+      // Cycle through built-in colors based on rate name or use Home as default
+      const colorKeys = Object.keys(BuiltInRateColors) as Array<keyof typeof BuiltInRateColors>;
+      const matchingKey = colorKeys.find((key) => key.toLowerCase() === rate.name.toLowerCase());
+      return matchingKey ? BuiltInRateColors[matchingKey] : BuiltInRateColors.Home;
     }
-    return rate.color || '#004D80';
+    return rate.color || BuiltInRateColors.Other;
   };
 
   return (
@@ -73,16 +77,13 @@ export default function RateForm({ rate, isNew, onFieldValueChange }: RateFormPr
               width: '24px',
               height: '24px',
               borderRadius: '50%',
-              backgroundColor: rate.color || '#004D80',
+              backgroundColor: rate.color || BuiltInRateColors.Home,
               border: '2px solid #ccc',
               marginLeft: '8px'
             }}
           />
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
-        Color should be in hex format (e.g., #004D80, #F27200)
-      </IonNote>
     </form>
   );
 }

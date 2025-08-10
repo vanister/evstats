@@ -18,3 +18,10 @@ export enum PreferenceKeys {
 
 /** Vehicle ID constant representing all vehicles in filtering contexts */
 export const ALL_VEHICLES_ID = -1;
+
+export enum BuiltInRateColors {
+  Home = '#004D80',
+  Work = '#F27200',
+  Other = '#929292',
+  DC = '#B51700'
+}

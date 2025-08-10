@@ -10,7 +10,8 @@ export const migrations: capSQLiteVersionUpgrade[] = [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL CHECK (name != ''),
         amount REAL NOT NULL CHECK (amount > 0),
-        unit TEXT LENGTH(5) NOT NULL CHECK (unit != '')
+        unit TEXT LENGTH(5) NOT NULL CHECK (unit != ''),
+        color TEXT DEFAULT '#929292' CHECK (color != '')
       );
       `,
       `
@@ -63,30 +64,14 @@ export const migrations: capSQLiteVersionUpgrade[] = [
       `,
       // seed the initial rate types
       `
-      INSERT INTO rate_types (name, amount, unit)
-      SELECT 'Home', 0.13, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      INSERT INTO rate_types (name, amount, unit, color)
+      SELECT 'Home', 0.13, 'kWh', '#004D80' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'Work', 0.17, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      SELECT 'DC', 0.32, 'kWh', '#B51700' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'Other', 0.12, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
+      SELECT 'Other', 0.12, 'kWh', '#929292' WHERE NOT EXISTS (SELECT 1 FROM rate_types)
       UNION ALL
-      SELECT 'DC', 0.32, 'kWh' WHERE NOT EXISTS (SELECT 1 FROM rate_types);
-      `
-    ]
-  },
-  {
-    // Add color column to rate_types
-    toVersion: 2,
-    statements: [
-      `ALTER TABLE rate_types ADD COLUMN color TEXT DEFAULT '#004D80';`,
-      `
-      UPDATE rate_types SET color = CASE 
-        WHEN name = 'Home' THEN '#004D80'
-        WHEN name = 'Work' THEN '#F27200' 
-        WHEN name = 'Other' THEN '#929292'
-        WHEN name = 'DC' THEN '#B51700'
-        ELSE '#004D80'
-      END;
+      SELECT 'Work', 0.17, 'kWh', '#F27200' WHERE NOT EXISTS (SELECT 1 FROM rate_types);
       `
     ]
   }

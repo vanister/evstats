@@ -25,8 +25,8 @@ import AlertableError from './components/AlertableError';
 // configure all of the chart components that are used by the app
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip);
 
+const currentDbVersion = 1;
 const databaseManager = getInstance();
-const currentDbVersion = 2;
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
