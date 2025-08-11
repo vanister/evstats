@@ -2,7 +2,6 @@ import {
   IonInput,
   IonItem,
   IonList,
-  IonNote,
   IonSelectOption,
   IonDatetimeButton,
   IonModal,
@@ -10,6 +9,7 @@ import {
   IonLabel
 } from '@ionic/react';
 import EvsSelect from '../../../components/EvsSelect';
+import EvsNote from '../../../components/EvsNote/EvsNote';
 import { Vehicle } from '../../../models/vehicle';
 import { RateType } from '../../../models/rateType';
 import { SessionFormState } from '../session-types';
@@ -79,9 +79,9 @@ export default function SessionForm({
           </EvsSelect>
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
+      <EvsNote>
         A vehicle selection is required
-      </IonNote>
+      </EvsNote>
       <IonList inset>
         <IonItem>
           <EvsSelect
@@ -113,9 +113,9 @@ export default function SessionForm({
           />
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
+      <EvsNote>
         Override the rate if needed
-      </IonNote>
+      </EvsNote>
     </form>
   );
 }

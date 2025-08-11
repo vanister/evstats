@@ -1,4 +1,5 @@
-import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
+import { IonInput, IonItem, IonList } from '@ionic/react';
+import EvsNote from '../../../../components/EvsNote/EvsNote';
 import { Vehicle } from '../../../../models/vehicle';
 
 type VehicleFormProps = {
@@ -78,9 +79,9 @@ export default function VehicleForm({ vehicle, onFieldValueChange }: VehicleForm
           />
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
+      <EvsNote>
         Vehicle identification and basic information
-      </IonNote>
+      </EvsNote>
 
       <IonList inset>
         <IonItem>
@@ -106,9 +107,9 @@ export default function VehicleForm({ vehicle, onFieldValueChange }: VehicleForm
           />
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
+      <EvsNote>
         Range should in be miles and Battery Size should be in kWh
-      </IonNote>
+      </EvsNote>
     </form>
   );
 }

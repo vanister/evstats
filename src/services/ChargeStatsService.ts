@@ -129,14 +129,13 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
 
   private getAverages(datasets: ChargeStatDataset[], rateTypes: RateTypeDbo[]): ChargeAverage[] {
     const sum = (prev: number, curr: number) => prev + curr;
-    const total = datasets.flatMap((ds) => ds.data).reduce(sum, 0);
 
     const averages = datasets.map<ChargeAverage>(({ data, label }) => {
-      const percent = (data.reduce(sum, 0) / (total || 1)) * 100;
+      const kWh = data.reduce(sum, 0);
 
       return {
         name: label,
-        percent: Math.round(percent),
+        kWh: kWh, // Keep precise values, round only in display
         color: this.getRateTypeColor(label, rateTypes)
       };
     });

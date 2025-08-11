@@ -1,4 +1,5 @@
-import { IonInput, IonItem, IonList, IonNote } from '@ionic/react';
+import { IonInput, IonItem, IonList } from '@ionic/react';
+import EvsNote from '../../../../components/EvsNote/EvsNote';
 import { RateType } from '../../../../models/rateType';
 import { BuiltInRateColors, IonSlots } from '../../../../constants';
 import ColorIndicator from '../../../../components/ColorIndicator';
@@ -48,9 +49,9 @@ export default function RateForm({ rate, onFieldValueChange }: RateFormProps) {
           />
         </IonItem>
       </IonList>
-      <IonNote color="medium" className="ion-margin-horizontal">
+      <EvsNote>
         Amount should be in dollars per kWh (e.g., 0.13 for 13 cents)
-      </IonNote>
+      </EvsNote>
 
       <IonList inset>
         <IonItem>

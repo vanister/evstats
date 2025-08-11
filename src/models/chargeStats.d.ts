@@ -5,12 +5,12 @@ export type ChargeStatsDbo = {
   kwh: number;
   rate: number;
   rate_name: string;
-  rate_override: number;
+  rate_override: number | null;
 };
 
 export type ChargeAverage = {
   name: string;
-  percent: number;
+  kWh: number;
   color: string;
 };
 

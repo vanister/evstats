@@ -1,6 +1,6 @@
 import './SettingsScreen.scss';
 
-import { IonList, IonItem, IonLabel, IonIcon, IonNote, useIonRouter } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonIcon, useIonRouter } from '@ionic/react';
 import {
   downloadOutline,
   shieldCheckmarkOutline,
@@ -8,6 +8,7 @@ import {
   shareOutline
 } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
+import EvsNote from '../../components/EvsNote/EvsNote';
 import { useAppSelector } from '../../redux/hooks';
 
 export default function SettingsScreen() {
@@ -47,11 +48,14 @@ export default function SettingsScreen() {
             <IonLabel>Backup & restore</IonLabel>
           </IonItem>
         </IonList>
-        <IonNote color="medium" className="ion-margin-horizontal">
+        <EvsNote>
           {hasVehicles
             ? 'Customize your charging rates and manage your data'
             : 'Get started by updating your rates and importing vehicles'}
-        </IonNote>
+        </EvsNote>
+        <EvsNote>
+          Export data and backup & restore coming soon.
+        </EvsNote>
       </div>
     </EvsPage>
   );
