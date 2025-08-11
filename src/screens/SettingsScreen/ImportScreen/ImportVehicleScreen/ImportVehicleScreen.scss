@@ -21,23 +21,9 @@
     }
   }
 
-  .processing-content {
-    text-align: center;
-    padding: 2rem;
-
-    .processing-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    h3 {
-      margin: 1rem 0 0.5rem 0;
-      color: var(--ion-color-dark);
-    }
-
-    p {
-      margin-bottom: 1.5rem;
-      color: var(--ion-color-medium);
-    }
+  // Progress indicator styling
+  ion-progress-bar {
+    margin: 0;
+    height: 2px;
   }
 }
