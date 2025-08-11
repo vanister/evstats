@@ -109,16 +109,14 @@ export default function ImportVehicleScreen() {
       </IonButton>
 
       {/* Status messages below button */}
-      {currentState === 'processing' && (
-        <div className="ion-margin-top">
+      <div className="ion-margin-top">
+        {currentState === 'processing' && (
           <IonText color="medium">
             <p>Processing CSV... Please wait while we validate and import your vehicles.</p>
           </IonText>
-        </div>
-      )}
+        )}
 
-      {currentState === 'error' && (
-        <div className="ion-margin-top">
+        {currentState === 'error' && (
           <IonText color="danger">
             {validationErrors.length > 0 ? (
               <>
@@ -135,12 +133,10 @@ export default function ImportVehicleScreen() {
               <p>{errorMessage}</p>
             )}
           </IonText>
-        </div>
-      )}
+        )}
 
-      {currentState === 'select' && (
-        <div className="import-notes ion-margin-top">
-          <IonNote color="medium">
+        {currentState === 'select' && (
+          <IonNote className="import-notes" color="medium">
             <p>
               <strong>Required columns:</strong> make, model, year
             </p>
@@ -156,49 +152,49 @@ export default function ImportVehicleScreen() {
               Ford,Mustang Mach-E,2022,91
             </code>
           </IonNote>
-        </div>
-      )}
+        )}
 
-      {currentState === 'complete' && importResult && (
-        <div className="ion-margin-top">
-          {importResult.success > 0 && (
-            <IonButton
-              expand="block"
-              fill="outline"
-              onClick={handleGoToVehicles}
-              className="ion-margin-top"
-            >
-              View Vehicles
-            </IonButton>
-          )}
+        {currentState === 'complete' && importResult && (
+          <>
+            {importResult.success > 0 && (
+              <IonButton
+                expand="block"
+                fill="outline"
+                onClick={handleGoToVehicles}
+                className="ion-margin-top"
+              >
+                View Vehicles
+              </IonButton>
+            )}
 
-          {importResult.errors.length > 0 && (
-            <IonText color="danger">
+            {importResult.errors.length > 0 && (
+              <IonText color="danger">
+                <p>
+                  <strong>Errors:</strong>
+                </p>
+                <ul>
+                  {importResult.errors.map((error, index) => (
+                    <li key={index}>
+                      Row {error.row}: {error.message}
+                    </li>
+                  ))}
+                </ul>
+              </IonText>
+            )}
+
+            <IonText color={importResult.success > 0 ? 'success' : 'danger'}>
               <p>
-                <strong>Errors:</strong>
+                <strong>{importResult.success > 0 ? 'Import Complete!' : 'Import Failed'}</strong>
               </p>
               <ul>
-                {importResult.errors.map((error, index) => (
-                  <li key={index}>
-                    Row {error.row}: {error.message}
-                  </li>
-                ))}
+                <li>Total: {importResult.total}</li>
+                <li>Success: {importResult.success}</li>
+                <li>Failed: {importResult.failed}</li>
               </ul>
             </IonText>
-          )}
-
-          <IonText color={importResult.success > 0 ? 'success' : 'danger'}>
-            <p>
-              <strong>{importResult.success > 0 ? 'Import Complete!' : 'Import Failed'}</strong>
-            </p>
-            <ul>
-              <li>Total: {importResult.total}</li>
-              <li>Success: {importResult.success}</li>
-              <li>Failed: {importResult.failed}</li>
-            </ul>
-          </IonText>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </EvsPage>
   );
 }
