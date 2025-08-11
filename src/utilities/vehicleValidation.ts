@@ -46,8 +46,8 @@ export function validateVehicle(vehicle: Vehicle): string | null {
     if (vinTrimmed.length !== 17) {
       return 'VIN must be exactly 17 characters';
     }
-    if (!/^[A-HJ-NPR-Z0-9]{17}$/i.test(vinTrimmed)) {
-      return 'VIN contains invalid characters';
+    if (!/^[ABCDEFGHJKLMNPRSTUVWXYZ0-9]{17}$/i.test(vinTrimmed)) {
+      return 'VIN contains invalid characters (I, O, and Q are not allowed)';
     }
   }
 
