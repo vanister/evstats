@@ -49,6 +49,7 @@ export default function VehicleCard({
           {range && <p>{`Range: ${range} miles`}</p>}
           {batterySize && <p>{`Battery Size: ${vehicle.batterySize} kWh`}</p>}
           {nickname && <p>{`Nickname: ${nickname}`}</p>}
+          {vehicle.id && <p className="vehicle-id">{`ID: ${vehicle.id}`}</p>}
         </div>
 
         <div className="vehicle-stats">

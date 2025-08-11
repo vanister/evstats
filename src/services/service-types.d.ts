@@ -7,6 +7,7 @@ import { RateService } from './RateService';
 import { VehicleService } from './VehicleService';
 import { VehicleStatsService } from './VehicleStatsService';
 import { VehicleImportService } from './VehicleImportService';
+import { SessionImportService } from './SessionImportService';
 
 /**
  * List of injectable services in the app.
@@ -21,6 +22,7 @@ export type ServiceContainer = {
   vehicleService: VehicleService;
   vehicleStatsService: VehicleStatsService;
   vehicleImportService: VehicleImportService;
+  sessionImportService: SessionImportService;
 };
 
 export type ContainerContext = {

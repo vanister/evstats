@@ -19,13 +19,11 @@ import { Vehicle } from '../../models/vehicle';
 import { logToDevServer } from '../../logger';
 import { useAppSelector } from '../../redux/hooks';
 import { ALL_VEHICLES_ID } from '../../constants';
-import { useSessions } from '../SessionScreen/useSessions';
 
 export default function ChargeStatsScreen() {
   const router = useIonRouter();
   const chargeStatsService = useServices('chargeStatsService');
   const vehicles = useAppSelector((s) => s.vehicles);
-  const { sessions } = useSessions();
   const [chartData, setChartData] = useState<ChargeStatData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +31,6 @@ export default function ChargeStatsScreen() {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
   const showEmptyState = !chartData && !loading && !error;
-  const hasNoSessions = sessions.length === 0 && !loading;
 
   const loadChartData = async () => {
     if (vehicles.length === 0) {
@@ -136,8 +133,8 @@ export default function ChargeStatsScreen() {
   );
 
   const headerButtons = [
-    // Only show filter button when there are multiple vehicles and sessions to filter
-    ...(vehicles.length > 1 && sessions.length > 0 ? [{
+    // Only show filter button when there are multiple vehicles
+    ...(vehicles.length > 1 ? [{
       key: 'filter',
       button: filterButton,
       slot: 'start'
@@ -154,12 +151,11 @@ export default function ChargeStatsScreen() {
     >
       {loading && <EmptyState>Loading charge statistics...</EmptyState>}
       {error && <EmptyState>Error: {error}</EmptyState>}
-      {hasNoSessions && (
+      {showEmptyState && (
         <div className="empty-state">
-          <h3>Add your first charging session</h3>
+          <h3>No charging sessions found</h3>
           <p>
-            Track your electric vehicle charging sessions to see detailed statistics and cost
-            analysis.
+            Check your filters or add charging sessions to see detailed statistics and cost analysis.
           </p>
           <IonButton fill="outline" onClick={handleAddSessionClick} className="ion-margin-top">
             <IonIcon icon={add} slot="start" />
@@ -167,10 +163,7 @@ export default function ChargeStatsScreen() {
           </IonButton>
         </div>
       )}
-      {showEmptyState && !hasNoSessions && (
-        <EmptyState>Not enough charge data for the selected time period</EmptyState>
-      )}
-      {chartData && !hasNoSessions && (
+      {chartData && (
         <>
           <ChargeBarChart data={chartData} title={getChartTitle()} />
           <CostBarChart

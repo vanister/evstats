@@ -33,10 +33,10 @@ export default function SessionList(props: SessionListProps) {
           <IonLabel>
             <h3>{session.rateType}</h3>
             <p>{session.date}</p>
-            <p>{session.vehicleName}</p>
+            <p><em>{session.vehicleName}</em></p>
           </IonLabel>
           <IonLabel slot="end">
-            <h3>{`+${session.kWh} kWh`}</h3>
+            <h3>{`+${Math.round(session.kWh)} kWh`}</h3>
           </IonLabel>
         </IonItem>
       ))}

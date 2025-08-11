@@ -3,17 +3,18 @@ import './ImportScreen.scss';
 import { IonList, IonItem, IonLabel, IonIcon, useIonRouter } from '@ionic/react';
 import { carOutline, flashOutline, analyticsOutline, documentsOutline } from 'ionicons/icons';
 import EvsPage from '../../../components/EvsPage';
+import { useAppSelector } from '../../../redux/hooks';
 
 export default function ImportScreen() {
   const router = useIonRouter();
+  const hasVehicles = useAppSelector((s) => s.vehicles.length > 0);
 
   const handleVehicleImportClick = () => {
     router.push('/settings/import/vehicles');
   };
 
   const handleSessionImportClick = () => {
-    // TODO: Implement session import
-    console.log('Session import coming soon');
+    router.push('/settings/import/sessions');
   };
 
   const handleRateImportClick = () => {
@@ -34,7 +35,7 @@ export default function ImportScreen() {
           <IonLabel>Import Vehicles</IonLabel>
         </IonItem>
 
-        <IonItem button disabled onClick={handleSessionImportClick}>
+        <IonItem button disabled={!hasVehicles} onClick={handleSessionImportClick}>
           <IonIcon icon={flashOutline} slot="start" />
           <IonLabel>Import Sessions</IonLabel>
         </IonItem>

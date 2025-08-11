@@ -28,7 +28,7 @@ export function useSessions() {
       d.loading = true;
     });
 
-    const sessions = await sessionService.list();
+    const sessions = await sessionService.list(90);
 
     setState((d) => {
       d.sessions = sessions;
