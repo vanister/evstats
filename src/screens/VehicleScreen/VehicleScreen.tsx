@@ -1,7 +1,8 @@
 import { IonIcon, IonButton, useIonAlert, useIonViewWillEnter } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import EvsPage from '../../components/EvsPage';
+import EvsSearchbar from '../../components/EvsSearchbar';
 import { logToDevServer } from '../../logger';
 import { Vehicle } from '../../models/vehicle';
 import VehicleList from './components/VehilceList/VehicleList';
@@ -12,6 +13,7 @@ export default function VehicleScreen() {
   const [showModal, setShowModal] = useState(false);
   const [isNew, setIsNew] = useState(true);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
   const {
@@ -94,6 +96,33 @@ export default function VehicleScreen() {
     }
   };
 
+  const handleSearchInput = (event: CustomEvent) => {
+    setSearchTerm(event.detail.value);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+
+  // Filter and sort vehicles
+  const sortedAndFilteredVehicles = useMemo(() => {
+    let filtered = vehicles;
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase();
+      filtered = vehicles.filter((vehicle) => {
+        const searchableText = `${vehicle.make} ${vehicle.model} ${vehicle.nickname || ''} ${
+          vehicle.year || ''
+        } ${vehicle.batterySize || ''}kWh`.toLowerCase();
+
+        return searchableText.includes(search);
+      });
+    }
+
+    return filtered;
+  }, [vehicles, searchTerm, defaultVehicleId]);
+
   // Create header add button
   const addButton = (
     <IonButton fill="clear" onClick={handleAddClick}>
@@ -109,6 +138,17 @@ export default function VehicleScreen() {
     }
   ];
 
+  // Create search toolbar content - only show when there are vehicles to search
+  const searchToolbarContent =
+    vehicles.length > 0 ? (
+      <EvsSearchbar
+        value={searchTerm}
+        placeholder="Search vehicles..."
+        onInput={handleSearchInput}
+        onClear={clearSearch}
+      />
+    ) : undefined;
+
   return (
     <EvsPage
       ref={pageRef}
@@ -117,9 +157,10 @@ export default function VehicleScreen() {
       fixedSlotPlacement="before"
       hideBack
       headerButtons={headerButtons}
+      searchContent={searchToolbarContent}
     >
       <VehicleList
-        vehicles={vehicles}
+        vehicles={sortedAndFilteredVehicles}
         vehicleStats={vehicleStats}
         loading={loadingStats}
         defaultVehicleId={defaultVehicleId}

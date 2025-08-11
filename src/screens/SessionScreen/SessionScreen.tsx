@@ -5,12 +5,12 @@ import {
   IonActionSheet,
   IonChip,
   IonLabel,
-  IonSearchbar,
   useIonAlert
 } from '@ionic/react';
 import { add, filter, close } from 'ionicons/icons';
 import { useMemo, useState, useRef } from 'react';
 import EvsPage from '../../components/EvsPage';
+import EvsSearchbar from '../../components/EvsSearchbar';
 import { SessionLog, Session } from '../../models/session';
 import SessionList from './components/SessionList/SessionList';
 import SessionModal from './components/SessionModal/SessionModal';
@@ -151,15 +151,19 @@ export default function SessionScreen() {
 
   const headerButtons = [
     // Only show filter button when there are multiple vehicles and sessions to filter
-    ...(vehicles.length > 1 && sessions.length > 0 ? [{
-      key: 'filter',
-      slot: 'start',
-      button: (
-        <IonButton fill="clear" onClick={handleFilterClick}>
-          <IonIcon icon={filter} />
-        </IonButton>
-      )
-    }] : []),
+    ...(vehicles.length > 1 && sessions.length > 0
+      ? [
+          {
+            key: 'filter',
+            slot: 'start',
+            button: (
+              <IonButton fill="clear" onClick={handleFilterClick}>
+                <IonIcon icon={filter} />
+              </IonButton>
+            )
+          }
+        ]
+      : []),
     {
       key: 'add',
       slot: 'end',
@@ -191,16 +195,15 @@ export default function SessionScreen() {
   );
 
   // Create search toolbar content - only show when there are sessions to search
-  const searchToolbarContent = sessions.length > 0 ? (
-    <IonSearchbar
-      value={searchTerm}
-      placeholder="Search sessions..."
-      debounce={300}
-      onIonInput={handleSearchInput}
-      onIonClear={clearSearch}
-      showClearButton="focus"
-    />
-  ) : undefined;
+  const searchToolbarContent =
+    sessions.length > 0 ? (
+      <EvsSearchbar
+        value={searchTerm}
+        placeholder="Search sessions..."
+        onInput={handleSearchInput}
+        onClear={clearSearch}
+      />
+    ) : undefined;
 
   return (
     <EvsPage
