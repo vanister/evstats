@@ -1,8 +1,15 @@
 .vehicle-list {
   .empty-list-message {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 70vh;
+    text-align: center;
+    padding: 2rem;
+
+    h3 {
+      margin-bottom: 1rem;
+    }
   }
 }

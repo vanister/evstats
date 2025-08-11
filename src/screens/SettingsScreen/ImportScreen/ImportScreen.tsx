@@ -31,34 +31,22 @@ export default function ImportScreen() {
       <IonList inset>
         <IonItem button onClick={handleVehicleImportClick}>
           <IonIcon icon={carOutline} slot="start" />
-          <IonLabel>
-            <h3>Import Vehicles</h3>
-            <p>Import vehicles from CSV files</p>
-          </IonLabel>
+          <IonLabel>Import Vehicles</IonLabel>
         </IonItem>
 
         <IonItem button disabled onClick={handleSessionImportClick}>
           <IonIcon icon={flashOutline} slot="start" />
-          <IonLabel>
-            <h3>Import Sessions</h3>
-            <p>Import charging sessions from CSV files</p>
-          </IonLabel>
+          <IonLabel>Import Sessions</IonLabel>
         </IonItem>
 
         <IonItem button disabled onClick={handleRateImportClick}>
           <IonIcon icon={analyticsOutline} slot="start" />
-          <IonLabel>
-            <h3>Import Rates</h3>
-            <p>Import custom charging rates</p>
-          </IonLabel>
+          <IonLabel>Import Rates</IonLabel>
         </IonItem>
 
         <IonItem button disabled onClick={handleDataImportClick}>
           <IonIcon icon={documentsOutline} slot="start" />
-          <IonLabel>
-            <h3>Import All Data</h3>
-            <p>Import complete backup files</p>
-          </IonLabel>
+          <IonLabel>Import All Data</IonLabel>
         </IonItem>
       </IonList>
     </EvsPage>

@@ -1,5 +1,7 @@
 import './VehicleList.scss';
 
+import { IonButton, IonIcon, useIonRouter } from '@ionic/react';
+import { downloadOutline } from 'ionicons/icons';
 import { Vehicle } from '../../../../models/vehicle';
 import { VehicleStats } from '../../../../models/vehicleStats';
 import VehicleCard from '../VehicleCard/VehicleCard';
@@ -15,12 +17,28 @@ type VehicleListProps = {
   onSetDefaultClick: (vehicle: Vehicle) => void;
 };
 
-export default function VehicleList({ vehicles, vehicleStats, loading, defaultVehicleId, ...props }: VehicleListProps) {
+export default function VehicleList({
+  vehicles,
+  vehicleStats,
+  loading,
+  defaultVehicleId,
+  ...props
+}: VehicleListProps) {
+  const router = useIonRouter();
+
+  const handleImportClick = () => {
+    router.push('/settings/import/vehicles');
+  };
+
   if (vehicles.length === 0) {
     return (
       <div className="vehicle-list">
         <div className="empty-list-message">
           <h3>{props.emptyMessage ?? 'Add a vehicle to get started'}</h3>
+          <IonButton fill="outline" onClick={handleImportClick} className="ion-margin-top">
+            <IonIcon icon={downloadOutline} slot="start" />
+            Import from CSV
+          </IonButton>
         </div>
       </div>
     );
@@ -29,7 +47,7 @@ export default function VehicleList({ vehicles, vehicleStats, loading, defaultVe
   return (
     <div className="vehicle-list">
       {vehicles.map((vehicle) => {
-        const stats = vehicleStats?.find(s => s.vehicleId === vehicle.id);
+        const stats = vehicleStats?.find((s) => s.vehicleId === vehicle.id);
         const isDefault = vehicle.id === defaultVehicleId;
         return (
           <VehicleCard

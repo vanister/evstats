@@ -1,10 +1,11 @@
 .import-vehicle-screen {
-  .csv-example {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: var(--ion-color-step-50);
-    border-radius: 8px;
-    border-left: 4px solid var(--ion-color-primary);
+  .import-notes {
+    text-align: center;
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
 
     code {
       display: block;
@@ -12,6 +13,10 @@
       font-size: 0.85rem;
       line-height: 1.4;
       margin-top: 0.5rem;
+      padding: 0.75rem;
+      background: var(--ion-color-step-50);
+      border-radius: 8px;
+      border-left: 4px solid var(--ion-color-primary);
       color: var(--ion-color-dark);
     }
   }

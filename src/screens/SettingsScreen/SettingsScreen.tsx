@@ -8,9 +8,11 @@ import {
   shareOutline
 } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
+import { useAppSelector } from '../../redux/hooks';
 
 export default function SettingsScreen() {
   const router = useIonRouter();
+  const hasVehicles = useAppSelector((s) => s.vehicles.length > 0);
 
   const handleRatesClick = () => {
     router.push('/settings/rates');
@@ -29,32 +31,26 @@ export default function SettingsScreen() {
             <IonLabel>Update rates</IonLabel>
           </IonItem>
 
-          <IonItem disabled>
-            <IonIcon icon={shareOutline} slot="start" />
-            <IonLabel>
-              <h3>Export data</h3>
-              <p>JSON or CSV format</p>
-            </IonLabel>
-          </IonItem>
-
           <IonItem button onClick={handleImportClick}>
             <IonIcon icon={downloadOutline} slot="start" />
-            <IonLabel>
-              <h3>Import data</h3>
-              <p>From CSV files</p>
-            </IonLabel>
+            <IonLabel>Import data</IonLabel>
+          </IonItem>
+          {/* todo - disable this when no vehicle, but for now always disable since its not implemented yet */}
+          <IonItem disabled={!hasVehicles || true}>
+            <IonIcon icon={shareOutline} slot="start" />
+            <IonLabel>Export data</IonLabel>
           </IonItem>
 
-          <IonItem disabled>
+          {/* todo - disable this when no vehicle, but for now always disable since its not implemented yet */}
+          <IonItem disabled={!hasVehicles || true}>
             <IonIcon icon={shieldCheckmarkOutline} slot="start" />
-            <IonLabel>
-              <h3>Backup & restore</h3>
-              <p>Settings and data</p>
-            </IonLabel>
+            <IonLabel>Backup & restore</IonLabel>
           </IonItem>
         </IonList>
         <IonNote color="medium" className="ion-margin-horizontal">
-          Customize your charging rates and manage your data
+          {hasVehicles
+            ? 'Customize your charging rates and manage your data'
+            : 'Get started by updating your rates and importing vehicles'}
         </IonNote>
       </div>
     </EvsPage>

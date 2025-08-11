@@ -41,7 +41,7 @@ export default function MainLayout() {
           <IonIcon icon={car} />
           <IonLabel>Vehicles</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="settings" href="/settings" disabled={!hasVehicles}>
+        <IonTabButton tab="settings" href="/settings">
           <IonIcon icon={settings} />
           <IonLabel>Settings</IonLabel>
         </IonTabButton>

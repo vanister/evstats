@@ -16,12 +16,7 @@ import {
   useIonAlert,
   useIonRouter
 } from '@ionic/react';
-import {
-  documentTextOutline,
-  cloudUploadOutline,
-  checkmarkCircleOutline,
-  closeCircleOutline
-} from 'ionicons/icons';
+import { downloadOutline, checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 import EvsPage from '../../../../components/EvsPage';
 import EmptyState from '../../../../components/EmptyState';
@@ -113,32 +108,30 @@ export default function ImportVehicleScreen() {
     <EvsPage className="import-vehicle-screen" title="Import Vehicles">
       {currentState === 'select' && (
         <>
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle>CSV Format Requirements</IonCardTitle>
-            </IonCardHeader>
-            <IonCardContent>
-              <p>
-                Required columns: <strong>make, model, year</strong>
-              </p>
-              <p>Optional columns: battery_size, range, nickname, trim, vin</p>
+          <div className="ion-padding">
+            <IonButton expand="block" onClick={handleFileSelect} size="large">
+              <IonIcon icon={downloadOutline} slot="start" />
+              Select CSV File
+            </IonButton>
 
-              <div className="csv-example">
-                <IonNote color="medium">Example:</IonNote>
+            <div className="import-notes ion-margin-top">
+              <IonNote color="medium">
+                <p>
+                  <strong>Required columns:</strong> make, model, year
+                </p>
+                <p>
+                  <strong>Optional columns:</strong> battery_size, range, nickname, trim, vin
+                </p>
+                <p>
+                  <strong>Example:</strong>
+                </p>
                 <code>
                   make,model,year,battery_size
                   <br />
                   Ford,Mustang Mach-E,2022,91
                 </code>
-              </div>
-            </IonCardContent>
-          </IonCard>
-
-          <div className="ion-padding">
-            <IonButton expand="block" onClick={handleFileSelect} size="large">
-              <IonIcon icon={cloudUploadOutline} slot="start" />
-              Select CSV File
-            </IonButton>
+              </IonNote>
+            </div>
           </div>
         </>
       )}
@@ -146,7 +139,7 @@ export default function ImportVehicleScreen() {
       {currentState === 'processing' && (
         <EmptyState>
           <div className="processing-content">
-            <IonIcon icon={cloudUploadOutline} color="primary" className="processing-icon" />
+            <IonIcon icon={downloadOutline} color="primary" className="processing-icon" />
             <h3>Processing CSV...</h3>
             <p>Please wait while we validate and import your vehicles.</p>
             <EvsProgressLoader type="indeterminate" />
