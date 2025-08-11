@@ -1,7 +1,11 @@
 import { Vehicle, VehicleDbo } from '../models/vehicle';
-import { VehicleService } from './VehicleService';
+import { VehicleRepository } from '../data/repositories/VehicleRepository';
 import { validateVehicle, sanitizeVehicle } from '../utilities/vehicleValidation';
-import { parseCSV, validateVehicleCsvHeaders, normalizeVehicleHeaders } from '../utilities/csvParser';
+import {
+  parseCSV,
+  validateVehicleCsvHeaders,
+  normalizeVehicleHeaders
+} from '../utilities/csvParser';
 import { BaseService } from './BaseService';
 
 export type ParsedVehicle = VehicleDbo & {
@@ -30,7 +34,7 @@ export interface VehicleImportService {
 }
 
 export class EvsVehicleImportService extends BaseService implements VehicleImportService {
-  constructor(private vehicleService: VehicleService) {
+  constructor(private vehicleRepository: VehicleRepository) {
     super();
   }
 
@@ -56,11 +60,11 @@ export class EvsVehicleImportService extends BaseService implements VehicleImpor
 
     // Parse and validate each vehicle
     const vehicles: ParsedVehicle[] = [];
-    
+
     for (let i = 0; i < parseResult.data.length; i++) {
       const rowData = parseResult.data[i];
       const rowNumber = i + 2; // +2 because we start from row 1 and skip header
-      
+
       try {
         const parsedVehicle = this.parseVehicleFromCsvRow(rowData, normalizedHeaders, rowNumber);
         vehicles.push(parsedVehicle);
@@ -78,10 +82,11 @@ export class EvsVehicleImportService extends BaseService implements VehicleImpor
       }
     }
 
-    const hasValidVehicles = vehicles.some(v => v.isValid);
-    const globalErrors = vehicles.filter(v => !v.isValid).length === vehicles.length 
-      ? ['No valid vehicles found in CSV'] 
-      : [];
+    const hasValidVehicles = vehicles.some((v) => v.isValid);
+    const globalErrors =
+      vehicles.filter((v) => !v.isValid).length === vehicles.length
+        ? ['No valid vehicles found in CSV']
+        : [];
 
     return {
       isValid: hasValidVehicles && errors.length === 0,
@@ -94,40 +99,57 @@ export class EvsVehicleImportService extends BaseService implements VehicleImpor
    * Imports valid vehicles to the database.
    */
   async importVehicles(vehicles: ParsedVehicle[]): Promise<ImportResult> {
-    const validVehicles = vehicles.filter(v => v.isValid);
+    const validVehicles = vehicles.filter((v) => v.isValid);
     const result: ImportResult = {
       total: vehicles.length,
       success: 0,
       failed: vehicles.length - validVehicles.length,
-      errors: vehicles.filter(v => !v.isValid).map(v => ({
-        row: v.rowNumber,
-        message: v.errors.join(', ')
-      })),
+      errors: vehicles
+        .filter((v) => !v.isValid)
+        .map((v) => ({
+          row: v.rowNumber,
+          message: v.errors.join(', ')
+        })),
       importedVehicles: []
     };
 
     // Import valid vehicles one by one
-    for (const vehicleDbo of validVehicles) {
+    for (const parsedVehicle of validVehicles) {
       try {
         // Convert DBO to Vehicle (excluding rowNumber, errors, isValid)
-        const vehicle: Vehicle = {
+        const vehicleDbo: VehicleDbo = {
+          id: 0, // Will be set by database
+          make: parsedVehicle.make,
+          model: parsedVehicle.model,
+          year: parsedVehicle.year,
+          nickname: parsedVehicle.nickname || undefined,
+          trim: parsedVehicle.trim || undefined,
+          vin: parsedVehicle.vin || undefined,
+          battery_size: parsedVehicle.battery_size || undefined,
+          range: parsedVehicle.range || 0
+        };
+
+        const savedId = await this.vehicleRepository.add(vehicleDbo);
+
+        // Convert back to Vehicle format for result
+        const savedVehicle: Vehicle = {
+          id: savedId,
           make: vehicleDbo.make,
           model: vehicleDbo.model,
           year: vehicleDbo.year,
-          nickname: vehicleDbo.nickname || undefined,
-          trim: vehicleDbo.trim || undefined,
-          vin: vehicleDbo.vin || undefined,
-          batterySize: vehicleDbo.battery_size || undefined,
-          range: vehicleDbo.range || undefined
+          nickname: vehicleDbo.nickname,
+          trim: vehicleDbo.trim,
+          vin: vehicleDbo.vin,
+          batterySize: vehicleDbo.battery_size,
+          range: vehicleDbo.range
         };
 
-        const savedVehicle = await this.vehicleService.add(vehicle);
         result.importedVehicles.push(savedVehicle);
         result.success++;
       } catch (error) {
         result.failed++;
         result.errors.push({
-          row: vehicleDbo.rowNumber,
+          row: parsedVehicle.rowNumber,
           message: error.message || 'Failed to save vehicle'
         });
       }
@@ -140,8 +162,8 @@ export class EvsVehicleImportService extends BaseService implements VehicleImpor
    * Parses a single CSV row into a ParsedVehicle.
    */
   private parseVehicleFromCsvRow(
-    rowData: Record<string, string>, 
-    headers: string[], 
+    rowData: Record<string, string>,
+    headers: string[],
     rowNumber: number
   ): ParsedVehicle {
     const errors: string[] = [];
@@ -206,7 +228,7 @@ export class EvsVehicleImportService extends BaseService implements VehicleImpor
     // Sanitize and validate
     const sanitizedVehicle = sanitizeVehicle(vehicle);
     const validationError = validateVehicle(sanitizedVehicle);
-    
+
     if (validationError) {
       errors.push(validationError);
     }

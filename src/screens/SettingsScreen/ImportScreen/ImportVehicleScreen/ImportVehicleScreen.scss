@@ -1,0 +1,38 @@
+.import-vehicle-screen {
+  .csv-example {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--ion-color-step-50);
+    border-radius: 8px;
+    border-left: 4px solid var(--ion-color-primary);
+
+    code {
+      display: block;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-top: 0.5rem;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .processing-content {
+    text-align: center;
+    padding: 2rem;
+
+    .processing-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      margin: 1rem 0 0.5rem 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin-bottom: 1.5rem;
+      color: var(--ion-color-medium);
+    }
+  }
+}

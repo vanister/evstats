@@ -69,7 +69,7 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     vehicleStatsRepository,
     vehicleRepository
   );
-  const vehicleImportService: VehicleImportService = new EvsVehicleImportService(vehicleService);
+  const vehicleImportService: VehicleImportService = new EvsVehicleImportService(vehicleRepository);
 
   // register the services here
   container

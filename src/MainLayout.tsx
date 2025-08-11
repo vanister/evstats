@@ -5,6 +5,7 @@ import ChargeStatsScreen from './screens/ChargeStatsScreen/ChargeStatsScreen';
 import SessionScreen from './screens/SessionScreen/SessionScreen';
 import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 import ImportScreen from './screens/SettingsScreen/ImportScreen/ImportScreen';
+import ImportVehicleScreen from './screens/SettingsScreen/ImportScreen/ImportVehicleScreen/ImportVehicleScreen';
 import DefaultRatesScreen from './screens/DefaultRatesScreen/DefaultRatesScreen';
 import { useAppSelector } from './redux/hooks';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
@@ -22,6 +23,7 @@ export default function MainLayout() {
         <Route exact path="/settings" component={SettingsScreen} />
         <Route exact path="/settings/rates" component={DefaultRatesScreen} />
         <Route exact path="/settings/import" component={ImportScreen} />
+        <Route exact path="/settings/import/vehicles" component={ImportVehicleScreen} />
         <Route exact path="/">
           <MainRouteRedirect />
         </Route>
