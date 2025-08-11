@@ -236,7 +236,12 @@ export default function SessionScreen() {
         </div>
       )}
 
-      <SessionList sessions={filteredSessionLogs} onSelection={handleSessionSelection} />
+      <SessionList 
+        sessions={filteredSessionLogs} 
+        totalSessionCount={sessionLogs.length}
+        isFiltered={hasActiveFilters}
+        onSelection={handleSessionSelection} 
+      />
 
       <IonActionSheet
         isOpen={showFilterSheet}

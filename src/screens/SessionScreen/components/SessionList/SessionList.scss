@@ -1,4 +1,8 @@
 .session-list {
+  .session-list-header {
+    margin-bottom: 4px;
+  }
+
   .empty-list-message {
     display: flex;
     flex-direction: column;

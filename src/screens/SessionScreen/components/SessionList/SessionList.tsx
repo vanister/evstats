@@ -2,17 +2,28 @@ import './SessionList.scss';
 
 import { IonList, IonItem, IonLabel } from '@ionic/react';
 import { SessionLog } from '../../../../models/session';
+import EvsNote from '../../../../components/EvsNote/EvsNote';
 
 type SessionListProps = {
   sessions: SessionLog[];
+  totalSessionCount: number;
+  isFiltered: boolean;
   onSelection: (session: SessionLog) => void;
 };
 
 export default function SessionList(props: SessionListProps) {
-  const { sessions, onSelection } = props;
+  const { sessions, totalSessionCount, isFiltered, onSelection } = props;
 
   const handleItemClick = (session: SessionLog) => {
     onSelection(session);
+  };
+
+  // Create header text based on filter state
+  const getHeaderText = () => {
+    if (isFiltered) {
+      return `Showing ${sessions.length} of ${totalSessionCount} sessions`;
+    }
+    return `${totalSessionCount} Most Recent Sessions`;
   };
 
   if (sessions.length === 0) {
@@ -27,8 +38,10 @@ export default function SessionList(props: SessionListProps) {
   }
 
   return (
-    <IonList className="session-list" inset>
-      {sessions.map((session) => (
+    <div className="session-list">
+      <EvsNote className="session-list-header">{getHeaderText()}</EvsNote>
+      <IonList inset>
+        {sessions.map((session) => (
         <IonItem key={session.id} button detail={true} onClick={() => handleItemClick(session)}>
           <IonLabel>
             <h3>{session.rateType}</h3>
@@ -39,7 +52,8 @@ export default function SessionList(props: SessionListProps) {
             <h3>{`+${Math.round(session.kWh)} kWh`}</h3>
           </IonLabel>
         </IonItem>
-      ))}
-    </IonList>
+        ))}
+      </IonList>
+    </div>
   );
 }
