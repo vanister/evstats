@@ -19,8 +19,8 @@ export default function SessionList(props: SessionListProps) {
     return (
       <div className="session-list">
         <div className="empty-list-message">
-          <h3>No sessions found</h3>
-          <p>Try adjusting your filters or add a new session</p>
+          <h3>No charging sessions found</h3>
+          <p>Adjust your search criteria or add a new charging session to get started</p>
         </div>
       </div>
     );

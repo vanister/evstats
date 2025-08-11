@@ -1,8 +1,14 @@
 import './ChargeStatsScreen.scss';
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { IonButton, IonIcon, IonActionSheet, useIonViewWillEnter } from '@ionic/react';
-import { filter } from 'ionicons/icons';
+import {
+  IonButton,
+  IonIcon,
+  IonActionSheet,
+  useIonViewWillEnter,
+  useIonRouter
+} from '@ionic/react';
+import { filter, add } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
 import ChargeBarChart from './components/ChargeBarChart/ChargeBarChart';
@@ -13,10 +19,13 @@ import { Vehicle } from '../../models/vehicle';
 import { logToDevServer } from '../../logger';
 import { useAppSelector } from '../../redux/hooks';
 import { ALL_VEHICLES_ID } from '../../constants';
+import { useSessions } from '../SessionScreen/useSessions';
 
 export default function ChargeStatsScreen() {
+  const router = useIonRouter();
   const chargeStatsService = useServices('chargeStatsService');
   const vehicles = useAppSelector((s) => s.vehicles);
+  const { sessions } = useSessions();
   const [chartData, setChartData] = useState<ChargeStatData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +33,7 @@ export default function ChargeStatsScreen() {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
   const showEmptyState = !chartData && !loading && !error;
+  const hasNoSessions = sessions.length === 0 && !loading;
 
   const loadChartData = async () => {
     if (vehicles.length === 0) {
@@ -72,6 +82,10 @@ export default function ChargeStatsScreen() {
     setIsActionSheetOpen(true);
   }, []);
 
+  const handleAddSessionClick = useCallback(() => {
+    router.push('/sessions');
+  }, [router]);
+
   const getVehicleDisplayName = (vehicle: Vehicle) => {
     return vehicle.nickname || `${vehicle.make} ${vehicle.model}`;
   };
@@ -96,20 +110,23 @@ export default function ChargeStatsScreen() {
   };
 
   // Create action sheet buttons
-  const actionSheetButtons = useMemo(() => [
-    {
-      text: 'All Vehicles',
-      handler: () => handleVehicleFilterChange(ALL_VEHICLES_ID)
-    },
-    ...vehicles.map((vehicle) => ({
-      text: getVehicleDisplayName(vehicle),
-      handler: () => handleVehicleFilterChange(vehicle.id!)
-    })),
-    {
-      text: 'Cancel',
-      role: 'cancel'
-    }
-  ], [vehicles, handleVehicleFilterChange]);
+  const actionSheetButtons = useMemo(
+    () => [
+      {
+        text: 'All Vehicles',
+        handler: () => handleVehicleFilterChange(ALL_VEHICLES_ID)
+      },
+      ...vehicles.map((vehicle) => ({
+        text: getVehicleDisplayName(vehicle),
+        handler: () => handleVehicleFilterChange(vehicle.id!)
+      })),
+      {
+        text: 'Cancel',
+        role: 'cancel'
+      }
+    ],
+    [vehicles, handleVehicleFilterChange]
+  );
 
   // Create header filter button
   const filterButton = (
@@ -136,8 +153,23 @@ export default function ChargeStatsScreen() {
     >
       {loading && <EmptyState>Loading charge statistics...</EmptyState>}
       {error && <EmptyState>Error: {error}</EmptyState>}
-      {showEmptyState && <EmptyState>Not enough charge data</EmptyState>}
-      {chartData && (
+      {hasNoSessions && (
+        <div className="empty-state">
+          <h3>Add your first charging session</h3>
+          <p>
+            Track your electric vehicle charging sessions to see detailed statistics and cost
+            analysis.
+          </p>
+          <IonButton fill="outline" onClick={handleAddSessionClick} className="ion-margin-top">
+            <IonIcon icon={add} slot="start" />
+            Add Session
+          </IonButton>
+        </div>
+      )}
+      {showEmptyState && !hasNoSessions && (
+        <EmptyState>Not enough charge data for the selected time period</EmptyState>
+      )}
+      {chartData && !hasNoSessions && (
         <>
           <ChargeBarChart data={chartData} title={getChartTitle()} />
           <CostBarChart
