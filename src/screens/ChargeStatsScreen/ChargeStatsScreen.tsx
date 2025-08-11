@@ -136,11 +136,12 @@ export default function ChargeStatsScreen() {
   );
 
   const headerButtons = [
-    {
+    // Only show filter button when there are multiple vehicles and sessions to filter
+    ...(vehicles.length > 1 && sessions.length > 0 ? [{
       key: 'filter',
       button: filterButton,
       slot: 'start'
-    }
+    }] : [])
   ];
 
   return (

@@ -150,7 +150,8 @@ export default function SessionScreen() {
   const hasActiveFilters = selectedVehicleFilter !== null || searchTerm.trim() !== '';
 
   const headerButtons = [
-    {
+    // Only show filter button when there are multiple vehicles and sessions to filter
+    ...(vehicles.length > 1 && sessions.length > 0 ? [{
       key: 'filter',
       slot: 'start',
       button: (
@@ -158,7 +159,7 @@ export default function SessionScreen() {
           <IonIcon icon={filter} />
         </IonButton>
       )
-    },
+    }] : []),
     {
       key: 'add',
       slot: 'end',
@@ -189,8 +190,8 @@ export default function SessionScreen() {
     [vehicles]
   );
 
-  // Create search toolbar content
-  const searchToolbarContent = (
+  // Create search toolbar content - only show when there are sessions to search
+  const searchToolbarContent = sessions.length > 0 ? (
     <IonSearchbar
       value={searchTerm}
       placeholder="Search sessions..."
@@ -199,7 +200,7 @@ export default function SessionScreen() {
       onIonClear={clearSearch}
       showClearButton="focus"
     />
-  );
+  ) : undefined;
 
   return (
     <EvsPage
