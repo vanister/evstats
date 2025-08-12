@@ -23,7 +23,12 @@ export default function SessionList(props: SessionListProps) {
     if (isFiltered) {
       return `Showing ${sessions.length} of ${totalSessionCount} sessions`;
     }
-    return `${totalSessionCount} Most Recent Sessions`;
+
+    if (totalSessionCount === 0) {
+      return 'No sessions';
+    }
+
+    return `Last ${totalSessionCount} ${totalSessionCount > 1 ? 'sessions' : 'session'}`;
   };
 
   if (sessions.length === 0) {
@@ -42,16 +47,18 @@ export default function SessionList(props: SessionListProps) {
       <EvsNote className="session-list-header">{getHeaderText()}</EvsNote>
       <IonList inset>
         {sessions.map((session) => (
-        <IonItem key={session.id} button detail={true} onClick={() => handleItemClick(session)}>
-          <IonLabel>
-            <h3>{session.rateType}</h3>
-            <p>{session.date}</p>
-            <p><em>{session.vehicleName}</em></p>
-          </IonLabel>
-          <IonLabel slot="end">
-            <h3>{`+${Math.round(session.kWh)} kWh`}</h3>
-          </IonLabel>
-        </IonItem>
+          <IonItem key={session.id} button detail={true} onClick={() => handleItemClick(session)}>
+            <IonLabel>
+              <h3>{session.rateType}</h3>
+              <p>{session.date}</p>
+              <p>
+                <em>{session.vehicleName}</em>
+              </p>
+            </IonLabel>
+            <IonLabel slot="end">
+              <h3>{`+${Math.round(session.kWh)} kWh`}</h3>
+            </IonLabel>
+          </IonItem>
         ))}
       </IonList>
     </div>
