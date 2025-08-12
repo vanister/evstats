@@ -28,7 +28,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
       try {
         await dispatch(initializeApp({ rateService, vehicleService, preferenceService })).unwrap();
       } catch (error) {
-        logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error);
+        logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error, true);
         showAlert('Initialization error');
       }
     };

@@ -2,8 +2,8 @@ import { ExplicitAny } from '@evs-core';
 
 export type LogLevel = 'info' | 'warn' | 'error';
 
-export async function logToDevServer(message: string, level: LogLevel = 'info', stack?: string) {
-  if (import.meta.env.PROD || import.meta.env.MODE === 'production') {
+export async function logToDevServer(message: string, level: LogLevel = 'info', stack?: string, forceLog = false) {
+  if ((import.meta.env.PROD || import.meta.env.MODE === 'production') && !forceLog) {
     return;
   }
 
@@ -33,9 +33,5 @@ export async function logToDevServer(message: string, level: LogLevel = 'info', 
 }
 
 function logToConsole(...msg: ExplicitAny[]) {
-  if (import.meta.env.PROD || import.meta.env.MODE === 'production') {
-    return;
-  }
-
-  console.debug('evstats.info >>', ...msg);
+  console.log('evstats.info >>', ...msg);
 }

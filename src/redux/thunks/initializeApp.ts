@@ -48,7 +48,7 @@ export const initializeApp = createAsyncThunk(
       logToDevServer('taking down splash screen');
       await SplashScreen.hide();
     } catch (error) {
-      logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error);
+      logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error, true);
       throw error;
     }
   }

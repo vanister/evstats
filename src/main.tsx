@@ -58,6 +58,6 @@ databaseManager
     );
   })
   .catch((error) => {
-    logToDevServer(`error starting app: ${error?.message}`, 'error', error?.stack ?? error);
+    logToDevServer(`error starting app: ${error?.message}`, 'error', error?.stack ?? error, true);
     alert(`Error starting app: ${error?.message}`);
   });

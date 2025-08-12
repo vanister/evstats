@@ -101,7 +101,8 @@ export function getService<Service extends keyof ServiceContainer>(name: Service
     logToDevServer(
       `something is trying to get "${name}" from a container that is not built: ${error.message}`,
       'error',
-      error.stack
+      error.stack,
+      true
     );
     throw error;
   }
