@@ -25,6 +25,9 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchAutoHide: false,
       showSpinner: false
+    },
+    ScreenOrientation: {
+      orientation: 'portrait'
     }
   }
 };

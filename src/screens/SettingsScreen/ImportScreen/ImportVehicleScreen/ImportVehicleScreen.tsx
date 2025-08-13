@@ -157,12 +157,7 @@ export default function ImportVehicleScreen() {
         {currentState === 'complete' && importResult && (
           <>
             {importResult.success > 0 && (
-              <IonButton
-                expand="block"
-                fill="outline"
-                onClick={handleGoToVehicles}
-                className="ion-margin-top"
-              >
+              <IonButton expand="block" fill="outline" onClick={handleGoToVehicles} className="ion-margin-top">
                 View Vehicles
               </IonButton>
             )}
