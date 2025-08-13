@@ -18,7 +18,7 @@ export default function VehicleScreen() {
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState('');
+  const [deleteMessages, setDeleteMessages] = useState<{ subtitle?: string; message: string }>(null);
   const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle>(null);
 
   const {
@@ -67,9 +67,9 @@ export default function VehicleScreen() {
   };
 
   const handleDeleteClick = (vehicle: Vehicle) => {
-    const message = getDeleteConfirmationMessage(vehicle, vehicleStats);
+    const messages = getDeleteConfirmationMessage(vehicle, vehicleStats);
 
-    setDeleteMessage(message);
+    setDeleteMessages(messages);
     setShowDeleteAlert(true);
     setVehicleToDelete(vehicle);
   };
@@ -80,7 +80,7 @@ export default function VehicleScreen() {
     const error = await removeVehicle(vehicle);
 
     setVehicleToDelete(null);
-    setDeleteMessage('');
+    setDeleteMessages(null);
 
     if (error) {
       logToDevServer(`Failed to delete vehicle: ${error}`, 'error');
@@ -91,6 +91,12 @@ export default function VehicleScreen() {
         buttons: [{ text: 'OK', role: 'cancel' }]
       });
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteAlert(false);
+    setVehicleToDelete(null);
+    setDeleteMessages(null);
   };
 
   const handleSetDefaultClick = async (vehicle: Vehicle) => {
@@ -178,9 +184,10 @@ export default function VehicleScreen() {
       <IonAlert
         isOpen={showDeleteAlert}
         header="Confirm Delete"
-        message={deleteMessage}
+        subHeader={deleteMessages?.subtitle}
+        message={deleteMessages?.message}
         buttons={[
-          { text: 'Cancel', role: 'cancel' },
+          { text: 'Cancel', role: 'cancel', handler: handleDeleteCancel },
           { text: 'Delete', role: 'destructive', handler: () => handleDeleteConfirmed(vehicleToDelete) }
         ]}
       />
