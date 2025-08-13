@@ -112,12 +112,17 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
       const daysDiff = getDaysDifference(today, sessionDate);
 
       if (daysDiff >= 0 && daysDiff < 31) {
-        kwhByRateType[rateName][daysDiff] = kwh;
+        // Sum the kWh values, initializing to 0 if null
+        const currentValue = kwhByRateType[rateName][daysDiff] || 0;
+        kwhByRateType[rateName][daysDiff] = currentValue + kwh;
       }
     });
 
     const datasets = rateTypeNames
-      .filter((rateName) => !!kwhByRateType[rateName])
+      .filter((rateName) => {
+        // Only include rate types that have at least one non-null value
+        return kwhByRateType[rateName].some(value => value !== null && value > 0);
+      })
       .map<ChargeStatDataset>((rateName) => ({
         label: rateName,
         data: kwhByRateType[rateName].slice().reverse(),
@@ -130,13 +135,15 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
   private getAverages(datasets: ChargeStatDataset[], rateTypes: RateTypeDbo[]): ChargeAverage[] {
     const sum = (prev: number, curr: number) => prev + curr;
 
-    const averages = datasets.map<ChargeAverage>(({ data, label }) => {
-      const kWh = data.reduce(sum, 0);
+    // Create averages for all rate types, not just ones with data
+    const averages = rateTypes.map<ChargeAverage>((rateType) => {
+      const dataset = datasets.find(ds => ds.label === rateType.name);
+      const kWh = dataset ? dataset.data.reduce(sum, 0) : 0;
 
       return {
-        name: label,
+        name: rateType.name,
         kWh: kWh, // Keep precise values, round only in display
-        color: this.getRateTypeColor(label, rateTypes)
+        color: this.getRateTypeColor(rateType.name, rateTypes)
       };
     });
 

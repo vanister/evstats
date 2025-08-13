@@ -19,12 +19,23 @@ export function createCostChartConfig({
   totalCost,
   title
 }: CreateCostChartConfigOptions): ChartConfiguration {
+  // Calculate dynamic padding based on the longest dollar value
+  const maxValue = Math.max(...costTotals.map(ct => ct.cost), 0);
+  const longestText = `$${Math.round(maxValue)}`;
+  const estimatedTextWidth = longestText.length * 8; // Approximate 8px per character
+  const dynamicPadding = Math.max(20, estimatedTextWidth + 10); // At least 20px, plus 10px buffer
+
   return {
     type: 'bar',
     options: {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: {
+          right: dynamicPadding
+        }
+      },
       scales: {
         x: {
           beginAtZero: true,
