@@ -1,4 +1,4 @@
-import { IonIcon, IonButton, useIonAlert, useIonViewWillEnter } from '@ionic/react';
+import { IonIcon, IonButton, useIonAlert, useIonViewWillEnter, IonAlert } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useRef, useState, useMemo } from 'react';
 import EvsPage from '../../components/EvsPage';
@@ -8,6 +8,7 @@ import { Vehicle } from '../../models/vehicle';
 import VehicleList from './components/VehilceList/VehicleList';
 import VehicleModal from './components/VehicleModal/VehicleModal';
 import { useVehicles } from './useVehicles';
+import { getDeleteConfirmationMessage } from './helpers';
 
 export default function VehicleScreen() {
   const [showModal, setShowModal] = useState(false);
@@ -16,6 +17,10 @@ export default function VehicleScreen() {
   const [searchTerm, setSearchTerm] = useState('');
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState('');
+  const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle>(null);
+
   const {
     vehicles,
     vehicleStats,
@@ -62,27 +67,30 @@ export default function VehicleScreen() {
   };
 
   const handleDeleteClick = (vehicle: Vehicle) => {
-    const stats = vehicleStats.find((s) => s.vehicleId === vehicle.id);
-    const sessionCount = stats?.totalSessions ?? 0;
-    const vehicleName = vehicle.nickname ?? vehicle.model;
+    const message = getDeleteConfirmationMessage(vehicle, vehicleStats);
 
-    let message = `Are you sure you want to delete ${vehicleName}?`;
-    if (sessionCount > 0) {
-      message += ` This will also delete ${sessionCount} charging session${
-        sessionCount === 1 ? '' : 's'
-      } associated with this vehicle.`;
+    setDeleteMessage(message);
+    setShowDeleteAlert(true);
+    setVehicleToDelete(vehicle);
+  };
+
+  const handleDeleteConfirmed = async (vehicle: Vehicle) => {
+    setShowDeleteAlert(false);
+
+    const error = await removeVehicle(vehicle);
+
+    setVehicleToDelete(null);
+    setDeleteMessage('');
+
+    if (error) {
+      logToDevServer(`Failed to delete vehicle: ${error}`, 'error');
+
+      await showAlert({
+        header: 'Error',
+        message: `Failed to delete vehicle: ${error}`,
+        buttons: [{ text: 'OK', role: 'cancel' }]
+      });
     }
-
-    showAlert(message, [
-      { text: 'Cancel', role: 'cancel' },
-      {
-        text: 'Delete',
-        role: 'destructive',
-        handler: async () => {
-          await removeVehicle(vehicle);
-        }
-      }
-    ]);
   };
 
   const handleSetDefaultClick = async (vehicle: Vehicle) => {
@@ -90,9 +98,7 @@ export default function VehicleScreen() {
       await setDefaultVehicle(vehicle);
     } catch (error) {
       logToDevServer(`Failed to set default vehicle: ${error.message}`, 'error', error.stack);
-      await showAlert('Failed to set default vehicle. Please try again.', [
-        { text: 'OK', role: 'cancel' }
-      ]);
+      await showAlert('Failed to set default vehicle. Please try again.', [{ text: 'OK', role: 'cancel' }]);
     }
   };
 
@@ -112,9 +118,9 @@ export default function VehicleScreen() {
     if (searchTerm.trim()) {
       const search = searchTerm.toLowerCase();
       filtered = vehicles.filter((vehicle) => {
-        const searchableText = `${vehicle.make} ${vehicle.model} ${vehicle.nickname || ''} ${
-          vehicle.year || ''
-        } ${vehicle.batterySize || ''}kWh`.toLowerCase();
+        const searchableText = `${vehicle.make} ${vehicle.model} ${vehicle.nickname || ''} ${vehicle.year || ''} ${
+          vehicle.batterySize || ''
+        }kWh`.toLowerCase();
 
         return searchableText.includes(search);
       });
@@ -147,7 +153,7 @@ export default function VehicleScreen() {
         onInput={handleSearchInput}
         onClear={clearSearch}
       />
-    ) : undefined;
+    ) : null;
 
   return (
     <EvsPage
@@ -167,6 +173,16 @@ export default function VehicleScreen() {
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEditClick}
         onSetDefaultClick={handleSetDefaultClick}
+      />
+
+      <IonAlert
+        isOpen={showDeleteAlert}
+        header="Confirm Delete"
+        message={deleteMessage}
+        buttons={[
+          { text: 'Cancel', role: 'cancel' },
+          { text: 'Delete', role: 'destructive', handler: () => handleDeleteConfirmed(vehicleToDelete) }
+        ]}
       />
 
       {showModal && (

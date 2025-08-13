@@ -10,6 +10,7 @@ export interface SessionRepository {
   add(session: SessionDbo): Promise<SessionDbo>;
   update(session: SessionDbo): Promise<number>;
   remove(id: number): Promise<boolean>;
+  removeByVehicleId(vehicleId: number): Promise<number>;
 }
 
 export class EvsSessionRepository extends BaseRepository<SessionDbo> implements SessionRepository {
@@ -58,6 +59,12 @@ export class EvsSessionRepository extends BaseRepository<SessionDbo> implements 
     const { changes } = await this.context.run(SessionSql.Delete, [id]);
 
     return changes > 0;
+  }
+
+  async removeByVehicleId(vehicleId: number): Promise<number> {
+    const { changes } = await this.context.run(SessionSql.DeleteByVehicleId, [vehicleId]);
+
+    return changes;
   }
 
 }

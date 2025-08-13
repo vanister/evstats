@@ -24,4 +24,8 @@ export class SessionSql {
     SELECT * FROM sessions WHERE vehicle_id = ? ORDER BY date DESC;
   `;
 
+  public static readonly DeleteByVehicleId = `
+    DELETE FROM sessions WHERE vehicle_id = ?;
+  `;
+
 }

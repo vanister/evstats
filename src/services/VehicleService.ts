@@ -1,10 +1,14 @@
 import { VehicleRepository } from '../data/repositories/VehicleRepository';
+import { SessionRepository } from '../data/repositories/SessionRepository';
 import { NotFoundError } from '../errors/NotFoundError';
 import { Vehicle, VehicleDbo } from '../models/vehicle';
 import { BaseService } from './BaseService';
 import { PartialPropertyRecord } from './service-types';
 import { PreferenceService } from './PreferenceService';
 import { PreferenceKeys } from '../constants';
+import { SessionSql } from '../data/sql/SessionSql';
+import { VehicleSql } from '../data/sql/VehicleSql';
+import { DbContext } from '../data/DbContext';
 
 export interface VehicleService {
   list(): Promise<Vehicle[]>;
@@ -28,7 +32,9 @@ export class EvsVehicleService extends BaseService implements VehicleService {
 
   constructor(
     private vehicleRepository: VehicleRepository,
-    private preferenceService: PreferenceService
+    private sessionRepository: SessionRepository,
+    private preferenceService: PreferenceService,
+    private context: DbContext
   ) {
     super();
   }
@@ -69,21 +75,31 @@ export class EvsVehicleService extends BaseService implements VehicleService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const removed = await this.vehicleRepository.remove(id);
+    // Use a transaction to ensure data integrity
+    // First delete all sessions for this vehicle, then delete the vehicle
+    const statements = [
+      { statement: SessionSql.DeleteByVehicleId, values: [id] },
+      { statement: VehicleSql.Delete, values: [id] }
+    ];
 
-    // If we're removing the default vehicle, clear the default preference
-    const defaultVehicleId = await this.getDefaultVehicleId();
-    if (defaultVehicleId === id) {
-      await this.preferenceService.remove(PreferenceKeys.DefaultVehicleId);
+    const { changes } = await this.context.executeSet(statements, true);
+    const vehicleWasRemoved = changes > 0;
+
+    if (vehicleWasRemoved) {
+      // If we're removing the default vehicle, clear the default preference
+      const defaultVehicleId = await this.getDefaultVehicleId();
+      if (defaultVehicleId === id) {
+        await this.preferenceService.remove(PreferenceKeys.DefaultVehicleId);
+      }
+
+      // If we're removing the last used vehicle, clear the last used preference
+      const lastUsedVehicleId = await this.preferenceService.get<number>(PreferenceKeys.LastUsedVehicleId, 'number');
+      if (lastUsedVehicleId === id) {
+        await this.preferenceService.remove(PreferenceKeys.LastUsedVehicleId);
+      }
     }
 
-    // If we're removing the last used vehicle, clear the last used preference
-    const lastUsedVehicleId = await this.preferenceService.get<number>(PreferenceKeys.LastUsedVehicleId, 'number');
-    if (lastUsedVehicleId === id) {
-      await this.preferenceService.remove(PreferenceKeys.LastUsedVehicleId);
-    }
-
-    return removed;
+    return vehicleWasRemoved;
   }
 
   async getDefaultVehicleId(): Promise<number | null> {

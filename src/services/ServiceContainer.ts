@@ -64,7 +64,9 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const rateService: RateService = new EvsRateService(rateRepository);
   const vehicleService: VehicleService = new EvsVehicleService(
     vehicleRepository,
-    preferenceService
+    sessionRepository,
+    preferenceService,
+    context
   );
   const vehicleStatsService: VehicleStatsService = new EvsVehicleStatsService(
     vehicleStatsRepository,
