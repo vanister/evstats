@@ -1,12 +1,4 @@
-import {
-  IonIcon,
-  IonButton,
-  useIonViewWillEnter,
-  IonActionSheet,
-  IonChip,
-  IonLabel,
-  useIonAlert
-} from '@ionic/react';
+import { IonIcon, IonButton, useIonViewWillEnter, IonActionSheet, IonChip, IonLabel, useIonAlert } from '@ionic/react';
 import { add, filter, close } from 'ionicons/icons';
 import { useMemo, useState, useRef } from 'react';
 import EvsPage from '../../components/EvsPage';
@@ -23,7 +15,7 @@ import { validateSession, isValidSession } from './validator';
 export default function SessionScreen() {
   const pageRef = useRef<HTMLElement>(null);
   const [showAlert] = useIonAlert();
-  const { sessions, loadSessions, addSession, updateSession, getSession } = useSessions();
+  const { sessions, loadSessions, addSession, updateSession, getSession, removeSession } = useSessions();
   const vehicles = useAppSelector((s) => s.vehicles);
   const rateTypes = useAppSelector((s) => s.rateType.rateTypes);
   const lastUsedRateTypeId = useAppSelector((s) => s.lastUsed.rateTypeId);
@@ -116,6 +108,33 @@ export default function SessionScreen() {
   const handleModalDismiss = () => {
     setShowModal(false);
     setEditingSession(null);
+  };
+
+  const handleSessionDelete = async (sessionLog: SessionLog) => {
+    await showAlert({
+      header: 'Confirm Delete',
+      message: 'Are you sure you want to delete this session?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            const error = await removeSession(sessionLog.id);
+            if (error) {
+              await showAlert({
+                header: 'Error',
+                message: `Failed to delete session: ${error}`,
+                buttons: [{ text: 'OK', role: 'cancel' }]
+              });
+            }
+          }
+        }
+      ]
+    });
   };
 
   const handleFilterClick = () => {
@@ -224,11 +243,7 @@ export default function SessionScreen() {
             </IonChip>
           )}
           {searchTerm.trim() && (
-            <IonChip
-              color="secondary"
-              onClick={clearSearch}
-              style={{ marginLeft: currentFilterName ? '8px' : '0' }}
-            >
+            <IonChip color="secondary" onClick={clearSearch} style={{ marginLeft: currentFilterName ? '8px' : '0' }}>
               <IonLabel>Search: &ldquo;{searchTerm}&rdquo;</IonLabel>
               <IonIcon icon={close} />
             </IonChip>
@@ -236,11 +251,12 @@ export default function SessionScreen() {
         </div>
       )}
 
-      <SessionList 
-        sessions={filteredSessionLogs} 
+      <SessionList
+        sessions={filteredSessionLogs}
         totalSessionCount={sessionLogs.length}
         isFiltered={hasActiveFilters}
-        onSelection={handleSessionSelection} 
+        onSelection={handleSessionSelection}
+        onDelete={handleSessionDelete}
       />
 
       <IonActionSheet

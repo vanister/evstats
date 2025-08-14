@@ -112,11 +112,38 @@ export function useSessions() {
     [sessionService, dispatch, setState]
   );
 
+  const removeSession = useCallback(
+    async (id: number): Promise<string | null> => {
+      setState((s) => {
+        s.operationLoading = true;
+      });
+
+      try {
+        await sessionService.remove(id);
+
+        setState((s) => {
+          s.sessions = s.sessions.filter((session) => session.id !== id);
+          s.operationLoading = false;
+        });
+
+        return null;
+      } catch (error) {
+        logToDevServer(`Failed to remove session: ${error.message}`, 'error', error.stack);
+        setState((s) => {
+          s.operationLoading = false;
+        });
+        return error.message || 'Failed to delete session. Please try again.';
+      }
+    },
+    [sessionService, setState]
+  );
+
   return {
     ...state,
     loadSessions,
     addSession,
     getSession,
-    updateSession
+    updateSession,
+    removeSession
   };
 }
