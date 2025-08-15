@@ -227,3 +227,4 @@ Use WebSearch or WebFetch tools to verify API usage before implementing features
 
 - Do not use `any` for types, always be explicit when typing
 - No inline styles unless they are dynamic or absolutely required
+- Always use the dateUtility for all date operations. Add to it if needed. It should always use date-fns before custom implemenations:

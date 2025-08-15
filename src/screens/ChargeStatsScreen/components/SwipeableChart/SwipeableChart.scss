@@ -1,0 +1,28 @@
+.swipeable-chart {
+  .view-mode-segment {
+    margin-bottom: 16px;
+  }
+
+  .chart-container {
+    position: relative;
+    touch-action: pan-y; // Allow vertical scrolling but capture horizontal swipes
+    
+    .chart-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      z-index: 10;
+    }
+  }
+
+  .swipeable-chart-error {
+    text-align: center;
+    padding: 32px;
+    color: var(--ion-color-danger);
+  }
+}

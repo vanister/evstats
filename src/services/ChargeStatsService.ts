@@ -20,6 +20,10 @@ import {
 export interface ChargeStatsService {
   getLast31Days(vehicleId: number, fromDate?: Date): Promise<ChargeStatData>;
   getAllVehiclesLast31Days(fromDate?: Date): Promise<ChargeStatData>;
+  getMonth(vehicleId: number, yearMonth: string): Promise<ChargeStatData>;
+  getAllVehiclesMonth(yearMonth: string): Promise<ChargeStatData>;
+  getYear(vehicleId: number, year: string): Promise<ChargeStatData>;
+  getAllVehiclesYear(year: string): Promise<ChargeStatData>;
 }
 
 /** Charge stats chart data service. */
@@ -180,5 +184,192 @@ export class EvsChargeStatsService extends BaseService implements ChargeStatsSer
     }, 0);
 
     return Math.round(totalCost * 100) / 100;
+  }
+
+  async getMonth(vehicleId: number, yearMonth: string): Promise<ChargeStatData> {
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getMonth(vehicleId, yearMonth);
+    const datasets: ChargeStatDataset[] = this.createMonthlyDataset(chargeStats, rateTypes, yearMonth);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
+    const totalCost: number = this.getTotalCost(chargeStats);
+
+    const data: ChargeStatData = {
+      vehicleId,
+      vehicleIds: [vehicleId],
+      labels: this.getMonthLabels(yearMonth),
+      datasets,
+      averages,
+      costTotals,
+      totalCost
+    };
+
+    return data;
+  }
+
+  async getAllVehiclesMonth(yearMonth: string): Promise<ChargeStatData> {
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getMonthAllVehicles(yearMonth);
+    
+    const vehicleIds = Array.from(new Set(chargeStats.map((stat) => stat.vehicle_id)));
+    const datasets: ChargeStatDataset[] = this.createMonthlyDataset(chargeStats, rateTypes, yearMonth);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
+    const totalCost: number = this.getTotalCost(chargeStats);
+
+    const data: ChargeStatData = {
+      vehicleId: 0,
+      vehicleIds,
+      labels: this.getMonthLabels(yearMonth),
+      datasets,
+      averages,
+      costTotals,
+      totalCost
+    };
+
+    return data;
+  }
+
+  async getYear(vehicleId: number, year: string): Promise<ChargeStatData> {
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getYear(vehicleId, year);
+    const datasets: ChargeStatDataset[] = this.createYearlyDataset(chargeStats, rateTypes, year);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
+    const totalCost: number = this.getTotalCost(chargeStats);
+
+    const data: ChargeStatData = {
+      vehicleId,
+      vehicleIds: [vehicleId],
+      labels: this.getYearLabels(),
+      datasets,
+      averages,
+      costTotals,
+      totalCost
+    };
+
+    return data;
+  }
+
+  async getAllVehiclesYear(year: string): Promise<ChargeStatData> {
+    const rateTypes = await this.rateRepository.list();
+    const chargeStats = await this.chargeStatsRepository.getYearAllVehicles(year);
+    
+    const vehicleIds = Array.from(new Set(chargeStats.map((stat) => stat.vehicle_id)));
+    const datasets: ChargeStatDataset[] = this.createYearlyDataset(chargeStats, rateTypes, year);
+    const averages: ChargeAverage[] = this.getAverages(datasets, rateTypes);
+    const costTotals: CostTotal[] = this.getCostTotals(chargeStats, rateTypes);
+    const totalCost: number = this.getTotalCost(chargeStats);
+
+    const data: ChargeStatData = {
+      vehicleId: 0,
+      vehicleIds,
+      labels: this.getYearLabels(),
+      datasets,
+      averages,
+      costTotals,
+      totalCost
+    };
+
+    return data;
+  }
+
+  private createMonthlyDataset(
+    chargeStats: ChargeStatsDbo[],
+    rateTypes: RateTypeDbo[],
+    yearMonth: string
+  ): ChargeStatDataset[] {
+    const rateTypeNames = rateTypes.map((rt) => rt.name);
+    const daysInMonth = this.getDaysInMonth(yearMonth);
+
+    const kwhByRateType: Record<string, (number | null)[]> = rateTypes.reduce(
+      (acc, { name }) => ({
+        ...acc,
+        [name]: new Array(daysInMonth).fill(null)
+      }),
+      {}
+    );
+
+    chargeStats.forEach(({ date, kwh, rate_name: rateName }) => {
+      const sessionDate = parseLocalDate(date);
+      const sessionYearMonth = `${sessionDate.getFullYear()}-${String(sessionDate.getMonth() + 1).padStart(2, '0')}`;
+      
+      // Only process dates that actually belong to the target month
+      if (sessionYearMonth === yearMonth) {
+        const dayOfMonth = sessionDate.getDate() - 1; // 0-indexed
+
+        if (dayOfMonth >= 0 && dayOfMonth < daysInMonth) {
+          const currentValue = kwhByRateType[rateName][dayOfMonth] || 0;
+          kwhByRateType[rateName][dayOfMonth] = currentValue + kwh;
+        }
+      }
+    });
+
+    const datasets = rateTypeNames
+      .filter((rateName) => {
+        return kwhByRateType[rateName].some(value => value !== null && value > 0);
+      })
+      .map<ChargeStatDataset>((rateName) => ({
+        label: rateName,
+        data: kwhByRateType[rateName],
+        backgroundColor: this.getRateTypeColor(rateName, rateTypes)
+      }));
+
+    return datasets;
+  }
+
+  private createYearlyDataset(
+    chargeStats: ChargeStatsDbo[],
+    rateTypes: RateTypeDbo[],
+    year: string
+  ): ChargeStatDataset[] {
+    const rateTypeNames = rateTypes.map((rt) => rt.name);
+
+    const kwhByRateType: Record<string, (number | null)[]> = rateTypes.reduce(
+      (acc, { name }) => ({
+        ...acc,
+        [name]: new Array(12).fill(null)
+      }),
+      {}
+    );
+
+    chargeStats.forEach(({ date, kwh, rate_name: rateName }) => {
+      const sessionDate = parseLocalDate(date);
+      const sessionYear = sessionDate.getFullYear().toString();
+      
+      // Only process dates that actually belong to the target year
+      if (sessionYear === year) {
+        const monthIndex = sessionDate.getMonth(); // 0-indexed (0 = January)
+
+        const currentValue = kwhByRateType[rateName][monthIndex] || 0;
+        kwhByRateType[rateName][monthIndex] = currentValue + kwh;
+      }
+    });
+
+    const datasets = rateTypeNames
+      .filter((rateName) => {
+        return kwhByRateType[rateName].some(value => value !== null && value > 0);
+      })
+      .map<ChargeStatDataset>((rateName) => ({
+        label: rateName,
+        data: kwhByRateType[rateName],
+        backgroundColor: this.getRateTypeColor(rateName, rateTypes)
+      }));
+
+    return datasets;
+  }
+
+  private getMonthLabels(yearMonth: string): string[] {
+    const daysInMonth = this.getDaysInMonth(yearMonth);
+    return Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString());
+  }
+
+  private getYearLabels(): string[] {
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  }
+
+  private getDaysInMonth(yearMonth: string): number {
+    const [year, month] = yearMonth.split('-').map(Number);
+    return new Date(year, month, 0).getDate();
   }
 }

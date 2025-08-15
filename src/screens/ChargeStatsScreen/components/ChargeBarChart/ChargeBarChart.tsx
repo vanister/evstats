@@ -11,9 +11,11 @@ type ChargeBarChartProps = {
   data: ChargeStatData | null;
   title?: string;
   today?: Date;
+  isLast31Days?: boolean;
+  currentPeriod?: string;
 };
 
-export default function ChargeBarChart({ data, title, today: todayProp }: ChargeBarChartProps) {
+export default function ChargeBarChart({ data, title, today: todayProp, isLast31Days = true, currentPeriod }: ChargeBarChartProps) {
   const chart = useRef<Chart>();
   const chartCanvasRef = useRef<HTMLCanvasElement>();
   const today = useRef(todayProp || new Date());
@@ -29,11 +31,13 @@ export default function ChargeBarChart({ data, title, today: todayProp }: Charge
     const config = createChartConfig({
       data,
       title,
-      today: today.current
+      today: today.current,
+      isLast31Days,
+      currentPeriod
     });
 
     setChartConfig(config);
-  }, [data, title, todayProp]);
+  }, [data, title, todayProp, isLast31Days, currentPeriod]);
 
   useLayoutEffect(() => {
     if (!chartConfig) {

@@ -11,11 +11,8 @@ import {
 import { filter, add } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import { useServices } from '../../providers/ServiceProvider';
-import ChargeBarChart from './components/ChargeBarChart/ChargeBarChart';
-import CostBarChart from './components/CostBarChart/CostBarChart';
-import EmptyState from '../../components/EmptyState';
+import SwipeableChart, { ViewMode } from './components/SwipeableChart/SwipeableChart';
 import { ChargeStatData } from '../../models/chargeStats';
-import { Vehicle } from '../../models/vehicle';
 import { logToDevServer } from '../../logger';
 import { useAppSelector } from '../../redux/hooks';
 import { ALL_VEHICLES_ID } from '../../constants';
@@ -32,11 +29,40 @@ export default function ChargeStatsScreen() {
 
   const showEmptyState = !chartData && !loading && !error;
 
-  const loadChartData = async () => {
+  const checkDataExists = async (viewMode: ViewMode, period: string): Promise<boolean> => {
+    try {
+      let data: ChargeStatData;
+
+      if (viewMode === 'monthly') {
+        if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+          data = await chargeStatsService.getAllVehiclesMonth(period);
+        } else {
+          data = await chargeStatsService.getMonth(selectedVehicleFilter, period);
+        }
+      } else if (viewMode === 'yearly') {
+        if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+          data = await chargeStatsService.getAllVehiclesYear(period);
+        } else {
+          data = await chargeStatsService.getYear(selectedVehicleFilter, period);
+        }
+      } else {
+        return false;
+      }
+
+      // Check if data has any actual values
+      return data && data.datasets.some(dataset => 
+        dataset.data.some(value => value !== null && value > 0)
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  const loadChartData = async (viewMode: ViewMode = 'monthly', period?: string, isLast31Days?: boolean): Promise<boolean> => {
     if (vehicles.length === 0) {
       setError('No vehicles available');
       setLoading(false);
-      return;
+      return false;
     }
 
     setLoading(true);
@@ -45,16 +71,47 @@ export default function ChargeStatsScreen() {
     try {
       let data: ChargeStatData;
 
-      if (selectedVehicleFilter === ALL_VEHICLES_ID) {
-        data = await chargeStatsService.getAllVehiclesLast31Days();
+      if (viewMode === 'monthly') {
+        if (isLast31Days || period === '') {
+          // Use last 31 days data
+          if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+            data = await chargeStatsService.getAllVehiclesLast31Days();
+          } else {
+            data = await chargeStatsService.getLast31Days(selectedVehicleFilter);
+          }
+        } else {
+          if (!period) {
+            setError('Period is required for historical monthly view');
+            return false;
+          }
+          // Use monthly data for specific months
+          if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+            data = await chargeStatsService.getAllVehiclesMonth(period);
+          } else {
+            data = await chargeStatsService.getMonth(selectedVehicleFilter, period);
+          }
+        }
+      } else if (viewMode === 'yearly') {
+        if (!period) {
+          setError('Period is required for yearly view');
+          return false;
+        }
+        if (selectedVehicleFilter === ALL_VEHICLES_ID) {
+          data = await chargeStatsService.getAllVehiclesYear(period);
+        } else {
+          data = await chargeStatsService.getYear(selectedVehicleFilter, period);
+        }
       } else {
-        data = await chargeStatsService.getLast31Days(selectedVehicleFilter);
+        setError('Invalid view mode');
+        return false;
       }
 
       setChartData(data);
+      return true;
     } catch (error) {
       logToDevServer(`Error loading charge stats: ${error.message}`, 'error', error.stack);
       setError(error.message || 'Failed to load charge statistics');
+      return false;
     } finally {
       setLoading(false);
     }
@@ -62,12 +119,12 @@ export default function ChargeStatsScreen() {
 
   // Load data initially when screen enters
   useIonViewWillEnter(() => {
-    loadChartData();
+    loadChartData('monthly', '', true); // Start with Last 31 Days
   });
 
   // Reload data when filter changes
   useEffect(() => {
-    loadChartData();
+    loadChartData('monthly', '', true); // Reset to Last 31 Days when filter changes
   }, [selectedVehicleFilter]);
 
   const handleVehicleFilterChange = useCallback((value: number) => {
@@ -83,30 +140,11 @@ export default function ChargeStatsScreen() {
     router.push('/sessions');
   }, [router]);
 
-  const getVehicleDisplayName = (vehicle: Vehicle) => {
+  // Create action sheet buttons
+  const getVehicleDisplayName = (vehicle: { nickname?: string; make: string; model: string }) => {
     return vehicle.nickname || `${vehicle.make} ${vehicle.model}`;
   };
 
-  const getChartTitle = () => {
-    if (selectedVehicleFilter === ALL_VEHICLES_ID) {
-      return 'Last 31 Days - All Vehicles';
-    }
-
-    const vehicle = vehicles.find((v) => v.id === selectedVehicleFilter);
-    return vehicle ? `Last 31 Days - ${getVehicleDisplayName(vehicle)}` : 'Last 31 Days';
-  };
-
-  const getCostChartTitle = () => {
-    const baseTitle = 'Costs';
-    if (selectedVehicleFilter === ALL_VEHICLES_ID) {
-      return `${baseTitle} - All Vehicles`;
-    }
-
-    const vehicle = vehicles.find((v) => v.id === selectedVehicleFilter);
-    return vehicle ? `${baseTitle} - ${getVehicleDisplayName(vehicle)}` : baseTitle;
-  };
-
-  // Create action sheet buttons
   const actionSheetButtons = useMemo(
     () => [
       {
@@ -149,8 +187,6 @@ export default function ChargeStatsScreen() {
       hideBack={true}
       headerButtons={headerButtons}
     >
-      {loading && <EmptyState>Loading charge statistics...</EmptyState>}
-      {error && <EmptyState>Error: {error}</EmptyState>}
       {showEmptyState && (
         <div className="empty-state">
           <h3>No charging sessions found</h3>
@@ -163,15 +199,16 @@ export default function ChargeStatsScreen() {
           </IonButton>
         </div>
       )}
-      {chartData && (
-        <>
-          <ChargeBarChart data={chartData} title={getChartTitle()} />
-          <CostBarChart
-            costTotals={chartData.costTotals}
-            totalCost={chartData.totalCost}
-            title={getCostChartTitle()}
-          />
-        </>
+      {!showEmptyState && (
+        <SwipeableChart
+          data={chartData}
+          loading={loading}
+          error={error}
+          selectedVehicleFilter={selectedVehicleFilter}
+          vehicles={vehicles}
+          onDataRequest={loadChartData}
+          onCheckDataExists={checkDataExists}
+        />
       )}
 
       <IonActionSheet
