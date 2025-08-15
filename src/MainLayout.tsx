@@ -7,6 +7,7 @@ import SettingsScreen from './screens/SettingsScreen/SettingsScreen';
 import ImportScreen from './screens/SettingsScreen/ImportScreen/ImportScreen';
 import ImportVehicleScreen from './screens/SettingsScreen/ImportScreen/ImportVehicleScreen/ImportVehicleScreen';
 import ImportSessionScreen from './screens/SettingsScreen/ImportScreen/ImportSessionScreen/ImportSessionScreen';
+import ExportScreen from './screens/SettingsScreen/ExportScreen/ExportScreen';
 import DefaultRatesScreen from './screens/DefaultRatesScreen/DefaultRatesScreen';
 import { useAppSelector } from './redux/hooks';
 import VehicleScreen from './screens/VehicleScreen/VehicleScreen';
@@ -26,6 +27,7 @@ export default function MainLayout() {
         <Route exact path="/settings/import" component={ImportScreen} />
         <Route exact path="/settings/import/vehicles" component={ImportVehicleScreen} />
         <Route exact path="/settings/import/sessions" component={ImportSessionScreen} />
+        <Route exact path="/settings/export" component={ExportScreen} />
         <Route exact path="/">
           <MainRouteRedirect />
         </Route>

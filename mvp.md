@@ -20,22 +20,22 @@
 - [x] Set default vehicle functionality
 - [x] Data persistence and error handling
 
-### 3. ⚠️ Charge Stats - **PARTIALLY COMPLETE**
+### 3. ✅ Charge Stats - **COMPLETE**
 
 - [x] Last 31 days statistics with charts
 - [x] Cost analysis and breakdowns
 - [x] Vehicle filtering
-- [ ] **MISSING: Swipe navigation between time periods (Last 31 Days ↔ Monthly ↔ Yearly)**
-- [ ] **MISSING: Monthly stats functionality with historical navigation**
-- [ ] **MISSING: Yearly stats functionality with historical navigation**
-- [ ] **MISSING: Month/Year toggle component (reusable)**
+- [x] Swipe navigation between time periods (Last 31 Days ↔ Monthly ↔ Yearly)
+- [x] Monthly stats functionality with historical navigation
+- [x] Yearly stats functionality with historical navigation
+- [x] Month/Year toggle component (SwipeableChart)
 
-### 4. ⚠️ Import/Export Data - **PARTIALLY COMPLETE**
+### 4. ✅ Import/Export Data - **COMPLETE**
 
 - [x] Vehicle CSV import with validation
-- [x] Session CSV import with validation
+- [x] Session CSV import with validation  
 - [x] Error handling and user feedback
-- [ ] **MISSING: Export functionality**
+- [x] Export functionality (CSV export for vehicles and sessions)
 
 ### 5. ❌ In-App Purchases - **NOT STARTED**
 
@@ -50,29 +50,23 @@
 
 ### 🚨 Must Fix Before Launch
 
-1. **Swipe Navigation & Historical Statistics**
+1. ~~**Swipe Navigation & Historical Statistics**~~ ✅ **COMPLETED**
 
-   - [ ] Add `getMonth()` and `getYear()` methods to ChargeStatsRepository for historical periods
-   - [ ] Add corresponding methods to ChargeStatsService
-   - [ ] Create reusable SwipeableChart component with month/year toggle
-   - [ ] Implement swipe right (go back) and swipe left (go forward) navigation
-   - [ ] Add period navigation: Last 31 Days → August → July → etc.
-   - [ ] Add year navigation with same swipe pattern
+   - [x] Add `getMonth()` and `getYear()` methods to ChargeStatsRepository for historical periods
+   - [x] Add corresponding methods to ChargeStatsService
+   - [x] Create reusable SwipeableChart component with month/year toggle
+   - [x] Implement swipe right (go back) and swipe left (go forward) navigation
+   - [x] Add period navigation: Last 31 Days → August → July → etc.
+   - [x] Add year navigation with same swipe pattern
 
-2. **Data Export Functionality**
+2. ~~**Data Export Functionality**~~ ✅ **COMPLETED**
 
-   - [ ] Implement CSV export for vehicles
-   - [ ] Implement CSV export for sessions
-   - [ ] Add export button to settings screen
-   - [ ] Add file download/sharing capability
+   - [x] Implement CSV export for vehicles
+   - [x] Implement CSV export for sessions
+   - [x] Add export button to settings screen
+   - [x] Add file download/sharing capability
 
-3. **Backup/Restore Feature**
-   - [ ] Complete DatabaseBackupService implementation
-   - [ ] Add backup creation functionality
-   - [ ] Add restore from backup functionality
-   - [ ] Enable backup/restore UI in settings
-
-4. **In-App Purchases**
+3. **In-App Purchases**
    - [ ] Install and configure Capacitor In-App Purchase plugin
    - [ ] Create purchase service with 4 tipping options
    - [ ] Add tip jar UI to settings screen
@@ -98,14 +92,13 @@
 
 ## Current Status Summary
 
-**🟢 Ready**: Sessions and Vehicles CRUD (40% of MVP)  
-**🟡 Partial**: Stats and Import/Export (40% of MVP)  
-**🔴 Missing**: Swipe navigation, Yearly stats, Export, Backup/Restore, In-App Purchases (20% of MVP)
+**🟢 Ready**: Sessions, Vehicles, Charge Stats, and Import/Export (80% of MVP)  
+**🔴 Missing**: In-App Purchases (20% of MVP)
 
 ## Estimated Timeline to MVP
 
-**Critical items**: 2-3 weeks  
-**Total MVP completion**: 3-4 weeks
+**Critical items**: 1 week (In-App Purchases only)  
+**Total MVP completion**: 1-2 weeks
 
 ## Technical Debt (Post-MVP)
 
@@ -169,5 +162,5 @@
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: August 2025  
 **MVP Target**: Q1 2025
