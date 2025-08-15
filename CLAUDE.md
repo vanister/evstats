@@ -16,6 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Guidelines
 
 - Always run lint and build when confirming
+- Comments should explain WHY, not WHAT - code should be self-documenting for what it does
 
 ## Architecture Overview
 
