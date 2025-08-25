@@ -14,6 +14,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
   const rateService = useServices('rateService');
   const vehicleService = useServices('vehicleService');
   const preferenceService = useServices('preferenceService');
+  const purchaseService = useServices('purchaseService');
   const appState = useAppSelector((state) => state.app);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
 
     const initialize = async () => {
       try {
-        await dispatch(initializeApp({ rateService, vehicleService, preferenceService })).unwrap();
+        await dispatch(initializeApp({ rateService, vehicleService, preferenceService, purchaseService })).unwrap();
       } catch (error) {
         logToDevServer(`error initializing app: ${error?.message}`, 'error', error?.stack ?? error, true);
         showAlert('Initialization error');
@@ -34,7 +35,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
     };
 
     initialize();
-  }, [serviceReady, dispatch, rateService, vehicleService, preferenceService, showAlert, appState.initialized]);
+  }, [serviceReady, dispatch, rateService, vehicleService, preferenceService, purchaseService, showAlert, appState.initialized]);
 
   if (!appState.initialized) {
     // todo consider showing a loading spinner

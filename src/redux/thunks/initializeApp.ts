@@ -8,17 +8,19 @@ import { setDefaultVehicleId } from '../defaultVehicleSlice';
 import { RateService } from '../../services/RateService';
 import { VehicleService } from '../../services/VehicleService';
 import { PreferenceService } from '../../services/PreferenceService';
+import { PurchaseService } from '../../services/PurchaseService';
 import { logToDevServer } from '../../logger';
 
 type InitializeAppArgs = {
   rateService: RateService;
   vehicleService: VehicleService;
   preferenceService: PreferenceService;
+  purchaseService: PurchaseService;
 };
 
 export const initializeApp = createAsyncThunk(
   'app/initialize',
-  async ({ rateService, vehicleService, preferenceService }: InitializeAppArgs, { dispatch }) => {
+  async ({ rateService, vehicleService, preferenceService, purchaseService }: InitializeAppArgs, { dispatch }) => {
     try {
       logToDevServer('initializing app');
       logToDevServer('loading rates');
@@ -43,6 +45,9 @@ export const initializeApp = createAsyncThunk(
       dispatch(setRateTypeId(lastUsedRate));
       dispatch(setVehicleId(lastUsedVehicle));
       dispatch(setDefaultVehicleId(defaultVehicle));
+
+      // Initialize purchase service in the background
+      purchaseService.initialize();
 
       logToDevServer('app initialized');
       logToDevServer('taking down splash screen');

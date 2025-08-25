@@ -10,6 +10,7 @@ import { VehicleImportService } from './VehicleImportService';
 import { SessionImportService } from './SessionImportService';
 import { ExportService } from './ExportService';
 import { FileExportService } from '../utilities/fileExport';
+import { PurchaseService } from './PurchaseService';
 
 /**
  * List of injectable services in the app.
@@ -27,6 +28,7 @@ export type ServiceContainer = {
   sessionImportService: SessionImportService;
   fileExportService: FileExportService;
   exportService: ExportService;
+  purchaseService: PurchaseService;
 };
 
 export type ContainerContext = {

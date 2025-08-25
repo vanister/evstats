@@ -23,6 +23,8 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (7.0.1):
     - Capacitor
+  - CordovaPlugins (7.2.0):
+    - CapacitorCordova
   - IONFilesystemLib (1.0.0)
   - SQLCipher (4.6.1):
     - SQLCipher/standard (= 4.6.1)
@@ -43,6 +45,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
 
 SPEC REPOS:
   trunk:
@@ -73,6 +76,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CordovaPlugins:
+    :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
   Capacitor: 03bc7cbdde6a629a8b910a9d7d78c3cc7ed09ea7
@@ -86,10 +91,11 @@ SPEC CHECKSUMS:
   CapacitorShare: be166411fa995ead2d39b104aa0aae56d8615c66
   CapacitorSplashScreen: 1d67815a422a9b61539c94f283c08ed56667c0fc
   CapacitorStatusBar: 6e7af040d8fc4dd655999819625cae9c2d74c36f
+  CordovaPlugins: 1ca8577fbd90aa21fc0a1a4428d24e3aedc3499a
   IONFilesystemLib: ceacae793975039530458eabab0c495c70515a0d
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: e521e92fb0e262bfe94925c2f6c0a5feebfea81b
+PODFILE CHECKSUM: aed33587be45b93d5aee7763047e369f333716a2
 
 COCOAPODS: 1.16.2

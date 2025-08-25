@@ -1,0 +1,127 @@
+{
+  "identifier" : "EVStats",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6738471928",
+      "localizations" : [
+        {
+          "description" : "Support the app with a small tip",
+          "displayName" : "Tip Jar",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.evstats.tip_jar",
+      "referenceName" : "Tip Jar",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "6738471929",
+      "localizations" : [
+        {
+          "description" : "Fuel development with coffee",
+          "displayName" : "Buy me a Coffee",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.evstats.buy_coffee",
+      "referenceName" : "Buy Coffee",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6738471930",
+      "localizations" : [
+        {
+          "description" : "Support with a hearty meal",
+          "displayName" : "Buy me Lunch",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.evstats.buy_lunch",
+      "referenceName" : "Buy Lunch",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6738471931",
+      "localizations" : [
+        {
+          "description" : "Show your appreciation generously",
+          "displayName" : "Generous Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.evstats.generous_tip",
+      "referenceName" : "Generous Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
