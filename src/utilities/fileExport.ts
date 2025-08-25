@@ -2,6 +2,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { format } from 'date-fns';
 import { BaseService } from '../services/BaseService';
+import { logToDevServer } from '../logger';
 
 export interface ExportFileOptions {
   filename: string;
@@ -54,7 +55,7 @@ export class EvsFileExportService extends BaseService implements FileExportServi
         return;
       }
       
-      console.error('Error saving or sharing file:', error);
+      logToDevServer(`Error saving or sharing file: ${error.message || error}`, 'error');
       throw new Error(`Failed to export file: ${error.message}`);
     }
   }

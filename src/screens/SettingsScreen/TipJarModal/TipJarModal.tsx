@@ -20,6 +20,7 @@ import { closeOutline, heartOutline, cashOutline, fastFoodOutline, cafeOutline }
 import { useServices } from '../../../providers/ServiceProvider';
 import { useEffect, useState } from 'react';
 import { TipProduct, PurchaseResult } from '../../../services/PurchaseService';
+import { logToDevServer } from '../../../logger';
 
 type TipJarModalProps = {
   isOpen: boolean;
@@ -41,7 +42,7 @@ export default function TipJarModal({ isOpen, onClose }: TipJarModalProps) {
         const availableProducts = await purchaseService.getAvailableProducts();
         setProducts(availableProducts);
       } catch (error) {
-        console.error('Failed to load products:', error);
+        logToDevServer(`Failed to load products: ${error.message || error}`, 'error');
         setProducts([]);
       }
     };
@@ -89,7 +90,7 @@ export default function TipJarModal({ isOpen, onClose }: TipJarModalProps) {
       }
     } catch (error) {
       await hideLoading();
-      console.error('Purchase error:', error);
+      logToDevServer(`Purchase error: ${error.message || error}`, 'error');
       showAlert({
         header: 'Purchase Error',
         message: 'Unable to process your purchase. Please check your connection and try again.',
