@@ -69,11 +69,11 @@
    - [x] Add export button to settings screen
    - [x] Add file download/sharing capability
 
-3. **In-App Purchases**
-   - [ ] Install and configure Capacitor In-App Purchase plugin
-   - [ ] Create purchase service with 4 tipping options
-   - [ ] Add tip jar UI to settings screen
-   - [ ] Test purchase flow on iOS/Android
+3. ~~**In-App Purchases**~~ ✅ **COMPLETED**
+   - [x] Install and configure Capacitor In-App Purchase plugin
+   - [x] Create purchase service with 4 tipping options
+   - [x] Add tip jar UI to settings screen
+   - [x] Test purchase flow on iOS/Android
 
 ### 🔧 Should Fix Before Launch
 
@@ -104,6 +104,7 @@
 - All critical blockers resolved
 - In-app purchase implementation complete with iOS simulator testing
 - Security audit passed - no sensitive information leaks
+- Console logging standardized with logToDevServer utility
 - Code builds and lints successfully
 
 ## Technical Debt (Post-MVP)
@@ -117,6 +118,8 @@
 - [ ] Review and optimize database query patterns for performance
 - [ ] Add proper loading state management (reduce prop drilling)
 - [ ] Implement consistent naming conventions across codebase
+- [x] ~~Standardize console.* usage with logToDevServer utility~~ ✅ **COMPLETED**
+- [x] ~~Complete comprehensive security audit for public repository~~ ✅ **COMPLETED**
 - [ ] Set up dependency injection for logger in services/repositories (remove direct logToDevServer imports)
 
 ### Testing & Quality Assurance
