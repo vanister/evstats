@@ -8,10 +8,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` - Build for production (TypeScript compilation + Vite build)
 - `npm run test` - Run tests with Vitest
 - `npm run test.lcov` - Run tests with coverage
+- `npm run test.lcov.all` - Run tests with full coverage including all files
+- `npm run test.debug` - Run tests in debug mode without watch
 - `npm run test.once` - Run tests once without watch mode
 - `npm run lint` - Run ESLint
 - `npm start` - Alias for dev server on port 8100
+- `npm run start.ios` - Start iOS development with live reload
 - `npm run start.logserver` - Start development log server
+- `npm run generate:vehicles` - Generate test vehicle data
+- `npm run generate:sessions` - Generate test session data
 
 ## Development Guidelines
 
@@ -228,4 +233,67 @@ Use WebSearch or WebFetch tools to verify API usage before implementing features
 
 - Do not use `any` for types, always be explicit when typing
 - No inline styles unless they are dynamic or absolutely required
-- Always use the dateUtility for all date operations. Add to it if needed. It should always use date-fns before custom implemenations:
+- Always use the dateUtility for all date operations. Add to it if needed. It should always use date-fns before custom implementations
+
+## Service Retrieval Pattern
+
+Use the `getService` function from `ServiceContainer.ts` to retrieve services in components:
+
+```typescript
+import { getService } from '../services/ServiceContainer';
+
+// In component
+const vehicleService = getService('vehicleService');
+```
+
+Available services: `chargeStatsService`, `databaseBackupService`, `preferenceService`, `rateService`, `sessionService`, `vehicleService`, `vehicleStatsService`, `vehicleImportService`, `sessionImportService`, `fileExportService`, `exportService`, `purchaseService`
+
+## Custom Hooks Pattern
+
+The app uses custom hooks for screen-specific logic:
+
+- `useVehicles` - Vehicle screen state management
+- `useSessions` - Session screen state management  
+- `useImmerState` - Immutable state updates with Immer
+
+## Utility Functions
+
+**Date Operations**: All date operations use `src/utilities/dateUtility.ts`:
+- `today()` - Current date in YYYY-MM-DD format
+- `parseLocalDate()` - Parse date string safely as local date
+- `formatDateForDisplay()` - Format date string for display
+- `getCurrentMonth()`, `getCurrentYear()` - Current period helpers
+- Month/year navigation helpers
+
+**File Operations**: Use `src/utilities/fileExport.ts` for file export functionality
+
+**CSV Parsing**: Use `src/utilities/csvParser.ts` for CSV file processing
+
+**Vehicle Validation**: Use `src/utilities/vehicleValidation.ts` for vehicle data validation
+
+## Development Utilities
+
+**Test Data Generation**: Use utility scripts to generate test data:
+- `npm run generate:vehicles` - Creates test vehicle data
+- `npm run generate:sessions` - Creates test session data
+
+**Development Logging**: 
+- Use `logToDevServer()` from `src/logger.ts` instead of console methods
+- Start log server with `npm run start.logserver`
+- Logs stored in `logs/` directory as daily files
+
+**Database Backups**: 
+- Temporary database copies stored in `temp_dbs/` directory
+- Use `DatabaseBackupService` for programmatic backup operations
+
+## Global Type Definitions
+
+- `@evs-core` - Global type alias pointing to `evs-core.d.ts`
+- `ExplicitAny` - Use instead of `any` type for better code documentation
+- `PropsWithChildrenAndClass` - Common prop type for components with children and className
+
+## Error Handling Patterns
+
+- Custom error types in `src/errors/` (e.g., `NotFoundError`)
+- Global `ErrorBoundary` with `AlertableError` component
+- Service-level error handling with typed exceptions
