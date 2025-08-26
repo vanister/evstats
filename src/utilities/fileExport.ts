@@ -17,10 +17,8 @@ export interface FileExportService {
 
 export class EvsFileExportService extends BaseService implements FileExportService {
   async exportFile(options: ExportFileOptions): Promise<void> {
-    const { filename, content, mimeType = 'text/csv' } = options;
-
-    // Mobile app only: Save to device and share
-    await this.saveAndShareFile(filename, content, mimeType);
+    // Temporarily disabled to prevent database file visibility in Files app
+    throw new Error('Export functionality is temporarily disabled');
   }
 
   generateExportFilename(type: 'vehicles' | 'sessions'): string {

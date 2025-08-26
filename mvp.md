@@ -30,12 +30,12 @@
 - [x] Yearly stats functionality with historical navigation
 - [x] Month/Year toggle component (SwipeableChart)
 
-### 4. ✅ Import/Export Data - **COMPLETE**
+### 4. ⚠️ Import/Export Data - **PARTIALLY COMPLETE**
 
 - [x] Vehicle CSV import with validation
 - [x] Session CSV import with validation
 - [x] Error handling and user feedback
-- [x] Export functionality (CSV export for vehicles and sessions)
+- [ ] Export functionality (temporarily disabled due to database file visibility in Files app)
 
 ### 5. ✅ In-App Purchases - **COMPLETE**
 
@@ -62,12 +62,13 @@
    - [x] Add period navigation: Last 31 Days → August → July → etc.
    - [x] Add year navigation with same swipe pattern
 
-2. ~~**Data Export Functionality**~~ ✅ **COMPLETED**
+2. **Data Export Functionality** ⚠️ **TEMPORARILY DISABLED**
 
    - [x] Implement CSV export for vehicles
    - [x] Implement CSV export for sessions
-   - [x] Add export button to settings screen
-   - [x] Add file download/sharing capability
+   - [ ] Export button temporarily disabled in settings screen
+   - [ ] File sharing functionality disabled to prevent database file visibility
+   - [ ] Need alternative export strategy that doesn't expose database in Files app
 
 3. ~~**In-App Purchases**~~ ✅ **COMPLETED**
    - [x] Install and configure Capacitor In-App Purchase plugin
@@ -76,6 +77,11 @@
    - [x] Test purchase flow on iOS/Android
 
 ### 🔧 Should Fix Before Launch
+
+4. **Alternative Export Solution**
+   - [ ] Implement export functionality that doesn't expose database file
+   - [ ] Consider email-based export or secure file sharing
+   - [ ] Test alternative export methods on iOS
 
 5. **Enhanced Date Range Selection**
 
@@ -95,13 +101,16 @@
 
 ## Current Status Summary
 
-**🟢 MVP COMPLETE**: All core features implemented and tested (100% of MVP)
-- ✅ Sessions, Vehicles, Charge Stats, Import/Export, and In-App Purchases
+**🟡 MVP NEARLY COMPLETE**: Core features implemented (95% of MVP)
+- ✅ Sessions, Vehicles, Charge Stats, Import functionality, and In-App Purchases
+- ⚠️ Export functionality temporarily disabled due to database file visibility issue
 
 ## MVP Launch Status
 
-**🎉 READY FOR LAUNCH**: All MVP requirements completed
-- All critical blockers resolved
+**🟡 NEARLY READY FOR LAUNCH**: One feature temporarily disabled
+- All critical blockers resolved except export functionality
+- Database file visibility issue resolved (prevented Files app access)
+- Export functionality temporarily disabled until alternative solution implemented
 - In-app purchase implementation complete with iOS simulator testing
 - Security audit passed - no sensitive information leaks
 - Console logging standardized with logToDevServer utility

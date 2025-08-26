@@ -1,7 +1,7 @@
 import './SettingsScreen.scss';
 
 import { IonList, IonItem, IonLabel, IonIcon, useIonRouter } from '@ionic/react';
-import { downloadOutline, flashOutline, shareOutline, heartOutline } from 'ionicons/icons';
+import { downloadOutline, flashOutline, heartOutline } from 'ionicons/icons';
 import EvsPage from '../../components/EvsPage';
 import EvsNote from '../../components/EvsNote/EvsNote';
 import { useAppSelector } from '../../redux/hooks';
@@ -21,9 +21,6 @@ export default function SettingsScreen() {
     router.push('/settings/import');
   };
 
-  const handleExportClick = () => {
-    router.push('/settings/export');
-  };
 
   const handleSupportClick = () => {
     setShowTipJar(true);
@@ -42,10 +39,11 @@ export default function SettingsScreen() {
             <IonIcon icon={downloadOutline} slot="start" />
             <IonLabel>Import data</IonLabel>
           </IonItem>
-          <IonItem button disabled={!hasVehicles} onClick={handleExportClick}>
+          {/* Temporarily disabled - database file visibility issue */}
+          {/* <IonItem button disabled={!hasVehicles} onClick={handleExportClick}>
             <IonIcon icon={shareOutline} slot="start" />
             <IonLabel>Export data</IonLabel>
-          </IonItem>
+          </IonItem> */}
         </IonList>
 
         <IonList inset>
