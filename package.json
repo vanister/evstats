@@ -15,7 +15,9 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "start": "npm run dev -- --port=8100",
     "start.ios": "dotenv -c -- bash -c 'npx vite build && npx cap copy ios && npx cap run ios --target=$IOS_TARGET_DEVICE --live-reload --port=$DEV_PORT --host=$DEV_HOST & npx vite --host=$DEV_HOST --port=$DEV_PORT --mode=development'",
-    "start.logserver": "node utilities/devLogServer.js"
+    "start.logserver": "node utilities/devLogServer.js",
+    "generate:vehicles": "node utilities/vehicleGenerator.js",
+    "generate:sessions": "node utilities/sessionGenerator.js"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "7.0.0",
@@ -62,6 +64,7 @@
     "@vitejs/plugin-legacy": "6.1.1",
     "@vitejs/plugin-react": "4.5.0",
     "@vitest/coverage-v8": "2.1.9",
+    "better-sqlite3": "^12.2.0",
     "cors": "^2.8.5",
     "dotenv-cli": "^10.0.0",
     "eslint-plugin-react": "7.37.5",
