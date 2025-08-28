@@ -16,7 +16,7 @@ export interface FileExportService {
 }
 
 export class EvsFileExportService extends BaseService implements FileExportService {
-  async exportFile(options: ExportFileOptions): Promise<void> {
+  async exportFile(_options: ExportFileOptions): Promise<void> {
     // Temporarily disabled to prevent database file visibility in Files app
     throw new Error('Export functionality is temporarily disabled');
   }

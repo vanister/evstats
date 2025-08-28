@@ -8,7 +8,8 @@ import { VehicleImportService, EvsVehicleImportService } from './VehicleImportSe
 import { SessionImportService, EvsSessionImportService } from './SessionImportService';
 import { ExportService, EvsExportService } from './ExportService';
 import { FileExportService, EvsFileExportService } from '../utilities/fileExport';
-import { PurchaseService, EvsPurchaseService } from './PurchaseService';
+// Purchase service imports temporarily disabled
+// import { PurchaseService, EvsPurchaseService } from './PurchaseService';
 import { logToDevServer } from '../logger';
 import { DatabaseBackupService, SqliteDbBackupService } from './DatabaseBackupService';
 import { RateRepository, EvsRateRepository } from '../data/repositories/RateRepository';
@@ -79,7 +80,8 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
   const sessionImportService: SessionImportService = new EvsSessionImportService(sessionRepository);
   const fileExportService: FileExportService = new EvsFileExportService();
   const exportService: ExportService = new EvsExportService(vehicleRepository, sessionRepository, fileExportService);
-  const purchaseService: PurchaseService = new EvsPurchaseService();
+  // Purchase service temporarily disabled - not registering with container
+  // const purchaseService: PurchaseService = new EvsPurchaseService();
 
   // register the services here
   container
@@ -93,8 +95,9 @@ export function initializeServiceContainer({ databaseManager }: ContainerContext
     .set('vehicleImportService', vehicleImportService)
     .set('sessionImportService', sessionImportService)
     .set('fileExportService', fileExportService)
-    .set('exportService', exportService)
-    .set('purchaseService', purchaseService);
+    .set('exportService', exportService);
+    // Purchase service temporarily disabled
+    // .set('purchaseService', purchaseService);
 
   isContainerBuilt = true;
   logToDevServer('service container initialized');
